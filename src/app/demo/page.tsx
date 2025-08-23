@@ -189,7 +189,7 @@ export default function DemoPage() {
   }, [])
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-gradient-to-br from-brand-void via-brand-dark to-brand-navy">
       {/* Navigation */}
       <NavSwitcher />
       

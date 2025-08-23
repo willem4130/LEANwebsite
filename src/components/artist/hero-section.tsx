@@ -285,7 +285,7 @@ export function HeroSection({
 
         {/* Premium CTA Buttons for Booking Agent Appeal */}
         <motion.div 
-          className="hero-cta flex flex-col sm:flex-row gap-4 justify-center items-center"
+          className="hero-cta flex justify-center items-center"
           variants={ctaVariants}
         >
           <motion.div whileHover="hover" whileTap="tap">
@@ -297,24 +297,6 @@ export function HeroSection({
                 "text-shadow hover:shadow-2xl will-change-transform min-w-48",
                 "transition-all duration-300",
                 "hover:shadow-[0_0_40px_rgba(0,255,255,0.4)]",
-                "focus:outline-none focus:ring-2 focus:ring-brand-neon/50"
-              )}
-            >
-              <a href={ctaLink} target="_blank" rel="noopener noreferrer">
-                {ctaText}
-              </a>
-            </Button>
-          </motion.div>
-          
-          <motion.div whileHover="hover" whileTap="tap">
-            <Button
-              variant="booking"
-              size="lg"
-              asChild
-              className={cn(
-                "text-shadow hover:shadow-2xl will-change-transform min-w-40",
-                "transition-all duration-300",
-                "hover:shadow-[0_0_30px_rgba(0,255,255,0.3)]",
                 "focus:outline-none focus:ring-2 focus:ring-brand-neon/50"
               )}
             >

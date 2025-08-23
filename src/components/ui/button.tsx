@@ -17,15 +17,24 @@ const buttonVariants = cva(
           "bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80",
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
-        gradient: "bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-lg hover:from-purple-700 hover:to-pink-700 transform hover:scale-105 transition-all duration-200",
-        artist: "bg-black/20 backdrop-blur-sm text-white border border-white/30 hover:bg-white/10 hover:border-white/50 transition-all duration-300",
+        gradient: "bg-gradient-to-r from-brand-electric to-brand-purple text-white shadow-lg hover:from-cyan-400 hover:to-purple-600 transform hover:scale-105 transition-all duration-200",
+        artist: "bg-brand-navy/80 backdrop-blur-sm text-white border border-brand-electric/50 hover:bg-brand-electric/20 hover:border-brand-electric transition-all duration-300",
+        
+        // Premium Booking Agent Appeal Variants
+        premium: "bg-gradient-to-r from-brand-neon via-brand-electric to-brand-purple text-black font-bold shadow-2xl hover:shadow-brand-neon/25 hover:scale-105 border border-brand-neon/30 hover:border-brand-neon transition-all duration-300 backdrop-blur-sm",
+        
+        professional: "bg-brand-charcoal/90 backdrop-blur-md text-brand-text-hero border-2 border-brand-neon/40 hover:bg-brand-neon/10 hover:border-brand-neon hover:shadow-lg hover:shadow-brand-neon/20 transition-all duration-300 font-semibold",
+        
+        booking: "bg-gradient-to-r from-brand-void via-brand-dark to-brand-navy text-brand-neon border border-brand-neon/50 hover:bg-gradient-to-r hover:from-brand-neon/20 hover:via-brand-electric/20 hover:to-brand-purple/20 hover:text-white hover:border-brand-neon hover:shadow-xl hover:shadow-brand-neon/30 transition-all duration-500 font-bold backdrop-blur-sm",
+        
+        cta: "bg-brand-neon text-black font-bold hover:bg-white hover:text-brand-void shadow-lg hover:shadow-xl hover:shadow-brand-neon/40 border border-brand-neon hover:border-white transform hover:scale-102 transition-all duration-300",
       },
       size: {
-        default: "h-9 px-4 py-2",
-        sm: "h-8 rounded-md px-3 text-xs",
-        lg: "h-10 rounded-md px-8",
-        xl: "h-12 rounded-lg px-12 text-lg",
-        icon: "h-9 w-9",
+        default: "h-11 px-4 py-2", // 44px minimum for accessibility
+        sm: "h-11 rounded-md px-3 text-xs", // Fixed: was h-8 (32px) - accessibility violation
+        lg: "h-12 rounded-md px-8",
+        xl: "h-14 rounded-lg px-12 text-lg",
+        icon: "h-11 w-11", // 44px minimum for touch targets
       },
     },
     defaultVariants: {

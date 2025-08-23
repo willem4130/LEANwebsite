@@ -135,8 +135,18 @@ export const createScrollAnimations = () => {
         gsap.to(section, {
           duration: 1,
           opacity: 1,
+          y: 0,
           scale: 1,
           ease: 'power2.out'
+        })
+      },
+      onLeaveBack: () => {
+        gsap.to(section, {
+          duration: 0.8,
+          opacity: 0,
+          y: 100,
+          scale: 0.95,
+          ease: 'power2.inOut'
         })
       }
     })

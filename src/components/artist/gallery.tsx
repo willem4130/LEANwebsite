@@ -61,7 +61,7 @@ export function Gallery({
   const [layoutMode, setLayoutMode] = useState<'grid' | 'masonry' | 'carousel'>(layout)
   const [isReducedMotion, setIsReducedMotion] = useState(false)
   const containerRef = useRef(null)
-  const isInView = useInView(containerRef, { once: true, margin: "-100px" })
+  const isInView = useInView(containerRef, { once: false, margin: "-100px" })
 
   React.useEffect(() => {
     setIsReducedMotion(prefersReducedMotion())
@@ -174,13 +174,13 @@ export function Gallery({
       >
         {/* Background overlay for better readability */}
         {backgroundType === 'image' && (
-          <div className="absolute inset-0 bg-white/85 backdrop-blur-sm" />
+          <div className="absolute inset-0 bg-gradient-to-br from-brand-neon/20 via-brand-electric/10 to-brand-purple/20 backdrop-blur-sm" />
         )}
 
         <div className="max-w-7xl mx-auto px-4 relative z-10">
           {/* Header */}
           <div className="text-center space-y-8 mb-12">
-            <h2 className="text-3xl lg:text-5xl font-bold text-gray-900">
+            <h2 className="text-3xl lg:text-5xl font-bold text-brand-text-hero">
               {title}
             </h2>
 
@@ -496,7 +496,7 @@ function GalleryItemCard({
 
   return (
     <Card
-      className="group cursor-pointer hover:shadow-xl transition-all duration-300 hover:-translate-y-1 overflow-hidden bg-white"
+      className="group cursor-pointer hover:shadow-xl transition-all duration-300 hover:-translate-y-1 overflow-hidden bg-gradient-to-br from-brand-navy/90 via-brand-dark/80 to-brand-charcoal/90"
       onClick={() => onSelect(item)}
     >
       <CardContent className="p-0">

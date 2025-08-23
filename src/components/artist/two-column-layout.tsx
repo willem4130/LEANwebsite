@@ -147,7 +147,7 @@ export function TwoColumnLayout({
     >
       {/* Background overlay for better text readability */}
       {backgroundType === 'image' && (
-        <div className="absolute inset-0 bg-white/80 backdrop-blur-sm" />
+        <div className="absolute inset-0 bg-gradient-to-br from-brand-neon/20 via-brand-electric/10 to-brand-purple/20 backdrop-blur-sm" />
       )}
 
       <div className="container mx-auto px-4 relative z-10">
@@ -156,7 +156,8 @@ export function TwoColumnLayout({
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, margin: "-100px" }}
+          exit="hidden"
+          viewport={{ once: false, margin: "-100px" }}
         >
           {/* Left Column - Tour Dates */}
           <motion.div variants={tourVariants} className="space-y-8">
@@ -241,7 +242,7 @@ export function TwoColumnLayout({
                   ))}
                 </div>
               ) : (
-                <div className="text-center py-12 text-gray-500">
+                <div className="text-center py-12 text-brand-text-secondary">
                   <Calendar className="w-12 h-12 mx-auto mb-4 opacity-50" />
                   <p className="text-lg">No upcoming shows scheduled</p>
                   <p className="text-sm">Check back soon for new dates!</p>
@@ -253,7 +254,7 @@ export function TwoColumnLayout({
           {/* Right Column - Bio */}
           <motion.div variants={tourVariants} className="space-y-8">
             <div className="space-y-6">
-              <h2 className="text-section-header text-gray-900">
+              <h2 className="text-section-header text-brand-text-hero">
                 {bioTitle}
               </h2>
               
@@ -268,7 +269,7 @@ export function TwoColumnLayout({
               )}
               
               <div
-                className="prose prose-lg prose-gray max-w-none"
+                className="prose prose-lg prose-invert max-w-none text-brand-text-primary"
                 dangerouslySetInnerHTML={{ __html: bioContent }}
               />
             </div>
