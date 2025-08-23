@@ -335,7 +335,7 @@ export const createSpectacularHeroTransition = () => {
             .to('.scan-2', { scaleX: 5, duration: 1.0, ease: 'power2.out' }, '+=0.1')
             .to('.scan-3', { opacity: 1, duration: 0.2 }, '-=0.7')
             .to('.scan-3', { scaleX: 5, duration: 0.9, ease: 'power2.out' }, '+=0.1')
-            .call(() => scanLines.remove(), null, '+=1')
+            .call(() => scanLines.remove(), [], '+=1')
         }, '-=0.2')
         
         // 4. Energy Orb Explosion (instead of particle burst)

@@ -24,31 +24,39 @@ export default function HomePage() {
   useEffect(() => {
     if (!containerRef.current) return
 
+    // Performance defaults for smooth 60fps
+    gsap.defaults({ force3D: true, lazy: false })
+
     // Set initial states using refs only
     gsap.set([badgeRef.current, titleRef.current, descriptionRef.current, buttonsRef.current, noteRef.current], {
       opacity: 0,
-      y: 50
+      y: 50,
+      force3D: true
     })
     
     gsap.set(featuresRef.current?.children || [], {
       opacity: 0,
       y: 100,
-      scale: 0.8
+      scale: 0.8,
+      force3D: true
     })
 
     gsap.set(techStackRef.current?.children || [], {
       opacity: 0,
-      y: 50
+      y: 50,
+      force3D: true
     })
 
     // Set background elements initial state
     gsap.set([backgroundGradientRef.current, backgroundOverlayRef.current], {
-      opacity: 0
+      opacity: 0,
+      force3D: true
     })
 
     gsap.set([backgroundCircle1Ref.current, backgroundCircle2Ref.current], {
       opacity: 0,
-      scale: 0
+      scale: 0,
+      force3D: true
     })
 
     // Simplified but effective animation sequence
@@ -156,6 +164,11 @@ export default function HomePage() {
 
     return () => {
       tl.kill()
+      // Clear properties to free memory
+      gsap.set([badgeRef.current, titleRef.current, descriptionRef.current, buttonsRef.current, noteRef.current], { clearProps: "all" })
+      gsap.set(featuresRef.current?.children || [], { clearProps: "all" })
+      gsap.set(techStackRef.current?.children || [], { clearProps: "all" })
+      gsap.set([backgroundGradientRef.current, backgroundOverlayRef.current, backgroundCircle1Ref.current, backgroundCircle2Ref.current], { clearProps: "all" })
     }
   }, [])
 

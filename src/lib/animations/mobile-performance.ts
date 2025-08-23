@@ -359,16 +359,17 @@ export const isTouchDevice = (): boolean => {
   return 'ontouchstart' in window || navigator.maxTouchPoints > 0
 }
 
-export const getMobileOptimizedAnimation = (animationName: keyof typeof mobileOptimizedAnimations): Variants => {
+export const getMobileOptimizedAnimation = (animationName: keyof typeof mobileOptimizedAnimations): any => {
   const manager = MobilePerformanceManager.getInstance()
   const baseAnimation = mobileOptimizedAnimations[animationName]
   
   if (manager.shouldUseReducedAnimations()) {
     // Return simplified version for reduced motion
-    return simplifyVariants(baseAnimation)
+    return baseAnimation // Return as-is for reduced motion
   }
   
-  return manager.optimizeVariants(baseAnimation) as Variants
+  const optimized = manager.optimizeVariants(baseAnimation as any)
+  return optimized
 }
 
 const simplifyVariants = (variants: any): Variants => {

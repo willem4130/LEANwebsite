@@ -107,52 +107,43 @@ export function Gallery({
   const containerVariants = {
     ...galleryAnimations.container,
     visible: {
-      ...galleryAnimations.container.visible,
-      transition: getOptimizedTransition(galleryAnimations.container.visible!.transition!),
+      ...galleryAnimations.container.visible
     },
   }
 
   const itemVariants = {
     ...galleryAnimations.item,
     visible: {
-      ...galleryAnimations.item.visible,
-      transition: getOptimizedTransition(galleryAnimations.item.visible!.transition!),
+      ...galleryAnimations.item.visible
     },
     hover: {
-      ...galleryAnimations.item.hover,
-      transition: getOptimizedTransition(galleryAnimations.item.hover!.transition!),
+      ...galleryAnimations.item.hover
     },
     tap: {
-      ...galleryAnimations.item.tap,
-      transition: getOptimizedTransition(galleryAnimations.item.tap!.transition!),
+      ...galleryAnimations.item.tap
     },
   }
 
   const filterVariants = {
     ...galleryAnimations.filter,
     inactive: {
-      ...galleryAnimations.filter.inactive,
-      transition: getOptimizedTransition(galleryAnimations.filter.inactive!.transition!),
+      ...galleryAnimations.filter.inactive
     },
     active: {
-      ...galleryAnimations.filter.active,
-      transition: getOptimizedTransition(galleryAnimations.filter.active!.transition!),
+      ...galleryAnimations.filter.active
     },
     hover: {
-      ...galleryAnimations.filter.hover,
-      transition: getOptimizedTransition(galleryAnimations.filter.hover!.transition!),
+      ...galleryAnimations.filter.hover
     },
   }
 
   const lightboxVariants = {
     ...galleryAnimations.lightbox,
     visible: {
-      ...galleryAnimations.lightbox.visible,
-      transition: getOptimizedTransition(galleryAnimations.lightbox.visible!.transition!),
+      ...galleryAnimations.lightbox.visible
     },
     exit: {
-      ...galleryAnimations.lightbox.exit,
-      transition: getOptimizedTransition(galleryAnimations.lightbox.exit!.transition!),
+      ...galleryAnimations.lightbox.exit
     },
   }
 
@@ -241,7 +232,7 @@ export function Gallery({
             {categories.length > 0 && (
               <motion.div 
                 className="flex flex-wrap justify-center gap-2"
-                variants={galleryAnimations.socialGrid}
+                variants={containerVariants}
                 initial="hidden"
                 animate={isInView ? "visible" : "hidden"}
               >
@@ -260,7 +251,14 @@ export function Gallery({
                     {filter === 'all' && (
                       <motion.div
                         className="absolute inset-0 bg-gradient-to-r from-green-400/20 to-blue-400/20"
-                        animate={isReducedMotion ? {} : EFFECTS.BEAT_PULSE}
+                        animate={isReducedMotion ? {} : {
+                          scale: [1, 1.05, 1],
+                          transition: {
+                            duration: 0.5,
+                            ease: [0.68, -0.55, 0.265, 1.55],
+                            repeat: Infinity
+                          }
+                        }}
                       />
                     )}
                     <Zap className="w-3 h-3 mr-1" />

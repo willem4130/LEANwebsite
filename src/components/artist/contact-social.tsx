@@ -232,60 +232,50 @@ export function ContactSocial({
   const containerVariants = {
     ...contactAnimations.container,
     visible: {
-      ...contactAnimations.container.visible,
-      transition: getOptimizedTransition(contactAnimations.container.visible!.transition!),
+      ...contactAnimations.container.visible
     },
   }
 
   const formFieldVariants = {
     ...contactAnimations.formField,
     visible: {
-      ...contactAnimations.formField.visible,
-      transition: getOptimizedTransition(contactAnimations.formField.visible!.transition!),
+      ...contactAnimations.formField.visible
     },
     focus: {
-      ...contactAnimations.formField.focus,
-      transition: getOptimizedTransition(contactAnimations.formField.focus!.transition!),
+      ...contactAnimations.formField.focus
     },
     error: {
-      ...contactAnimations.formField.error,
-      transition: getOptimizedTransition(contactAnimations.formField.error!.transition!),
+      ...contactAnimations.formField.error
     },
   }
 
   const submitButtonVariants = {
     ...contactAnimations.submitButton,
     hover: {
-      ...contactAnimations.submitButton.hover,
-      transition: getOptimizedTransition(contactAnimations.submitButton.hover!.transition!),
+      ...contactAnimations.submitButton.hover
     },
     loading: {
-      ...contactAnimations.submitButton.loading,
-      transition: getOptimizedTransition(contactAnimations.submitButton.loading!.transition!),
+      ...contactAnimations.submitButton.loading
     },
     success: {
-      ...contactAnimations.submitButton.success,
-      transition: getOptimizedTransition(contactAnimations.submitButton.success!.transition!),
+      ...contactAnimations.submitButton.success
     },
   }
 
   const socialGridVariants = {
     ...contactAnimations.socialGrid,
     visible: {
-      ...contactAnimations.socialGrid.visible,
-      transition: getOptimizedTransition(contactAnimations.socialGrid.visible!.transition!),
+      ...contactAnimations.socialGrid.visible
     },
   }
 
   const socialItemVariants = {
     ...contactAnimations.socialItem,
     visible: {
-      ...contactAnimations.socialItem.visible,
-      transition: getOptimizedTransition(contactAnimations.socialItem.visible!.transition!),
+      ...contactAnimations.socialItem.visible
     },
     hover: {
-      ...contactAnimations.socialItem.hover,
-      transition: getOptimizedTransition(contactAnimations.socialItem.hover!.transition!),
+      ...contactAnimations.socialItem.hover
     },
   }
 

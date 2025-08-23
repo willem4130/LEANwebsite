@@ -3,6 +3,7 @@
  * Ensures WCAG compliance and respects user preferences
  */
 
+import React from 'react'
 import { Variants, Transition } from 'framer-motion'
 import { TIMING, EASING } from './electronic-music-animations'
 

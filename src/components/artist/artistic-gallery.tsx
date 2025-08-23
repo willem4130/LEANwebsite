@@ -54,8 +54,7 @@ export function ArtisticGallery({
     visible: { 
       opacity: 1, 
       y: 0, 
-      scale: 1,
-      transition: { duration: 0.6, ease: "easeOut" }
+      scale: 1
     }
   }
 
@@ -101,8 +100,14 @@ export function ArtisticGallery({
                   "break-inside-avoid mb-6 cursor-pointer group relative overflow-hidden rounded-lg bg-card border border-border",
                   getItemHeight(index)
                 )}
-                whileHover={{ scale: 1.02 }}
-                transition={{ duration: 0.3 }}
+                whileHover={{ 
+                  scale: 1.02,
+                  transition: { duration: 0.3, ease: [0.4, 0.0, 0.2, 1.0] }
+                }}
+                transition={{ 
+                  duration: 0.6, 
+                  ease: [0.4, 0.0, 0.2, 1.0]
+                }}
                 onClick={() => setSelectedImage(item)}
               >
                 {/* Image/Video */}

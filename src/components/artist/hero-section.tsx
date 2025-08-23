@@ -28,6 +28,7 @@ interface ProfessionalInfo {
 }
 
 interface HeroSectionProps {
+  id?: string
   artistName: string
   tagline?: string
   backgroundType: 'color' | 'gradient' | 'image' | 'video'
@@ -47,6 +48,7 @@ interface HeroSectionProps {
 }
 
 export function HeroSection({
+  id,
   artistName,
   tagline,
   backgroundType,
@@ -231,6 +233,7 @@ export function HeroSection({
       }
     >
       <section
+        id={id}
         className={cn(
           "hero-background relative min-h-screen flex items-center justify-center overflow-hidden",
           className
@@ -316,8 +319,7 @@ export function HeroSection({
             variants={{
               ...heroAnimations.tagline,
               visible: {
-                ...heroAnimations.tagline.visible,
-                transition: { ...getOptimizedTransition(heroAnimations.tagline.visible!.transition!), delay: 1.2 }
+                ...heroAnimations.tagline.visible
               }
             }}
           >
@@ -395,8 +397,7 @@ export function HeroSection({
           variants={{
             ...heroAnimations.cta,
             visible: {
-              ...heroAnimations.cta.visible,
-              transition: { ...getOptimizedTransition(heroAnimations.cta.visible!.transition!), delay: 1.8 }
+              ...heroAnimations.cta.visible
             }
           }}
         >
