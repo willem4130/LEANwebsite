@@ -7,9 +7,9 @@ export default function HomePage() {
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
       <div className="container mx-auto px-4 py-16">
         <div className="text-center">
-          <div className="inline-flex items-center gap-2 bg-green-500/20 text-green-300 px-4 py-2 rounded-full text-sm mb-6">
-            <CheckCircle className="w-4 h-4" />
-            MVP Complete - All Components Built!
+          <div className="inline-flex items-center gap-2 bg-yellow-500/20 text-yellow-300 px-4 py-2 rounded-full text-sm mb-6">
+            <Zap className="w-4 h-4" />
+            Framework Cleaned Up - Demo In Progress
           </div>
           
           <h1 className="text-6xl font-bold text-white mb-6 animate-fade-in">
@@ -51,7 +51,7 @@ export default function HomePage() {
             <p className="text-slate-300 text-sm">
               5-second intro sequences with precise timing controls and full background customization
             </p>
-            <div className="mt-3 text-green-400 text-xs font-semibold">✓ COMPLETE</div>
+            <div className="mt-3 text-green-400 text-xs font-semibold">✓ WORKING</div>
           </div>
           
           <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 border border-white/20">
@@ -62,7 +62,7 @@ export default function HomePage() {
             <p className="text-slate-300 text-sm">
               Tour dates and bio with independent background controls per section
             </p>
-            <div className="mt-3 text-green-400 text-xs font-semibold">✓ COMPLETE</div>
+            <div className="mt-3 text-yellow-400 text-xs font-semibold">🚧 MIGRATING</div>
           </div>
           
           <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 border border-white/20">
@@ -73,7 +73,7 @@ export default function HomePage() {
             <p className="text-slate-300 text-sm">
               Grid, masonry, and carousel layouts with lightbox and category filtering
             </p>
-            <div className="mt-3 text-green-400 text-xs font-semibold">✓ COMPLETE</div>
+            <div className="mt-3 text-yellow-400 text-xs font-semibold">🚧 MIGRATING</div>
           </div>
           
           <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 border border-white/20">
@@ -84,7 +84,7 @@ export default function HomePage() {
             <p className="text-slate-300 text-sm">
               Validated contact forms with social media integration and animations
             </p>
-            <div className="mt-3 text-green-400 text-xs font-semibold">✓ COMPLETE</div>
+            <div className="mt-3 text-yellow-400 text-xs font-semibold">🚧 MIGRATING</div>
           </div>
         </div>
 

@@ -1,7 +1,7 @@
 import type { Config } from "tailwindcss";
 
 const config: Config = {
-  darkMode: ["class"],
+  darkMode: "class",
   content: [
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
@@ -74,12 +74,22 @@ const config: Config = {
           from: { transform: "translateX(-100%)" },
           to: { transform: "translateX(0)" },
         },
+        "hero-entrance": {
+          "0%": { opacity: "0", transform: "scale(0.95)" },
+          "100%": { opacity: "1", transform: "scale(1)" },
+        },
+        "parallax-float": {
+          "0%, 100%": { transform: "translateY(0px)" },
+          "50%": { transform: "translateY(-10px)" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         "fade-in": "fade-in 0.6s ease-out",
         "slide-in": "slide-in 0.8s ease-out",
+        "hero-entrance": "hero-entrance 0.8s ease-out",
+        "parallax-float": "parallax-float 6s ease-in-out infinite",
       },
     },
   },

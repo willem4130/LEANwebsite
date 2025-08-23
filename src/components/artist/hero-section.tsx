@@ -3,6 +3,8 @@
 import React, { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
+import { ComponentErrorBoundary } from '@/components/ErrorBoundary'
+import { AlertCircle, RefreshCw } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 interface HeroSectionProps {
@@ -14,7 +16,7 @@ interface HeroSectionProps {
     url: string
     alt?: string
   }
-  animationDuration: number
+  animationDuration: number | string
   ctaText: string
   ctaLink: string
   textColor?: string
@@ -34,6 +36,20 @@ export function HeroSection({
   className,
 }: HeroSectionProps) {
   const [isLoaded, setIsLoaded] = useState(false)
+  const [mediaError, setMediaError] = useState(false)
+  const [mediaLoading, setMediaLoading] = useState(true)
+
+  // Input validation
+  if (!artistName || !ctaText || !ctaLink) {
+    return (
+      <div className="min-h-screen bg-gray-900 flex items-center justify-center">
+        <div className="text-center">
+          <AlertCircle className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+          <p className="text-gray-300">Hero section missing required information</p>
+        </div>
+      </div>
+    )
+  }
 
   useEffect(() => {
     setIsLoaded(true)
@@ -65,59 +81,75 @@ export function HeroSection({
 
   const containerVariants = {
     hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        duration: 0.5,
-        staggerChildren: 0.3,
-      },
-    },
+    visible: { opacity: 1 },
   }
 
   const itemVariants = {
     hidden: { opacity: 0, y: 30 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.8,
-        ease: 'easeOut',
-      },
-    },
+    visible: { opacity: 1, y: 0 },
   }
 
   const logoVariants = {
     hidden: { opacity: 0, scale: 0.8 },
-    visible: {
-      opacity: 1,
-      scale: 1,
-      transition: {
-        duration: 1,
-        ease: 'easeOut',
-        delay: 0.5,
-      },
-    },
+    visible: { opacity: 1, scale: 1 },
   }
 
   return (
-    <section
-      className={cn(
-        "relative min-h-screen flex items-center justify-center overflow-hidden",
-        className
-      )}
-      style={getBackgroundStyle()}
+    <ComponentErrorBoundary 
+      componentName="Hero Section"
+      fallback={
+        <div className="min-h-screen bg-gray-900 flex items-center justify-center">
+          <div className="text-center">
+            <AlertCircle className="w-12 h-12 text-red-500 mx-auto mb-4" />
+            <h3 className="text-lg font-semibold text-white mb-2">Hero Section Error</h3>
+            <p className="text-gray-300 mb-4">The hero section couldn't load properly.</p>
+            <Button onClick={() => window.location.reload()} variant="outline">
+              <RefreshCw className="w-4 h-4 mr-2" />
+              Reload Page
+            </Button>
+          </div>
+        </div>
+      }
     >
+      <section
+        className={cn(
+          "relative min-h-screen flex items-center justify-center overflow-hidden",
+          className
+        )}
+        style={getBackgroundStyle()}
+      >
       {/* Video Background */}
-      {backgroundType === 'video' && backgroundMedia?.url && (
-        <video
-          autoPlay
-          muted
-          loop
-          playsInline
-          className="absolute inset-0 w-full h-full object-cover"
-        >
-          <source src={backgroundMedia.url} type="video/mp4" />
-        </video>
+      {backgroundType === 'video' && backgroundMedia?.url && !mediaError && (
+        <>
+          {mediaLoading && (
+            <div className="absolute inset-0 bg-gray-900 flex items-center justify-center">
+              <div className="w-8 h-8 border-2 border-white border-t-transparent rounded-full animate-spin" />
+            </div>
+          )}
+          <video
+            autoPlay
+            muted
+            loop
+            playsInline
+            className="absolute inset-0 w-full h-full object-cover"
+            onError={() => setMediaError(true)}
+            onLoadStart={() => setMediaLoading(true)}
+            onCanPlay={() => setMediaLoading(false)}
+          >
+            <source src={backgroundMedia.url} type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
+        </>
+      )}
+
+      {/* Media Error Fallback */}
+      {mediaError && backgroundType === 'video' && (
+        <div className="absolute inset-0 bg-gray-900 flex items-center justify-center">
+          <div className="text-center">
+            <AlertCircle className="w-8 h-8 text-gray-400 mx-auto mb-2" />
+            <p className="text-gray-300 text-sm">Video failed to load</p>
+          </div>
+        </div>
       )}
 
       {/* Overlay */}
@@ -186,5 +218,6 @@ export function HeroSection({
         </motion.div>
       </motion.div>
     </section>
+    </ComponentErrorBoundary>
   )
 }
