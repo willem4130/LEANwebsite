@@ -39,17 +39,17 @@ export function Gallery({
   layout = 'grid',
   title,
   backgroundType = 'color',
-  backgroundColor = '#f8fafc',
+  backgroundColor = '#060609',
   backgroundMedia,
   className,
 }: GalleryProps) {
   // Input validation for production safety
   if (!items || !Array.isArray(items)) {
     return (
-      <div className="py-16">
+      <div className="py-16 bg-brand-void">
         <div className="max-w-7xl mx-auto px-4">
-          <Alert>
-            <AlertDescription>No gallery items to display</AlertDescription>
+          <Alert className="bg-brand-charcoal/60 border-brand-electric/30">
+            <AlertDescription className="text-brand-text-secondary">No gallery items to display</AlertDescription>
           </Alert>
         </div>
       </div>
@@ -67,8 +67,14 @@ export function Gallery({
     setIsReducedMotion(prefersReducedMotion())
   }, [])
 
-  const categories = Array.from(
+  // Essential categories for professional presentation
+  const essentialCategories = ['live', 'studio', 'behind-scenes', 'press']
+  const availableCategories = Array.from(
     new Set(items.flatMap(item => item.category || []))
+  )
+  // Only show categories that exist in the items and are essential
+  const categories = essentialCategories.filter(cat => 
+    availableCategories.some(available => available.toLowerCase().includes(cat))
   )
 
   const filteredItems = filter === 'all' 
@@ -81,7 +87,7 @@ export function Gallery({
         return { backgroundColor }
       case 'gradient':
         return {
-          background: `linear-gradient(135deg, ${backgroundColor} 0%, #e2e8f0 100%)`
+          background: `linear-gradient(135deg, ${backgroundColor} 0%, #1a1a2e 100%)`
         }
       case 'image':
         return backgroundMedia?.url
@@ -154,13 +160,13 @@ export function Gallery({
     <ComponentErrorBoundary 
       componentName="Gallery"
       fallback={
-        <div className="py-16">
+        <div className="py-16 bg-brand-void">
           <div className="max-w-7xl mx-auto px-4">
-            <Alert>
+            <Alert className="bg-brand-charcoal/60 border-brand-coral/50">
               <AlertDescription>
                 <div className="flex items-start space-y-2 flex-col">
-                  <h3 className="text-lg font-semibold text-red-800">Gallery Error</h3>
-                  <p className="text-red-700">The gallery couldn't load properly.</p>
+                  <h3 className="text-lg font-semibold text-brand-coral">Gallery Error</h3>
+                  <p className="text-brand-text-secondary">The gallery couldn't load properly.</p>
                 </div>
               </AlertDescription>
             </Alert>
@@ -223,7 +229,7 @@ export function Gallery({
                     <span className="relative z-10">{label}</span>
                     
                     {/* Tooltip */}
-                    <div className="absolute -top-10 left-1/2 transform -translate-x-1/2 bg-black/80 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap">
+                    <div className="absolute -top-10 left-1/2 transform -translate-x-1/2 bg-brand-charcoal/95 text-brand-text-primary border border-brand-electric/30 text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap shadow-lg">
                       {description}
                     </div>
                   </Button>
@@ -262,7 +268,7 @@ export function Gallery({
                   </Button>
                 </motion.div>
                 
-                {/* Category filters with electronic styling */}
+                {/* Essential category filters with electronic styling */}
                 {categories.map(category => (
                   <motion.div
                     key={category}
@@ -290,10 +296,10 @@ export function Gallery({
                           })}
                         />
                       )}
-                      <span className="relative z-10">{category}</span>
+                      <span className="relative z-10">{category.replace('-', ' ')}</span>
                       
                       {/* Genre indicator */}
-                      <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-current rounded-full opacity-0 group-hover:opacity-60 transition-opacity" />
+                      <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-brand-neon rounded-full opacity-0 group-hover:opacity-80 transition-opacity" />
                     </Button>
                   </motion.div>
                 ))}
@@ -502,15 +508,15 @@ function GalleryItemCard({
       <CardContent className="p-0">
         <div className="relative aspect-square overflow-hidden">
           {imageError ? (
-            <div className="flex flex-col items-center justify-center h-full bg-gray-100">
-              <AlertCircle className="w-8 h-8 text-gray-400 mb-2" />
-              <p className="text-gray-500 text-sm">Image failed to load</p>
+            <div className="flex flex-col items-center justify-center h-full bg-brand-charcoal/60">
+              <AlertCircle className="w-8 h-8 text-brand-text-muted mb-2" />
+              <p className="text-brand-text-secondary text-sm">Image failed to load</p>
             </div>
           ) : (
             <div className="relative">
               {imageLoading && (
-                <div className="absolute inset-0 bg-gray-200 flex items-center justify-center">
-                  <div className="w-8 h-8 border-2 border-gray-300 border-t-gray-600 rounded-full animate-spin" />
+                <div className="absolute inset-0 bg-brand-navy/60 flex items-center justify-center">
+                  <div className="w-8 h-8 border-2 border-brand-electric/30 border-t-brand-neon rounded-full animate-spin" />
                 </div>
               )}
               <img
@@ -527,8 +533,8 @@ function GalleryItemCard({
           {/* Play button for videos */}
           {item.type === 'video' && (
             <div className="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/40 transition-all duration-300">
-              <div className="w-16 h-16 bg-white/90 group-hover:bg-white rounded-full flex items-center justify-center group-hover:scale-110 transition-all duration-300">
-                <Play className="w-6 h-6 text-gray-800 ml-1" />
+              <div className="w-16 h-16 bg-brand-neon/90 group-hover:bg-brand-neon rounded-full flex items-center justify-center group-hover:scale-110 transition-all duration-300 shadow-lg shadow-brand-neon/30">
+                <Play className="w-6 h-6 text-brand-void ml-1" />
               </div>
             </div>
           )}

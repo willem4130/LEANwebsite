@@ -9,6 +9,24 @@ import { cn } from '@/lib/utils'
 import { heroAnimations, getOptimizedTransition, prefersReducedMotion } from '@/lib/animations/electronic-music-animations'
 import { createHeroAnimations } from '@/lib/gsap-animations'
 
+interface SocialProof {
+  monthlyListeners?: string
+  venueCount?: string  
+  pressFeature?: string
+  festivals?: string[]
+}
+
+interface SecondaryCta {
+  text: string
+  link: string
+}
+
+interface ProfessionalInfo {
+  venueTypes?: string
+  availability?: string
+  bookingStatus?: string
+}
+
 interface HeroSectionProps {
   artistName: string
   tagline?: string
@@ -21,6 +39,9 @@ interface HeroSectionProps {
   animationDuration: number | string
   ctaText: string
   ctaLink: string
+  secondaryCta?: SecondaryCta
+  socialProof?: SocialProof
+  professionalInfo?: ProfessionalInfo
   textColor?: string
   className?: string
 }
@@ -34,6 +55,9 @@ export function HeroSection({
   animationDuration = 4,
   ctaText,
   ctaLink,
+  secondaryCta,
+  socialProof,
+  professionalInfo,
   textColor = '#ffffff',
   className,
 }: HeroSectionProps) {
@@ -57,17 +81,24 @@ export function HeroSection({
   const heroRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    setIsLoaded(true)
+    // Delay loading state to allow for smooth entrance
+    const loadTimer = setTimeout(() => {
+      setIsLoaded(true)
+    }, 200)
+    
     setIsReducedMotion(prefersReducedMotion())
     
-    // Initialize GSAP animations after component mounts
-    const timer = setTimeout(() => {
+    // Initialize GSAP background animations only
+    const animTimer = setTimeout(() => {
       if (!prefersReducedMotion()) {
         createHeroAnimations()
       }
-    }, 100)
+    }, 300)
     
-    return () => clearTimeout(timer)
+    return () => {
+      clearTimeout(loadTimer)
+      clearTimeout(animTimer)
+    }
   }, [])
 
   const getBackgroundStyle = () => {
@@ -99,58 +130,88 @@ export function HeroSection({
     }
   }
 
-  // Use electronic music-specific animations with accessibility optimization
+  // Optimized animation variants with proper sequencing
   const containerVariants = {
-    ...heroAnimations.container,
+    hidden: { opacity: 0 },
     visible: {
-      ...heroAnimations.container.visible,
-      transition: getOptimizedTransition(heroAnimations.container.visible!.transition!),
+      opacity: 1,
+      transition: {
+        duration: 0.3,
+        staggerChildren: 0.6,
+        delayChildren: 0.4,
+      },
     },
   }
 
   const artistNameVariants = {
-    ...heroAnimations.artistName,
+    hidden: { 
+      opacity: 0,
+      y: 40,
+      scale: 0.9,
+      filter: 'blur(8px)',
+    },
     visible: {
-      ...heroAnimations.artistName.visible,
-      transition: getOptimizedTransition(heroAnimations.artistName.visible!.transition!),
+      opacity: 1,
+      y: 0,
+      scale: 1,
+      filter: 'blur(0px)',
+      transition: getOptimizedTransition({
+        duration: 1.2,
+        ease: [0.25, 0.46, 0.45, 0.94],
+        type: "spring",
+        damping: 25,
+        stiffness: 120,
+      }),
     },
   }
 
   const taglineVariants = {
-    ...heroAnimations.tagline,
+    hidden: { 
+      opacity: 0,
+      y: 20,
+      filter: 'blur(4px)',
+    },
     visible: {
-      ...heroAnimations.tagline.visible,
-      transition: getOptimizedTransition(heroAnimations.tagline.visible!.transition!),
+      opacity: 1,
+      y: 0,
+      filter: 'blur(0px)',
+      transition: getOptimizedTransition({
+        duration: 0.8,
+        ease: [0.23, 1, 0.32, 1],
+      }),
     },
   }
 
   const ctaVariants = {
-    ...heroAnimations.cta,
+    hidden: { 
+      opacity: 0,
+      scale: 0.9,
+      y: 20,
+    },
     visible: {
-      ...heroAnimations.cta.visible,
-      transition: getOptimizedTransition(heroAnimations.cta.visible!.transition!),
+      opacity: 1,
+      scale: 1,
+      y: 0,
+      transition: getOptimizedTransition({
+        duration: 0.6,
+        ease: [0.68, -0.55, 0.265, 1.55],
+      }),
     },
     hover: {
-      ...heroAnimations.cta.hover,
-      transition: getOptimizedTransition(heroAnimations.cta.hover!.transition!),
+      scale: 1.05,
+      transition: getOptimizedTransition({
+        duration: 0.2,
+        ease: [0.25, 0.46, 0.45, 0.94],
+      }),
     },
     tap: {
-      ...heroAnimations.cta.tap,
-      transition: getOptimizedTransition(heroAnimations.cta.tap!.transition!),
+      scale: 0.98,
+      transition: getOptimizedTransition({
+        duration: 0.1,
+      }),
     },
   }
 
-  const scrollIndicatorVariants = {
-    ...heroAnimations.scrollIndicator,
-    visible: {
-      ...heroAnimations.scrollIndicator.visible,
-      transition: getOptimizedTransition(heroAnimations.scrollIndicator.visible!.transition!),
-    },
-    pulse: {
-      ...heroAnimations.scrollIndicator.pulse,
-      transition: getOptimizedTransition(heroAnimations.scrollIndicator.pulse!.transition!),
-    },
-  }
 
   return (
     <ComponentErrorBoundary 
@@ -214,27 +275,6 @@ export function HeroSection({
       {/* Advanced Atmospheric Overlay System */}
       <div className="absolute inset-0 bg-black/10 backdrop-blur-[1px]" />
       
-      {/* Floating Particle Effect */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/4 left-1/4 w-2 h-2 bg-brand-neon/30 rounded-full animate-parallax-float" 
-             style={{ animationDelay: '0s', animationDuration: '8s' }} />
-        <div className="absolute top-3/4 right-1/3 w-1 h-1 bg-brand-electric/40 rounded-full animate-parallax-float" 
-             style={{ animationDelay: '2s', animationDuration: '12s' }} />
-        <div className="absolute top-1/2 right-1/4 w-3 h-3 bg-brand-purple/20 rounded-full animate-parallax-float" 
-             style={{ animationDelay: '4s', animationDuration: '10s' }} />
-        <div className="absolute bottom-1/4 left-1/3 w-1.5 h-1.5 bg-brand-coral/30 rounded-full animate-parallax-float" 
-             style={{ animationDelay: '6s', animationDuration: '14s' }} />
-      </div>
-      
-      {/* Pulsing Energy Ring */}
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-          <div className="w-96 h-96 border border-brand-neon/10 rounded-full animate-pulse" 
-               style={{ animationDuration: '4s' }} />
-          <div className="absolute inset-4 border border-brand-electric/5 rounded-full animate-pulse" 
-               style={{ animationDuration: '6s', animationDelay: '2s' }} />
-        </div>
-      </div>
 
       {/* Content */}
       <motion.div
@@ -245,26 +285,12 @@ export function HeroSection({
       >
         {/* Artist Name/Logo with Electronic Music Entrance */}
         <motion.h1
-          className="hero-artist-name text-artist-name mb-6 text-shadow-glow will-change-transform"
+          className="hero-artist-name text-artist-name mb-6 text-shadow-glow"
           style={{ 
             color: textColor,
             textShadow: `0 0 20px ${textColor}40, 0 0 40px ${textColor}20`,
           }}
           variants={artistNameVariants}
-          onAnimationStart={() => {
-            // Apply will-change for performance
-            const element = document.querySelector('h1')
-            if (element instanceof HTMLElement) {
-              element.style.willChange = 'transform, opacity, filter'
-            }
-          }}
-          onAnimationComplete={() => {
-            // Remove will-change after animation
-            const element = document.querySelector('h1')
-            if (element instanceof HTMLElement) {
-              element.style.willChange = 'auto'
-            }
-          }}
         >
           {artistName}
         </motion.h1>
@@ -272,7 +298,7 @@ export function HeroSection({
         {/* Tagline with Filter Sweep Effect */}
         {tagline && (
           <motion.p
-            className="hero-tagline font-display-secondary text-h3-mobile sm:text-h3-tablet lg:text-h3-desktop mb-8 opacity-90 text-shadow font-medium will-change-transform"
+            className="hero-tagline font-display-secondary text-h3-mobile sm:text-h3-tablet lg:text-h3-desktop mb-8 opacity-90 text-shadow font-medium"
             style={{ 
               color: textColor,
               textShadow: `0 0 10px ${textColor}30`,
@@ -283,9 +309,65 @@ export function HeroSection({
           </motion.p>
         )}
 
-        {/* Premium CTA Buttons for Booking Agent Appeal */}
+        {/* Social Media Links */}
+        {socialProof && (
+          <motion.div 
+            className="hero-social-links flex flex-wrap justify-center items-center gap-3 mb-8"
+            variants={{
+              ...heroAnimations.tagline,
+              visible: {
+                ...heroAnimations.tagline.visible,
+                transition: { ...getOptimizedTransition(heroAnimations.tagline.visible!.transition!), delay: 1.2 }
+              }
+            }}
+          >
+            <motion.a
+              href="https://open.spotify.com/artist/arianova"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 px-4 py-2 rounded-full bg-brand-neon/10 border border-brand-neon/20 text-brand-neon hover:bg-brand-neon/20 hover:border-brand-neon/40 transition-all duration-300 hover:shadow-[0_0_20px_rgba(0,255,255,0.3)]"
+              whileHover={{ scale: 1.05, y: -2 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <div className="w-4 h-4 rounded-full bg-brand-neon flex items-center justify-center">
+                <span className="text-xs text-black font-bold">♪</span>
+              </div>
+              <span className="text-sm font-medium">Spotify</span>
+            </motion.a>
+            
+            <motion.a
+              href="https://instagram.com/arianova"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 px-4 py-2 rounded-full bg-brand-electric/10 border border-brand-electric/20 text-brand-electric hover:bg-brand-electric/20 hover:border-brand-electric/40 transition-all duration-300 hover:shadow-[0_0_20px_rgba(0,212,255,0.3)]"
+              whileHover={{ scale: 1.05, y: -2 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <div className="w-4 h-4 rounded-full bg-brand-electric flex items-center justify-center">
+                <span className="text-xs text-black font-bold">IG</span>
+              </div>
+              <span className="text-sm font-medium">Instagram</span>
+            </motion.a>
+
+            <motion.a
+              href="https://youtube.com/@arianova"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 px-4 py-2 rounded-full bg-brand-purple/10 border border-brand-purple/20 text-brand-purple hover:bg-brand-purple/20 hover:border-brand-purple/40 transition-all duration-300 hover:shadow-[0_0_20px_rgba(139,92,246,0.3)]"
+              whileHover={{ scale: 1.05, y: -2 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <div className="w-4 h-4 rounded-full bg-brand-purple flex items-center justify-center">
+                <span className="text-xs text-black font-bold">▶</span>
+              </div>
+              <span className="text-sm font-medium">YouTube</span>
+            </motion.a>
+          </motion.div>
+        )}
+
+        {/* Single Centered CTA */}
         <motion.div 
-          className="hero-cta flex justify-center items-center"
+          className="hero-cta flex justify-center items-center mb-8"
           variants={ctaVariants}
         >
           <motion.div whileHover="hover" whileTap="tap">
@@ -294,88 +376,66 @@ export function HeroSection({
               size="xl"
               asChild
               className={cn(
-                "text-shadow hover:shadow-2xl will-change-transform min-w-48",
+                "text-shadow hover:shadow-2xl min-w-48",
                 "transition-all duration-300",
                 "hover:shadow-[0_0_40px_rgba(0,255,255,0.4)]",
                 "focus:outline-none focus:ring-2 focus:ring-brand-neon/50"
               )}
             >
-              <a href="mailto:booking@arianova.com" rel="noopener noreferrer">
-                Book Now
+              <a href={secondaryCta?.link || "mailto:booking@arianova.com"} rel="noopener noreferrer">
+                {secondaryCta?.text || "Contact Us"}
               </a>
             </Button>
           </motion.div>
         </motion.div>
 
-        {/* Electronic Music Scroll Indicator */}
-        <motion.div
-          className="absolute bottom-8 left-1/2 transform -translate-x-1/2"
-          variants={scrollIndicatorVariants}
-          animate="pulse"
+        {/* Newsletter Subscription - UX Best Practices */}
+        <motion.div 
+          className="hero-newsletter max-w-md mx-auto"
+          variants={{
+            ...heroAnimations.cta,
+            visible: {
+              ...heroAnimations.cta.visible,
+              transition: { ...getOptimizedTransition(heroAnimations.cta.visible!.transition!), delay: 1.8 }
+            }
+          }}
         >
-          <div className="w-6 h-10 border-2 border-white/40 rounded-full flex justify-center relative overflow-hidden">
-            {/* Outer glow effect */}
-            <div 
-              className="absolute inset-0 rounded-full" 
-              style={{
-                boxShadow: `0 0 20px ${textColor}20, inset 0 0 10px ${textColor}10`,
-              }}
-            />
-            
-            {/* Animated dot with electronic timing */}
-            <motion.div
-              className="w-1.5 h-3 bg-white rounded-full mt-2"
-              style={{
-                boxShadow: `0 0 8px ${textColor}, 0 0 16px ${textColor}80`,
-              }}
-              animate={isReducedMotion ? {} : {
-                y: [0, 12, 0],
-                opacity: [0.6, 1, 0.6],
-                scale: [1, 1.2, 1],
-              }}
-              transition={getOptimizedTransition({
-                duration: 1.9, // Based on electronic music measure timing
-                repeat: Infinity,
-                ease: [0.25, 0.1, 0.25, 1], // Analog smooth curve
-              })}
-            />
-            
-            {/* Frequency visualization lines */}
-            <div className="absolute top-1 left-1/2 transform -translate-x-1/2 flex space-x-px">
-              {[...Array(3)].map((_, i) => (
-                <motion.div
-                  key={i}
-                  className="w-px bg-white/30 rounded-full"
-                  animate={isReducedMotion ? {} : {
-                    height: [2, 6, 2],
-                    opacity: [0.3, 0.8, 0.3],
-                  }}
-                  transition={getOptimizedTransition({
-                    duration: 0.5 + i * 0.1,
-                    repeat: Infinity,
-                    ease: [0.25, 0.46, 0.45, 0.94], // Synth attack curve
-                    delay: i * 0.1,
-                  })}
-                />
-              ))}
-            </div>
+          <div className="text-center mb-4">
+            <p className="text-brand-text-secondary text-sm mb-2">
+              Get exclusive updates & new releases
+            </p>
           </div>
           
-          {/* Subtle "Scroll" text hint */}
-          <motion.p
-            className="text-xs text-white/50 mt-2 font-mono tracking-wider"
-            animate={isReducedMotion ? {} : {
-              opacity: [0.3, 0.7, 0.3],
-            }}
-            transition={getOptimizedTransition({
-              duration: 3.8,
-              repeat: Infinity,
-              ease: "linear",
-            })}
-          >
-            SCROLL
-          </motion.p>
+          <div className="flex gap-2">
+            <input
+              type="email"
+              placeholder="Enter your email"
+              className={cn(
+                "flex-1 px-4 py-3 rounded-full bg-brand-void/50 border border-brand-neon/20",
+                "text-brand-text-primary placeholder-brand-text-secondary/70",
+                "focus:outline-none focus:border-brand-neon/50 focus:ring-2 focus:ring-brand-neon/20",
+                "transition-all duration-300 backdrop-blur-sm"
+              )}
+            />
+            <Button
+              variant="outline"
+              size="default"
+              className={cn(
+                "px-6 border-brand-neon/40 text-brand-neon rounded-full",
+                "hover:bg-brand-neon/10 hover:border-brand-neon",
+                "focus:outline-none focus:ring-2 focus:ring-brand-neon/30",
+                "transition-all duration-300 whitespace-nowrap"
+              )}
+            >
+              Subscribe
+            </Button>
+          </div>
+          
+          <p className="text-xs text-brand-text-secondary/60 text-center mt-3">
+            No spam, unsubscribe anytime. Privacy policy applies.
+          </p>
         </motion.div>
+
       </motion.div>
     </section>
     </ComponentErrorBoundary>

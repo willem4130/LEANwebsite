@@ -50,7 +50,7 @@ import { HeroSection } from '@/components/artist/hero-section'
 import { TwoColumnLayout } from '@/components/artist/two-column-layout'
 import { Gallery } from '@/components/artist/gallery'
 import { ContactSocial } from '@/components/artist/contact-social'
-import { NavSwitcher } from '@/components/ui/nav-switcher'
+import { ElectronicNav } from '@/components/ui/electronic-nav'
 import { initializeGSAPAnimations, cleanupGSAPAnimations } from '@/lib/gsap-animations'
 
 // Mock data for demonstration
@@ -190,11 +190,12 @@ export default function DemoPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-brand-void via-brand-dark to-brand-navy">
-      {/* Navigation */}
-      <NavSwitcher />
+      {/* Electronic Navigation */}
+      <ElectronicNav />
       
       {/* Hero Section with gradient background */}
       <HeroSection
+        id="hero"
         artistName="ARIA NOVA"
         tagline="Electronic Soundscapes • Live Performances • Original Compositions"
         backgroundType="gradient"
@@ -202,11 +203,20 @@ export default function DemoPage() {
         animationDuration={4}
         ctaText="Listen Now"
         ctaLink="https://open.spotify.com/artist/demo"
+        secondaryCta={{
+          text: "Contact",
+          link: "mailto:booking@arianova.com"
+        }}
+        socialProof={{
+          monthlyListeners: "2M+ Monthly Listeners",
+          venueCount: "150+ Venues Worldwide", 
+          pressFeature: "Featured in Electronic Music Weekly"
+        }}
         textColor="#ffffff"
       />
 
       {/* Two Column Layout with consistent dark theme */}
-      <div className="section-container">
+      <div id="shows" className="section-container">
         <TwoColumnLayout
           tourEvents={mockTourEvents}
         bioTitle="About Aria Nova"
@@ -218,8 +228,8 @@ export default function DemoPage() {
           <p>When not touring, Aria works from a solar-powered studio nestled in the mountains of Colorado, where the natural environment continues to inspire new sonic explorations.</p>
         `}
         bioImage={{
-          url: 'https://images.unsplash.com/photo-1594736797933-d0981ba5fbf6?w=600&h=400&fit=crop',
-          alt: 'Aria Nova in the studio',
+          url: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=600&h=400&fit=crop&auto=format',
+          alt: 'Aria Nova working with electronic music equipment in her mountain studio',
         }}
           backgroundType="color"
           backgroundColor="#0a0a0f"
@@ -227,7 +237,7 @@ export default function DemoPage() {
       </div>
 
       {/* Gallery with consistent dark theme */}
-      <div className="section-container">
+      <div id="gallery" className="section-container">
         <Gallery
           items={mockGalleryItems}
           layout="masonry"
@@ -238,7 +248,7 @@ export default function DemoPage() {
       </div>
 
       {/* Contact & Social with consistent gradient theme */}
-      <div className="section-container contact-section">
+      <div id="contact" className="section-container contact-section">
         <ContactSocial
           socialLinks={mockSocialLinks}
           contactEmail="booking@arianova.com"
