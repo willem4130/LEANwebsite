@@ -1,11 +1,57 @@
 'use client'
 
+/*
+ * ARIA NOVA PREMIUM ELECTRONIC MUSIC BRAND GUIDELINES
+ * ===================================================
+ * 
+ * BRAND IDENTITY:
+ * - Premium electronic music artist positioned for professional booking
+ * - Sophisticated, atmospheric, future-forward aesthetic
+ * - Clean professionalism meets cutting-edge electronic music culture
+ * 
+ * COLOR SYSTEM:
+ * - Primary: Neon Cyan (#00ffff) - Electric energy, main CTA accent
+ * - Secondary: Electric Blue (#00d4ff) - Supporting electric tones  
+ * - Background: Void (#060609), Dark (#0a0a0f), Navy (#1a1a2e), Charcoal (#2a2a3e)
+ * - Energy: Purple (#8b5cf6), Coral (#ff6b6b), Magenta (#e91e63)
+ * - Text Hierarchy: Hero White (#ffffff), Primary (#e2e8f0), Secondary (#94a3b8), Muted (#475569)
+ * 
+ * TYPOGRAPHY STRATEGY:
+ * - Display Primary: Orbitron (futuristic, electronic character)
+ * - Display Secondary: Exo 2 (supporting technical aesthetic)  
+ * - Body Primary: Inter (clean, professional readability)
+ * - Body Accent: Space Mono (monospace, coding aesthetic)
+ * - Responsive scaling with proper letter-spacing for electronic feel
+ * 
+ * BUTTON VARIANTS FOR BOOKING AGENT APPEAL:
+ * - premium: Gradient neon for primary actions (Listen Now)
+ * - booking: Dark gradient with neon accents for booking CTAs
+ * - professional: Charcoal/neon for professional actions
+ * - cta: Pure neon for maximum attention (emergency use)
+ * 
+ * ATMOSPHERIC EFFECTS:
+ * - Multi-layer gradients with radial color bleeds
+ * - Floating particle animations (8-14s cycles)
+ * - Pulsing energy rings (4-6s cycles)  
+ * - Glow effects on interactive elements
+ * - Backdrop blur for layering depth
+ * 
+ * BOOKING AGENT SUCCESS CRITERIA:
+ * - Immediate professional recognition (3-second rule)
+ * - Clear dual CTA strategy (Listen + Book)
+ * - Premium visual hierarchy
+ * - Consistent brand experience
+ * - Technical sophistication without alienating mainstream bookers
+ */
+
+import React, { useEffect } from 'react'
 import { Metadata } from 'next'
 import { HeroSection } from '@/components/artist/hero-section'
 import { TwoColumnLayout } from '@/components/artist/two-column-layout'
 import { Gallery } from '@/components/artist/gallery'
 import { ContactSocial } from '@/components/artist/contact-social'
 import { NavSwitcher } from '@/components/ui/nav-switcher'
+import { initializeGSAPAnimations, cleanupGSAPAnimations } from '@/lib/gsap-animations'
 
 // Mock data for demonstration
 const mockTourEvents = [
@@ -132,6 +178,16 @@ const mockSocialLinks = [
 ]
 
 export default function DemoPage() {
+  useEffect(() => {
+    // Initialize all GSAP animations
+    initializeGSAPAnimations()
+    
+    // Cleanup on unmount
+    return () => {
+      cleanupGSAPAnimations()
+    }
+  }, [])
+
   return (
     <div className="min-h-screen">
       {/* Navigation */}
@@ -149,9 +205,10 @@ export default function DemoPage() {
         textColor="#ffffff"
       />
 
-      {/* Two Column Layout with image background */}
-      <TwoColumnLayout
-        tourEvents={mockTourEvents}
+      {/* Two Column Layout with consistent dark theme */}
+      <div className="section-container">
+        <TwoColumnLayout
+          tourEvents={mockTourEvents}
         bioTitle="About Aria Nova"
         bioContent={`
           <p>Aria Nova is an electronic music producer and live performer known for creating immersive soundscapes that blend ambient textures with driving beats. Drawing inspiration from both organic and synthetic worlds, Aria crafts music that tells stories without words.</p>
@@ -164,26 +221,31 @@ export default function DemoPage() {
           url: 'https://images.unsplash.com/photo-1594736797933-d0981ba5fbf6?w=600&h=400&fit=crop',
           alt: 'Aria Nova in the studio',
         }}
-        backgroundType="color"
-        backgroundColor="#f8fafc"
-      />
+          backgroundType="color"
+          backgroundColor="#0a0a0f"
+        />
+      </div>
 
-      {/* Gallery with masonry layout */}
-      <Gallery
-        items={mockGalleryItems}
-        layout="masonry"
-        title="Gallery"
-        backgroundType="color"
-        backgroundColor="#ffffff"
-      />
+      {/* Gallery with consistent dark theme */}
+      <div className="section-container">
+        <Gallery
+          items={mockGalleryItems}
+          layout="masonry"
+          title="Gallery"
+          backgroundType="color"
+          backgroundColor="#1a1a2e"
+        />
+      </div>
 
-      {/* Contact & Social with dark gradient */}
-      <ContactSocial
-        socialLinks={mockSocialLinks}
-        contactEmail="booking@arianova.com"
-        backgroundType="gradient"
-        backgroundColor="#0f0f23"
-      />
+      {/* Contact & Social with consistent gradient theme */}
+      <div className="section-container contact-section">
+        <ContactSocial
+          socialLinks={mockSocialLinks}
+          contactEmail="booking@arianova.com"
+          backgroundType="gradient"
+          backgroundColor="#0a0a0f"
+        />
+      </div>
     </div>
   )
 }

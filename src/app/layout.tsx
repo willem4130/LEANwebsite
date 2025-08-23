@@ -1,10 +1,37 @@
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
+import { Inter, Orbitron, Exo_2, Space_Mono } from 'next/font/google'
 import { NavSwitcher } from '@/components/ui/nav-switcher'
 import { ErrorBoundary } from '@/components/ErrorBoundary'
 import '@/styles/globals.css'
 
-const inter = Inter({ subsets: ['latin'] })
+// Electronic Music Typography System
+const inter = Inter({ 
+  subsets: ['latin'],
+  variable: '--font-inter',
+  display: 'swap',
+  weight: ['300', '400', '500']
+})
+
+const orbitron = Orbitron({ 
+  subsets: ['latin'],
+  variable: '--font-orbitron',
+  display: 'swap',
+  weight: ['700', '800', '900']
+})
+
+const exo2 = Exo_2({ 
+  subsets: ['latin'],
+  variable: '--font-exo2',
+  display: 'swap',
+  weight: ['500', '600', '700']
+})
+
+const spaceMono = Space_Mono({ 
+  subsets: ['latin'],
+  variable: '--font-space-mono',
+  display: 'swap',
+  weight: ['400', '700']
+})
 
 export const metadata: Metadata = {
   title: 'Music Artist Website',
@@ -18,7 +45,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="scroll-smooth">
-      <body className={inter.className}>
+      <body className={`${inter.variable} ${orbitron.variable} ${exo2.variable} ${spaceMono.variable} font-body-primary`}>
         <ErrorBoundary>
           <NavSwitcher />
           {children}

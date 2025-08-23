@@ -5,6 +5,7 @@ import { motion } from 'framer-motion'
 import { Calendar, MapPin, ExternalLink, Clock } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { formatDate, cn } from '@/lib/utils'
+import { scrollAnimations, getOptimizedTransition, prefersReducedMotion, TIMING } from '@/lib/animations/electronic-music-animations'
 
 interface TourEvent {
   id: string
@@ -66,19 +67,77 @@ export function TwoColumnLayout({
     }
   }
 
+  // Electronic Music Storytelling Animations
   const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: { opacity: 1 },
+    ...scrollAnimations.sectionReveal,
+    visible: {
+      ...scrollAnimations.sectionReveal.visible,
+      transition: getOptimizedTransition({
+        staggerChildren: TIMING.QUICK,
+        delayChildren: 0.2,
+      }),
+    },
   }
 
-  const columnVariants = {
-    hidden: { opacity: 0, y: 50 },
-    visible: { opacity: 1, y: 0 },
+  const bioVariants = {
+    hidden: { 
+      opacity: 0, 
+      x: -60, 
+      filter: 'blur(4px)' 
+    },
+    visible: {
+      opacity: 1,
+      x: 0,
+      filter: 'blur(0px)',
+      transition: getOptimizedTransition({
+        duration: 1.2,
+        ease: [0.23, 1, 0.32, 1], // Filter sweep easing
+      }),
+    },
   }
 
-  const eventVariants = {
-    hidden: { opacity: 0, x: -30 },
-    visible: { opacity: 1, x: 0 },
+  const tourVariants = {
+    hidden: { 
+      opacity: 0, 
+      x: 60, 
+      scale: 0.95 
+    },
+    visible: {
+      opacity: 1,
+      x: 0,
+      scale: 1,
+      transition: getOptimizedTransition({
+        duration: 1.0,
+        ease: [0.25, 0.46, 0.45, 0.94], // Synth attack easing
+        staggerChildren: 0.15,
+      }),
+    },
+  }
+
+  const tourEventVariants = {
+    hidden: { 
+      opacity: 0, 
+      y: 30, 
+      rotateX: 15 
+    },
+    visible: {
+      opacity: 1,
+      y: 0,
+      rotateX: 0,
+      transition: getOptimizedTransition({
+        duration: 0.8,
+        ease: [0.25, 0.1, 0.25, 1], // Analog smooth
+      }),
+    },
+    hover: {
+      y: -5,
+      rotateX: -2,
+      scale: 1.02,
+      transition: getOptimizedTransition({
+        duration: 0.3,
+        ease: [0.25, 0.46, 0.45, 0.94],
+      }),
+    },
   }
 
   return (
@@ -100,65 +159,66 @@ export function TwoColumnLayout({
           viewport={{ once: true, margin: "-100px" }}
         >
           {/* Left Column - Tour Dates */}
-          <motion.div variants={columnVariants} className="space-y-8">
+          <motion.div variants={tourVariants} className="space-y-8">
             <div className="space-y-6">
-              <h2 className="text-3xl lg:text-4xl font-bold text-gray-900">
+              <h2 className="text-3xl lg:text-4xl font-bold text-brand-text-hero mb-2">
                 Upcoming Shows
               </h2>
+              <div className="h-1 w-20 bg-gradient-to-r from-brand-neon to-brand-electric rounded-full mb-6"></div>
               
               {tourEvents.length > 0 ? (
                 <div className="space-y-4">
                   {tourEvents.map((event, index) => (
                     <motion.div
                       key={event.id}
-                      variants={eventVariants}
+                      variants={tourEventVariants}
                       className={cn(
-                        "group relative p-6 rounded-lg border transition-all duration-300 hover:shadow-lg",
+                        "group relative p-6 rounded-lg border transition-all duration-300 hover:shadow-xl backdrop-blur-sm",
                         event.featured
-                          ? "bg-gradient-to-r from-purple-50 to-pink-50 border-purple-200 shadow-md"
-                          : "bg-white/90 border-gray-200 hover:border-gray-300",
+                          ? "bg-gradient-to-r from-brand-navy/90 via-brand-dark/80 to-brand-charcoal/90 border-brand-neon/40 shadow-lg shadow-brand-neon/10 hover:shadow-brand-neon/20"
+                          : "bg-brand-charcoal/60 border-brand-electric/30 hover:border-brand-electric/60 hover:shadow-brand-electric/10",
                         event.soldOut && "opacity-75"
                       )}
                     >
                       {event.featured && (
-                        <div className="absolute -top-2 -right-2 bg-purple-600 text-white text-xs px-2 py-1 rounded-full font-semibold">
+                        <div className="absolute -top-2 -right-2 bg-gradient-to-r from-brand-neon to-brand-electric text-brand-void text-xs px-3 py-1.5 rounded-full font-bold shadow-lg animate-glow-pulse">
                           Featured
                         </div>
                       )}
 
                       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                         <div className="space-y-2">
-                          <h3 className="text-xl font-semibold text-gray-900">
+                          <h3 className="text-xl font-semibold text-brand-text-hero">
                             {event.eventName}
                           </h3>
                           
-                          <div className="flex items-center gap-2 text-gray-600">
-                            <MapPin className="w-4 h-4" />
+                          <div className="flex items-center gap-2 text-brand-text-secondary">
+                            <MapPin className="w-4 h-4 text-brand-electric" />
                             <span>{event.venue}</span>
                           </div>
                           
-                          <div className="flex items-center gap-2 text-gray-600">
-                            <Calendar className="w-4 h-4" />
+                          <div className="flex items-center gap-2 text-brand-text-secondary">
+                            <Calendar className="w-4 h-4 text-brand-purple" />
                             <span>{formatDate(event.date)}</span>
                           </div>
                           
-                          <div className="flex items-center gap-2 text-gray-600">
-                            <Clock className="w-4 h-4" />
+                          <div className="flex items-center gap-2 text-brand-text-muted">
+                            <Clock className="w-4 h-4 text-brand-coral" />
                             <span>{event.city}</span>
                           </div>
                         </div>
 
                         <div className="flex items-center gap-3">
                           {event.soldOut ? (
-                            <div className="px-4 py-2 bg-gray-100 text-gray-500 rounded-lg font-semibold">
+                            <div className="px-4 py-2 bg-brand-charcoal/80 text-brand-text-muted rounded-lg font-semibold border border-brand-muted/30">
                               Sold Out
                             </div>
                           ) : event.ticketUrl ? (
                             <Button
-                              variant="outline"
+                              variant="professional"
                               size="sm"
                               asChild
-                              className="group-hover:bg-purple-50 group-hover:border-purple-200"
+                              className="group-hover:shadow-lg group-hover:shadow-brand-neon/20"
                             >
                               <a
                                 href={event.ticketUrl}
@@ -170,7 +230,11 @@ export function TwoColumnLayout({
                                 <ExternalLink className="w-3 h-3" />
                               </a>
                             </Button>
-                          ) : null}
+                          ) : (
+                            <div className="px-4 py-2 bg-gradient-to-r from-brand-electric/20 to-brand-purple/20 text-brand-electric rounded-lg font-semibold border border-brand-electric/30">
+                              Coming Soon
+                            </div>
+                          )}
                         </div>
                       </div>
                     </motion.div>
@@ -187,9 +251,9 @@ export function TwoColumnLayout({
           </motion.div>
 
           {/* Right Column - Bio */}
-          <motion.div variants={columnVariants} className="space-y-8">
+          <motion.div variants={tourVariants} className="space-y-8">
             <div className="space-y-6">
-              <h2 className="text-3xl lg:text-4xl font-bold text-gray-900">
+              <h2 className="text-section-header text-gray-900">
                 {bioTitle}
               </h2>
               

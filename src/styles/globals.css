@@ -4,6 +4,20 @@
 
 @layer base {
   :root {
+    /* Typography System - Electronic Music */
+    --font-display-primary: var(--font-orbitron);
+    --font-display-secondary: var(--font-exo2);
+    --font-body-primary: var(--font-inter);
+    --font-body-accent: var(--font-space-mono);
+    
+    /* Responsive Typography Sizes */
+    --text-h1: clamp(3rem, 5vw, 6rem);
+    --text-h2: clamp(1.875rem, 4vw, 3rem);
+    --text-h3: clamp(1.5rem, 3vw, 2.25rem);
+    --text-body: clamp(1rem, 1.5vw, 1.125rem);
+    --text-small: clamp(0.875rem, 1.2vw, 1rem);
+    
+    /* Color System */
     --background: 0 0% 100%;
     --foreground: 222.2 84% 4.9%;
     --card: 0 0% 100%;
@@ -27,6 +41,7 @@
   }
 
   .dark {
+    /* Dark mode optimized for electronic music aesthetics */
     --background: 222.2 84% 4.9%;
     --foreground: 210 40% 98%;
     --card: 222.2 84% 4.9%;
@@ -59,8 +74,50 @@
   }
 }
 
-/* Custom styles for music artist website */
+/* Electronic Music Typography & Visual System */
 @layer components {
+  /* Typography Classes */
+  .text-artist-name {
+    font-family: var(--font-display-primary);
+    font-size: var(--text-h1);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  }
+  
+  .text-section-header {
+    font-family: var(--font-display-secondary);
+    font-size: var(--text-h2);
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+  }
+  
+  .text-content-header {
+    font-family: var(--font-display-secondary);
+    font-size: var(--text-h3);
+    font-weight: 600;
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+  }
+  
+  .text-body-large {
+    font-family: var(--font-body-primary);
+    font-size: var(--text-body);
+    font-weight: 400;
+    line-height: 1.6;
+  }
+  
+  .text-body-accent {
+    font-family: var(--font-body-accent);
+    font-size: var(--text-small);
+    font-weight: 400;
+    line-height: 1.5;
+    letter-spacing: 0.02em;
+  }
+
+  /* Visual Effects */
   .hero-bg-overlay {
     background: linear-gradient(
       135deg,
@@ -73,6 +130,10 @@
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
   }
   
+  .text-shadow-glow {
+    text-shadow: 0 0 20px rgba(0, 212, 255, 0.3), 0 2px 4px rgba(0, 0, 0, 0.5);
+  }
+  
   .backdrop-blur-hero {
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
@@ -80,6 +141,13 @@
   
   .gradient-text {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  .gradient-text-electric {
+    background: linear-gradient(135deg, #00d4ff 0%, #8b5cf6 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;

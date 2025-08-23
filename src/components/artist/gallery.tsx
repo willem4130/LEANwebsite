@@ -1,13 +1,14 @@
 'use client'
 
-import React, { useState } from 'react'
-import { motion } from 'framer-motion'
-import { Play, X, ChevronLeft, ChevronRight, Grid3X3, LayoutGrid, AlertCircle } from 'lucide-react'
+import React, { useState, useRef } from 'react'
+import { motion, useInView } from 'framer-motion'
+import { Play, X, ChevronLeft, ChevronRight, Grid3X3, LayoutGrid, AlertCircle, Zap } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Dialog, DialogContent, DialogTrigger, DialogClose } from '@/components/ui/dialog'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { ComponentErrorBoundary } from '@/components/ErrorBoundary'
+import { galleryAnimations, getOptimizedTransition, prefersReducedMotion, EFFECTS } from '@/lib/animations/electronic-music-animations'
 
 interface GalleryItem {
   id: string
@@ -58,6 +59,13 @@ export function Gallery({
   const [selectedItem, setSelectedItem] = useState<GalleryItem | null>(null)
   const [filter, setFilter] = useState<string>('all')
   const [layoutMode, setLayoutMode] = useState<'grid' | 'masonry' | 'carousel'>(layout)
+  const [isReducedMotion, setIsReducedMotion] = useState(false)
+  const containerRef = useRef(null)
+  const isInView = useInView(containerRef, { once: true, margin: "-100px" })
+
+  React.useEffect(() => {
+    setIsReducedMotion(prefersReducedMotion())
+  }, [])
 
   const categories = Array.from(
     new Set(items.flatMap(item => item.category || []))
@@ -89,19 +97,57 @@ export function Gallery({
     }
   }
 
+  // Electronic Music Soundscape Animations
   const containerVariants = {
-    hidden: { opacity: 0 },
+    ...galleryAnimations.container,
     visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1,
-      },
+      ...galleryAnimations.container.visible,
+      transition: getOptimizedTransition(galleryAnimations.container.visible!.transition!),
     },
   }
 
   const itemVariants = {
-    hidden: { opacity: 0, scale: 0.9 },
-    visible: { opacity: 1, scale: 1 },
+    ...galleryAnimations.item,
+    visible: {
+      ...galleryAnimations.item.visible,
+      transition: getOptimizedTransition(galleryAnimations.item.visible!.transition!),
+    },
+    hover: {
+      ...galleryAnimations.item.hover,
+      transition: getOptimizedTransition(galleryAnimations.item.hover!.transition!),
+    },
+    tap: {
+      ...galleryAnimations.item.tap,
+      transition: getOptimizedTransition(galleryAnimations.item.tap!.transition!),
+    },
+  }
+
+  const filterVariants = {
+    ...galleryAnimations.filter,
+    inactive: {
+      ...galleryAnimations.filter.inactive,
+      transition: getOptimizedTransition(galleryAnimations.filter.inactive!.transition!),
+    },
+    active: {
+      ...galleryAnimations.filter.active,
+      transition: getOptimizedTransition(galleryAnimations.filter.active!.transition!),
+    },
+    hover: {
+      ...galleryAnimations.filter.hover,
+      transition: getOptimizedTransition(galleryAnimations.filter.hover!.transition!),
+    },
+  }
+
+  const lightboxVariants = {
+    ...galleryAnimations.lightbox,
+    visible: {
+      ...galleryAnimations.lightbox.visible,
+      transition: getOptimizedTransition(galleryAnimations.lightbox.visible!.transition!),
+    },
+    exit: {
+      ...galleryAnimations.lightbox.exit,
+      transition: getOptimizedTransition(galleryAnimations.lightbox.exit!.transition!),
+    },
   }
 
   return (
@@ -138,68 +184,157 @@ export function Gallery({
               {title}
             </h2>
 
-            {/* Layout Controls */}
+            {/* Electronic Music Layout Controls */}
             <div className="flex flex-wrap justify-center gap-2">
-              <Button
-                variant={layoutMode === 'grid' ? 'default' : 'outline'}
-                size="sm"
-                onClick={() => setLayoutMode('grid')}
-                className="flex items-center gap-2"
-              >
-                <Grid3X3 className="w-4 h-4" />
-                Grid
-              </Button>
-              <Button
-                variant={layoutMode === 'masonry' ? 'default' : 'outline'}
-                size="sm"
-                onClick={() => setLayoutMode('masonry')}
-                className="flex items-center gap-2"
-              >
-                <LayoutGrid className="w-4 h-4" />
-                Masonry
-              </Button>
-              <Button
-                variant={layoutMode === 'carousel' ? 'default' : 'outline'}
-                size="sm"
-                onClick={() => setLayoutMode('carousel')}
-                className="flex items-center gap-2"
-              >
-                <ChevronRight className="w-4 h-4" />
-                Carousel
-              </Button>
+              {[
+                { mode: 'grid', icon: Grid3X3, label: 'Grid', description: 'Frequency Grid' },
+                { mode: 'masonry', icon: LayoutGrid, label: 'Masonry', description: 'Waveform Flow' },
+                { mode: 'carousel', icon: ChevronRight, label: 'Carousel', description: 'Timeline Scroll' },
+              ].map(({ mode, icon: Icon, label, description }) => (
+                <motion.div
+                  key={mode}
+                  variants={filterVariants}
+                  animate={layoutMode === mode ? 'active' : 'inactive'}
+                  whileHover="hover"
+                >
+                  <Button
+                    variant={layoutMode === mode ? 'default' : 'outline'}
+                    size="sm"
+                    onClick={() => setLayoutMode(mode as typeof layoutMode)}
+                    className="flex items-center gap-2 relative overflow-hidden group"
+                  >
+                    {/* Animated background pulse for active state */}
+                    {layoutMode === mode && (
+                      <motion.div
+                        className="absolute inset-0 bg-gradient-to-r from-purple-500/20 to-blue-500/20"
+                        animate={isReducedMotion ? {} : {
+                          scale: [1, 1.1, 1],
+                          opacity: [0.3, 0.6, 0.3],
+                        }}
+                        transition={getOptimizedTransition({
+                          duration: 2,
+                          repeat: Infinity,
+                          ease: [0.25, 0.1, 0.25, 1],
+                        })}
+                      />
+                    )}
+                    
+                    <Icon className="w-4 h-4 relative z-10" />
+                    <span className="relative z-10">{label}</span>
+                    
+                    {/* Tooltip */}
+                    <div className="absolute -top-10 left-1/2 transform -translate-x-1/2 bg-black/80 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap">
+                      {description}
+                    </div>
+                  </Button>
+                </motion.div>
+              ))}
             </div>
 
-            {/* Category Filters */}
+            {/* Electronic Music Category Filters */}
             {categories.length > 0 && (
-              <div className="flex flex-wrap justify-center gap-2">
-                <Button
-                  variant={filter === 'all' ? 'default' : 'outline'}
-                  size="sm"
-                  onClick={() => setFilter('all')}
+              <motion.div 
+                className="flex flex-wrap justify-center gap-2"
+                variants={galleryAnimations.socialGrid}
+                initial="hidden"
+                animate={isInView ? "visible" : "hidden"}
+              >
+                {/* All Filter with special styling */}
+                <motion.div
+                  variants={filterVariants}
+                  animate={filter === 'all' ? 'active' : 'inactive'}
+                  whileHover="hover"
                 >
-                  All
-                </Button>
-                {categories.map(category => (
                   <Button
-                    key={category}
-                    variant={filter === category ? 'default' : 'outline'}
+                    variant={filter === 'all' ? 'default' : 'outline'}
                     size="sm"
-                    onClick={() => setFilter(category)}
+                    onClick={() => setFilter('all')}
+                    className="relative overflow-hidden group"
                   >
-                    {category}
+                    {filter === 'all' && (
+                      <motion.div
+                        className="absolute inset-0 bg-gradient-to-r from-green-400/20 to-blue-400/20"
+                        animate={isReducedMotion ? {} : EFFECTS.BEAT_PULSE}
+                      />
+                    )}
+                    <Zap className="w-3 h-3 mr-1" />
+                    <span className="relative z-10">All Tracks</span>
                   </Button>
+                </motion.div>
+                
+                {/* Category filters with electronic styling */}
+                {categories.map(category => (
+                  <motion.div
+                    key={category}
+                    variants={filterVariants}
+                    animate={filter === category ? 'active' : 'inactive'}
+                    whileHover="hover"
+                  >
+                    <Button
+                      variant={filter === category ? 'default' : 'outline'}
+                      size="sm"
+                      onClick={() => setFilter(category)}
+                      className="relative overflow-hidden capitalize group"
+                    >
+                      {filter === category && (
+                        <motion.div
+                          className="absolute inset-0 bg-gradient-to-r from-purple-400/20 to-pink-400/20"
+                          animate={isReducedMotion ? {} : {
+                            scale: [1, 1.05, 1],
+                            opacity: [0.3, 0.7, 0.3],
+                          }}
+                          transition={getOptimizedTransition({
+                            duration: 1.5,
+                            repeat: Infinity,
+                            ease: [0.23, 1, 0.32, 1], // Filter sweep curve
+                          })}
+                        />
+                      )}
+                      <span className="relative z-10">{category}</span>
+                      
+                      {/* Genre indicator */}
+                      <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-current rounded-full opacity-0 group-hover:opacity-60 transition-opacity" />
+                    </Button>
+                  </motion.div>
                 ))}
-              </div>
+              </motion.div>
             )}
           </div>
 
-          {/* Gallery Content */}
+          {/* Electronic Music Gallery Content */}
           <motion.div
+            ref={containerRef}
             variants={containerVariants}
             initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
+            animate={isInView ? "visible" : "hidden"}
+            className="relative"
           >
+            {/* Background frequency visualization */}
+            {!isReducedMotion && (
+              <div className="absolute inset-0 pointer-events-none overflow-hidden">
+                {[...Array(20)].map((_, i) => (
+                  <motion.div
+                    key={i}
+                    className="absolute bg-gradient-to-t from-transparent via-purple-500/5 to-transparent"
+                    style={{
+                      left: `${(i / 20) * 100}%`,
+                      width: '1px',
+                      height: '100%',
+                    }}
+                    animate={{
+                      scaleY: [0.3, 0.8 + Math.random() * 0.4, 0.3],
+                      opacity: [0.1, 0.3, 0.1],
+                    }}
+                    transition={{
+                      duration: 1 + Math.random() * 2,
+                      repeat: Infinity,
+                      ease: [0.25, 0.46, 0.45, 0.94],
+                      delay: i * 0.1,
+                    }}
+                  />
+                ))}
+              </div>
+            )}
             {layoutMode === 'carousel' ? (
               <div className="relative">
                 <div className="flex overflow-x-auto gap-4 pb-4 scrollbar-hide">
@@ -207,7 +342,9 @@ export function Gallery({
                     <motion.div 
                       key={item.id}
                       variants={itemVariants}
-                      className="flex-shrink-0 w-80"
+                      whileHover="hover"
+                      whileTap="tap"
+                      className="flex-shrink-0 w-80 will-change-transform"
                     >
                       <GalleryItemCard
                         item={item}
@@ -223,7 +360,13 @@ export function Gallery({
                   <motion.div
                     key={item.id}
                     variants={itemVariants}
-                    className={layoutMode === 'masonry' && index % 3 === 0 ? 'row-span-2' : ''}
+                    whileHover="hover"
+                    whileTap="tap"
+                    className={`${layoutMode === 'masonry' && index % 3 === 0 ? 'row-span-2' : ''} will-change-transform`}
+                    style={{
+                      // Add subtle perspective for depth
+                      transformStyle: 'preserve-3d',
+                    }}
                   >
                     <GalleryItemCard
                       item={item}
@@ -235,35 +378,93 @@ export function Gallery({
             )}
           </motion.div>
 
-          {/* Lightbox Dialog */}
+          {/* Electronic Music Lightbox Dialog */}
           <Dialog open={!!selectedItem} onOpenChange={(open) => !open && setSelectedItem(null)}>
-            <DialogContent className="max-w-4xl max-h-[90vh] p-0">
-              <DialogClose className="absolute right-4 top-4 z-50 bg-black/50 text-white hover:bg-black/70 rounded-full p-2">
-                <X className="w-4 h-4" />
-              </DialogClose>
+            <DialogContent className="max-w-4xl max-h-[90vh] p-0 border-none bg-black/95 backdrop-blur-xl">
+              {/* Enhanced close button */}
+              <motion.button
+                className="absolute right-4 top-4 z-50 bg-black/80 text-white hover:bg-black/90 rounded-full p-3 group"
+                onClick={() => setSelectedItem(null)}
+                whileHover={{ scale: 1.1, rotate: 90 }}
+                whileTap={{ scale: 0.95 }}
+                transition={{ duration: 0.2 }}
+              >
+                <X className="w-5 h-5 transition-transform group-hover:rotate-90" />
+                
+                {/* Close button glow */}
+                <div className="absolute inset-0 rounded-full bg-red-500/20 scale-0 group-hover:scale-150 transition-transform duration-300" />
+              </motion.button>
+              
               {selectedItem && (
-                <div className="relative">
+                <motion.div 
+                  className="relative"
+                  variants={lightboxVariants}
+                  initial="hidden"
+                  animate="visible"
+                  exit="exit"
+                >
                   {selectedItem.type === 'video' ? (
                     <video
                       src={selectedItem.url}
                       controls
                       autoPlay
-                      className="w-full h-full rounded-lg"
+                      className="w-full h-full rounded-lg shadow-2xl"
+                      style={{
+                        boxShadow: '0 0 50px rgba(147, 51, 234, 0.3), 0 0 100px rgba(59, 130, 246, 0.2)',
+                      }}
                     />
                   ) : (
                     <img
                       src={selectedItem.url}
                       alt={selectedItem.altText || selectedItem.caption || 'Gallery item'}
-                      className="w-full h-full object-contain rounded-lg"
+                      className="w-full h-full object-contain rounded-lg shadow-2xl"
+                      style={{
+                        boxShadow: '0 0 50px rgba(147, 51, 234, 0.3), 0 0 100px rgba(59, 130, 246, 0.2)',
+                      }}
                     />
                   )}
                   
+                  {/* Enhanced caption with electronic styling */}
                   {selectedItem.caption && (
-                    <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-6 rounded-b-lg">
-                      <p className="text-white text-lg">{selectedItem.caption}</p>
-                    </div>
+                    <motion.div 
+                      className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent p-6 rounded-b-lg border-t border-white/10"
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.3, duration: 0.5 }}
+                    >
+                      <p className="text-white text-lg font-light tracking-wide">
+                        {selectedItem.caption}
+                      </p>
+                      
+                      {/* Category tags */}
+                      {selectedItem.category && (
+                        <div className="flex gap-2 mt-3">
+                          {selectedItem.category.map(cat => (
+                            <span
+                              key={cat}
+                              className="text-xs bg-purple-500/20 text-purple-300 px-2 py-1 rounded-full border border-purple-500/30"
+                            >
+                              {cat}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+                      
+                      {/* Animated accent line */}
+                      <motion.div
+                        className="w-full h-px bg-gradient-to-r from-transparent via-purple-400 to-transparent mt-4"
+                        animate={isReducedMotion ? {} : {
+                          scaleX: [0, 1, 0],
+                        }}
+                        transition={{
+                          duration: 3,
+                          repeat: Infinity,
+                          ease: [0.23, 1, 0.32, 1],
+                        }}
+                      />
+                    </motion.div>
                   )}
-                </div>
+                </motion.div>
               )}
             </DialogContent>
           </Dialog>

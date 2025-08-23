@@ -21,6 +21,7 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { ComponentErrorBoundary } from '@/components/ErrorBoundary'
 import { toaster } from '@/components/ui/toaster'
+import { contactAnimations, getOptimizedTransition, prefersReducedMotion } from '@/lib/animations/electronic-music-animations'
 
 interface SocialLink {
   platform: 'instagram' | 'facebook' | 'youtube' | 'spotify' | 'soundcloud' | 'twitter' | 'tiktok'
@@ -87,6 +88,12 @@ export function ContactSocial({
   const [errors, setErrors] = useState<FormErrors>({})
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle')
+  const [isReducedMotion, setIsReducedMotion] = useState(false)
+  const [focusedField, setFocusedField] = useState<string | null>(null)
+
+  React.useEffect(() => {
+    setIsReducedMotion(prefersReducedMotion())
+  }, [])
 
   const getBackgroundStyle = () => {
     switch (backgroundType) {
@@ -221,24 +228,65 @@ export function ContactSocial({
     }
   }
 
+  // Electronic Music Contact Animations for Booking Confidence
   const containerVariants = {
-    hidden: { opacity: 0 },
+    ...contactAnimations.container,
     visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.2,
-      },
+      ...contactAnimations.container.visible,
+      transition: getOptimizedTransition(contactAnimations.container.visible!.transition!),
     },
   }
 
-  const itemVariants = {
-    hidden: { opacity: 0, y: 30 },
-    visible: { opacity: 1, y: 0 },
+  const formFieldVariants = {
+    ...contactAnimations.formField,
+    visible: {
+      ...contactAnimations.formField.visible,
+      transition: getOptimizedTransition(contactAnimations.formField.visible!.transition!),
+    },
+    focus: {
+      ...contactAnimations.formField.focus,
+      transition: getOptimizedTransition(contactAnimations.formField.focus!.transition!),
+    },
+    error: {
+      ...contactAnimations.formField.error,
+      transition: getOptimizedTransition(contactAnimations.formField.error!.transition!),
+    },
   }
 
-  const socialVariants = {
-    hidden: { opacity: 0, scale: 0.8 },
-    visible: { opacity: 1, scale: 1 },
+  const submitButtonVariants = {
+    ...contactAnimations.submitButton,
+    hover: {
+      ...contactAnimations.submitButton.hover,
+      transition: getOptimizedTransition(contactAnimations.submitButton.hover!.transition!),
+    },
+    loading: {
+      ...contactAnimations.submitButton.loading,
+      transition: getOptimizedTransition(contactAnimations.submitButton.loading!.transition!),
+    },
+    success: {
+      ...contactAnimations.submitButton.success,
+      transition: getOptimizedTransition(contactAnimations.submitButton.success!.transition!),
+    },
+  }
+
+  const socialGridVariants = {
+    ...contactAnimations.socialGrid,
+    visible: {
+      ...contactAnimations.socialGrid.visible,
+      transition: getOptimizedTransition(contactAnimations.socialGrid.visible!.transition!),
+    },
+  }
+
+  const socialItemVariants = {
+    ...contactAnimations.socialItem,
+    visible: {
+      ...contactAnimations.socialItem.visible,
+      transition: getOptimizedTransition(contactAnimations.socialItem.visible!.transition!),
+    },
+    hover: {
+      ...contactAnimations.socialItem.hover,
+      transition: getOptimizedTransition(contactAnimations.socialItem.hover!.transition!),
+    },
   }
 
   return (
@@ -282,73 +330,183 @@ export function ContactSocial({
             viewport={{ once: true, margin: "-100px" }}
             className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16"
           >
-            {/* Contact Form */}
+            {/* Electronic Music Contact Form */}
             <motion.div
-              variants={itemVariants}
+              variants={formFieldVariants}
               className="space-y-8"
             >
               <div className="text-center lg:text-left space-y-4">
-                <h2 className="text-3xl lg:text-5xl font-bold text-white">
+                <h2 className="text-section-header text-white">
                   Get In Touch
                 </h2>
-                <p className="text-gray-300 text-lg">
+                <p className="text-body-large text-gray-300">
                   Ready to book a show or have a question? Drop me a message and I'll get back to you soon.
                 </p>
               </div>
 
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <Input
-                      type="text"
-                      placeholder="Your Name"
-                      className="bg-white/10 border-white/30 text-white placeholder:text-gray-400"
-                      value={form.name}
-                      onChange={(e) => handleInputChange('name', e.target.value)}
-                      required
-                    />
+                  {/* Name Field with Confidence Building */}
+                  <motion.div
+                    variants={formFieldVariants}
+                    animate={focusedField === 'name' ? 'focus' : 'visible'}
+                    className="relative"
+                  >
+                    <div className="relative group">
+                      <Input
+                        type="text"
+                        placeholder="Your Name"
+                        className="bg-white/10 border-white/30 text-white placeholder:text-gray-400 transition-all duration-300 focus:bg-white/15 focus:border-white/50 focus:shadow-lg focus:shadow-purple-500/10"
+                        value={form.name}
+                        onChange={(e) => handleInputChange('name', e.target.value)}
+                        onFocus={() => setFocusedField('name')}
+                        onBlur={() => setFocusedField(null)}
+                        required
+                      />
+                      
+                      {/* Focus indicator */}
+                      {focusedField === 'name' && (
+                        <motion.div
+                          className="absolute -inset-0.5 bg-gradient-to-r from-purple-500/20 to-blue-500/20 rounded-lg -z-10"
+                          initial={{ opacity: 0, scale: 0.8 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          transition={{ duration: 0.2 }}
+                        />
+                      )}
+                      
+                      {/* Typing confidence indicator */}
+                      {form.name.length > 0 && (
+                        <motion.div
+                          className="absolute right-3 top-1/2 transform -translate-y-1/2"
+                          initial={{ opacity: 0, scale: 0.5 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          transition={{ duration: 0.3 }}
+                        >
+                          <div className="w-2 h-2 bg-green-400 rounded-full" />
+                        </motion.div>
+                      )}
+                    </div>
+                    
                     {errors.name && (
-                      <div className="flex items-center mt-1 text-red-400 text-sm">
+                      <motion.div 
+                        className="flex items-center mt-1 text-red-400 text-sm"
+                        variants={formFieldVariants}
+                        animate="error"
+                      >
                         <AlertCircle className="w-4 h-4 mr-1" />
                         {errors.name}
-                      </div>
+                      </motion.div>
+                    )}
+                  </motion.div>
+                  
+                  {/* Email Field with Professional Validation */}
+                  <motion.div
+                    variants={formFieldVariants}
+                    animate={focusedField === 'email' ? 'focus' : 'visible'}
+                    className="relative"
+                  >
+                    <div className="relative group">
+                      <Input
+                        type="email"
+                        placeholder="Your Email"
+                        className="bg-white/10 border-white/30 text-white placeholder:text-gray-400 transition-all duration-300 focus:bg-white/15 focus:border-white/50 focus:shadow-lg focus:shadow-blue-500/10"
+                        value={form.email}
+                        onChange={(e) => handleInputChange('email', e.target.value)}
+                        onFocus={() => setFocusedField('email')}
+                        onBlur={() => setFocusedField(null)}
+                        required
+                      />
+                      
+                      {/* Focus indicator */}
+                      {focusedField === 'email' && (
+                        <motion.div
+                          className="absolute -inset-0.5 bg-gradient-to-r from-blue-500/20 to-cyan-500/20 rounded-lg -z-10"
+                          initial={{ opacity: 0, scale: 0.8 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          transition={{ duration: 0.2 }}
+                        />
+                      )}
+                      
+                      {/* Email validation indicator */}
+                      {form.email.length > 0 && (
+                        <motion.div
+                          className="absolute right-3 top-1/2 transform -translate-y-1/2"
+                          initial={{ opacity: 0, scale: 0.5 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          transition={{ duration: 0.3 }}
+                        >
+                          <div className={`w-2 h-2 rounded-full ${
+                            isValidEmail(form.email) ? 'bg-green-400' : 'bg-yellow-400'
+                          }`} />
+                        </motion.div>
+                      )}
+                    </div>
+                    
+                    {errors.email && (
+                      <motion.div 
+                        className="flex items-center mt-1 text-red-400 text-sm"
+                        variants={formFieldVariants}
+                        animate="error"
+                      >
+                        <AlertCircle className="w-4 h-4 mr-1" />
+                        {errors.email}
+                      </motion.div>
+                    )}
+                  </motion.div>
+                </div>
+
+                {/* Subject Field with Booking Context */}
+                <motion.div
+                  variants={formFieldVariants}
+                  animate={focusedField === 'subject' ? 'focus' : 'visible'}
+                  className="relative"
+                >
+                  <div className="relative group">
+                    <Input
+                      type="text"
+                      placeholder="Subject (e.g., Booking Inquiry, Collaboration)"
+                      className="bg-white/10 border-white/30 text-white placeholder:text-gray-400 transition-all duration-300 focus:bg-white/15 focus:border-white/50 focus:shadow-lg focus:shadow-green-500/10"
+                      value={form.subject}
+                      onChange={(e) => handleInputChange('subject', e.target.value)}
+                      onFocus={() => setFocusedField('subject')}
+                      onBlur={() => setFocusedField(null)}
+                      required
+                    />
+                    
+                    {/* Focus indicator */}
+                    {focusedField === 'subject' && (
+                      <motion.div
+                        className="absolute -inset-0.5 bg-gradient-to-r from-green-500/20 to-emerald-500/20 rounded-lg -z-10"
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ duration: 0.2 }}
+                      />
+                    )}
+                    
+                    {/* Booking context indicator */}
+                    {form.subject.toLowerCase().includes('booking') && (
+                      <motion.div
+                        className="absolute right-3 top-1/2 transform -translate-y-1/2"
+                        initial={{ opacity: 0, rotate: -180 }}
+                        animate={{ opacity: 1, rotate: 0 }}
+                        transition={{ duration: 0.5 }}
+                      >
+                        <div className="text-green-400 text-xs font-semibold">🎵</div>
+                      </motion.div>
                     )}
                   </div>
                   
-                  <div>
-                    <Input
-                      type="email"
-                      placeholder="Your Email"
-                      className="bg-white/10 border-white/30 text-white placeholder:text-gray-400"
-                      value={form.email}
-                      onChange={(e) => handleInputChange('email', e.target.value)}
-                      required
-                    />
-                    {errors.email && (
-                      <div className="flex items-center mt-1 text-red-400 text-sm">
-                        <AlertCircle className="w-4 h-4 mr-1" />
-                        {errors.email}
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                <div>
-                  <Input
-                    type="text"
-                    placeholder="Subject"
-                    className="bg-white/10 border-white/30 text-white placeholder:text-gray-400"
-                    value={form.subject}
-                    onChange={(e) => handleInputChange('subject', e.target.value)}
-                    required
-                  />
                   {errors.subject && (
-                    <div className="flex items-center mt-1 text-red-400 text-sm">
+                    <motion.div 
+                      className="flex items-center mt-1 text-red-400 text-sm"
+                      variants={formFieldVariants}
+                      animate="error"
+                    >
                       <AlertCircle className="w-4 h-4 mr-1" />
                       {errors.subject}
-                    </div>
+                    </motion.div>
                   )}
-                </div>
+                </motion.div>
 
                 <div>
                   <Textarea
@@ -370,23 +528,69 @@ export function ContactSocial({
                   </p>
                 </div>
 
-                <Button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="w-full bg-white text-black hover:bg-gray-100 disabled:opacity-50"
+                {/* Enhanced Submit Button with Booking Confidence */}
+                <motion.div
+                  variants={submitButtonVariants}
+                  animate={
+                    submitStatus === 'success' ? 'success' :
+                    isSubmitting ? 'loading' : 'idle'
+                  }
+                  whileHover={!isSubmitting ? 'hover' : undefined}
+                  className="relative"
                 >
-                  {isSubmitting ? (
-                    <div className="flex items-center gap-2">
-                      <div className="w-4 h-4 border-2 border-gray-600 border-t-gray-900 rounded-full animate-spin" />
-                      Sending...
-                    </div>
-                  ) : (
-                    <div className="flex items-center gap-2">
-                      <Send className="w-4 h-4" />
-                      Send Message
-                    </div>
+                  <Button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="w-full bg-white text-black hover:bg-gray-100 disabled:opacity-50 relative overflow-hidden group transition-all duration-300"
+                  >
+                    {/* Button background effects */}
+                    {!isSubmitting && (
+                      <motion.div
+                        className="absolute inset-0 bg-gradient-to-r from-green-400/20 to-blue-400/20 opacity-0 group-hover:opacity-100"
+                        transition={{ duration: 0.3 }}
+                      />
+                    )}
+                    
+                    {isSubmitting ? (
+                      <div className="flex items-center gap-2 relative z-10">
+                        <motion.div 
+                          className="w-4 h-4 border-2 border-gray-600 border-t-gray-900 rounded-full"
+                          animate={{ rotate: 360 }}
+                          transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                        />
+                        <span>Sending Your Message...</span>
+                      </div>
+                    ) : submitStatus === 'success' ? (
+                      <div className="flex items-center gap-2 relative z-10">
+                        <motion.div
+                          initial={{ scale: 0 }}
+                          animate={{ scale: 1 }}
+                          transition={{ duration: 0.3 }}
+                        >
+                          <CheckCircle className="w-4 h-4 text-green-600" />
+                        </motion.div>
+                        <span>Message Sent!</span>
+                      </div>
+                    ) : (
+                      <div className="flex items-center gap-2 relative z-10">
+                        <Send className="w-4 h-4" />
+                        <span>Send Booking Inquiry</span>
+                      </div>
+                    )}
+                  </Button>
+                  
+                  {/* Professional response time indicator */}
+                  {!isSubmitting && submitStatus === 'idle' && (
+                    <motion.p
+                      className="text-center text-gray-400 text-xs mt-2"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ delay: 0.5 }}
+                    >
+                      ⚡ Professional response within 24 hours
+                    </motion.p>
                   )}
-                </Button>
+                </motion.div>
 
                 {/* Submit Status */}
                 {submitStatus === 'success' && (
@@ -421,7 +625,7 @@ export function ContactSocial({
 
             {/* Social Links & Direct Contact */}
             <motion.div
-              variants={itemVariants}
+              variants={formFieldVariants}
               className="space-y-8"
             >
               <div className="text-center lg:text-left space-y-4">
@@ -433,35 +637,73 @@ export function ContactSocial({
                 </p>
               </div>
 
-              {/* Social Links Grid */}
+              {/* Electronic Music Social Links Grid */}
               <motion.div 
-                variants={containerVariants}
+                variants={socialGridVariants}
                 className="grid grid-cols-2 sm:grid-cols-3 gap-4"
               >
-                {socialLinks.map((social) => (
+                {socialLinks.map((social, index) => (
                   <motion.a
                     key={social.platform}
                     href={social.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    variants={socialVariants}
-                    whileHover={{ scale: 1.05 }}
+                    variants={socialItemVariants}
+                    whileHover="hover"
                     whileTap={{ scale: 0.95 }}
+                    className="group"
+                    style={{
+                      // Stagger the animation delays
+                      animationDelay: `${index * 0.1}s`,
+                    }}
                   >
-                    <Card className="bg-white/10 backdrop-blur-sm border-white/20 hover:bg-white/20 transition-all duration-300 cursor-pointer">
-                      <CardContent className="p-6">
+                    <Card className="bg-white/10 backdrop-blur-sm border-white/20 hover:bg-white/25 transition-all duration-300 cursor-pointer relative overflow-hidden group">
+                      {/* Hover glow effect */}
+                      <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-blue-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                      
+                      {/* Platform-specific accent */}
+                      <div className={`absolute top-0 left-0 w-full h-1 transition-all duration-300 ${
+                        social.platform === 'instagram' ? 'bg-gradient-to-r from-pink-500 to-yellow-500' :
+                        social.platform === 'spotify' ? 'bg-green-500' :
+                        social.platform === 'youtube' ? 'bg-red-500' :
+                        social.platform === 'facebook' ? 'bg-blue-500' :
+                        'bg-purple-500'
+                      } scale-x-0 group-hover:scale-x-100 origin-left`} />
+                      
+                      <CardContent className="p-6 relative z-10">
                         <div className="flex flex-col items-center space-y-3">
-                          <div className="text-white">
+                          <motion.div 
+                            className="text-white relative"
+                            whileHover={!isReducedMotion ? {
+                              rotate: [0, -5, 5, 0],
+                              scale: [1, 1.1, 1.1, 1],
+                            } : {}}
+                            transition={{ duration: 0.5 }}
+                          >
                             {getSocialIcon(social.platform)}
-                          </div>
-                          <p className="text-white text-sm font-medium capitalize">
+                            
+                            {/* Icon glow effect */}
+                            <div className="absolute inset-0 bg-current opacity-0 group-hover:opacity-20 rounded-full blur-lg transition-opacity duration-300" />
+                          </motion.div>
+                          
+                          <p className="text-white text-sm font-medium capitalize group-hover:text-white/90 transition-colors">
                             {social.platform}
                           </p>
+                          
                           {social.username && (
-                            <p className="text-gray-400 text-xs">
+                            <p className="text-gray-400 text-xs group-hover:text-gray-300 transition-colors">
                               @{social.username}
                             </p>
                           )}
+                          
+                          {/* Follow indicator */}
+                          <motion.div
+                            className="text-xs text-purple-300 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                            initial={{ y: 5 }}
+                            whileHover={{ y: 0 }}
+                          >
+                            Follow for updates
+                          </motion.div>
                         </div>
                       </CardContent>
                     </Card>
@@ -469,37 +711,115 @@ export function ContactSocial({
                 ))}
               </motion.div>
 
-              {/* Direct Email */}
-              <motion.div variants={itemVariants}>
-                <Card className="bg-white/10 backdrop-blur-sm border-white/20">
+              {/* Enhanced Direct Email Card */}
+              <motion.div 
+                variants={formFieldVariants}
+                whileHover={{ scale: 1.02 }}
+                className="group"
+              >
+                <Card className="bg-white/10 backdrop-blur-sm border-white/20 hover:bg-white/15 transition-all duration-300 relative overflow-hidden">
+                  {/* Animated border */}
+                  <motion.div
+                    className="absolute inset-0 border border-gradient-to-r from-purple-500/50 to-blue-500/50 rounded-lg opacity-0 group-hover:opacity-100"
+                    transition={{ duration: 0.3 }}
+                  />
+                  
                   <CardContent className="p-6">
                     <div className="flex items-center space-x-4">
-                      <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
+                      <motion.div 
+                        className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center relative"
+                        whileHover={!isReducedMotion ? {
+                          rotate: [0, -10, 10, 0],
+                          scale: [1, 1.1, 1],
+                        } : {}}
+                        transition={{ duration: 0.6 }}
+                      >
                         <Mail className="w-6 h-6 text-white" />
-                      </div>
+                        
+                        {/* Pulse indicator for direct contact */}
+                        <motion.div
+                          className="absolute -inset-1 border-2 border-white/30 rounded-full"
+                          animate={!isReducedMotion ? {
+                            scale: [1, 1.2, 1],
+                            opacity: [0.5, 0, 0.5],
+                          } : {}}
+                          transition={{
+                            duration: 2,
+                            repeat: Infinity,
+                            ease: "easeInOut",
+                          }}
+                        />
+                      </motion.div>
+                      
                       <div className="flex-1">
-                        <h3 className="text-lg font-semibold text-white">Direct Email</h3>
+                        <h3 className="text-lg font-semibold text-white group-hover:text-white/90 transition-colors">
+                          Direct Booking Email
+                        </h3>
                         <a
-                          href={`mailto:${contactEmail}`}
-                          className="text-gray-300 hover:text-white underline transition-colors"
+                          href={`mailto:${contactEmail}?subject=Booking Inquiry`}
+                          className="text-gray-300 hover:text-white underline transition-colors text-sm flex items-center gap-2"
                         >
                           {contactEmail}
+                          <motion.div
+                            className="opacity-0 group-hover:opacity-100 transition-opacity"
+                            whileHover={{ x: 2 }}
+                          >
+                            <ExternalLink className="w-3 h-3" />
+                          </motion.div>
                         </a>
+                        
+                        {/* Professional indicator */}
+                        <div className="flex items-center gap-2 mt-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                          <div className="w-2 h-2 bg-green-400 rounded-full" />
+                          <span className="text-xs text-green-300">Fastest response time</span>
+                        </div>
                       </div>
                     </div>
                   </CardContent>
                 </Card>
               </motion.div>
 
-              {/* Quick Response Promise */}
+              {/* Enhanced Professional Promise */}
               <motion.div
-                variants={itemVariants}
+                variants={formFieldVariants}
                 className="flex justify-center lg:justify-start"
               >
-                <div className="flex items-center bg-green-500/20 text-green-300 px-4 py-2 rounded-full text-sm space-x-2">
-                  <CheckCircle className="w-4 h-4" />
-                  <span>Typically responds within 24 hours</span>
-                </div>
+                <motion.div 
+                  className="flex items-center bg-green-500/20 text-green-300 px-6 py-3 rounded-full text-sm space-x-3 border border-green-500/30 relative overflow-hidden group"
+                  whileHover={{ scale: 1.05 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  {/* Animated background */}
+                  <motion.div
+                    className="absolute inset-0 bg-green-400/10"
+                    animate={!isReducedMotion ? {
+                      x: ['-100%', '100%'],
+                    } : {}}
+                    transition={{
+                      duration: 3,
+                      repeat: Infinity,
+                      ease: "linear",
+                    }}
+                  />
+                  
+                  <motion.div
+                    animate={!isReducedMotion ? {
+                      rotate: [0, 360],
+                    } : {}}
+                    transition={{
+                      duration: 2,
+                      repeat: Infinity,
+                      ease: "linear",
+                    }}
+                  >
+                    <CheckCircle className="w-5 h-5" />
+                  </motion.div>
+                  
+                  <div className="relative z-10">
+                    <div className="font-semibold">Professional Response Guarantee</div>
+                    <div className="text-xs opacity-80">Within 24 hours • Booking priority</div>
+                  </div>
+                </motion.div>
               </motion.div>
             </motion.div>
           </motion.div>
