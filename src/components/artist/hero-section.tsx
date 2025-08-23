@@ -389,7 +389,7 @@ export function HeroSection({
           </motion.div>
         </motion.div>
 
-        {/* Newsletter Subscription - UX Best Practices */}
+        {/* Newsletter Subscription - Optimized proportions */}
         <motion.div 
           className="hero-newsletter max-w-md mx-auto"
           variants={{
@@ -400,40 +400,28 @@ export function HeroSection({
             }
           }}
         >
-          <div className="text-center mb-4">
-            <p className="text-brand-text-secondary text-sm mb-2">
-              Get exclusive updates & new releases
-            </p>
-          </div>
-          
-          <div className="flex gap-2">
+          <div className="flex gap-3">
             <input
               type="email"
-              placeholder="Enter your email"
+              placeholder="Email address"
               className={cn(
-                "flex-1 px-4 py-3 rounded-full bg-brand-void/50 border border-brand-neon/20",
+                "flex-1 h-12 px-4 text-sm rounded-xl bg-brand-void/30 border border-brand-neon/20",
                 "text-brand-text-primary placeholder-brand-text-secondary/70",
-                "focus:outline-none focus:border-brand-neon/50 focus:ring-2 focus:ring-brand-neon/20",
-                "transition-all duration-300 backdrop-blur-sm"
+                "focus:outline-none focus:border-brand-neon focus:ring-2 focus:ring-brand-neon/10",
+                "transition-all duration-200"
               )}
             />
             <Button
               variant="outline"
-              size="default"
               className={cn(
-                "px-6 border-brand-neon/40 text-brand-neon rounded-full",
+                "h-12 px-6 rounded-2xl border-brand-neon/40 text-brand-neon font-medium min-w-[120px]",
                 "hover:bg-brand-neon/10 hover:border-brand-neon",
-                "focus:outline-none focus:ring-2 focus:ring-brand-neon/30",
-                "transition-all duration-300 whitespace-nowrap"
+                "transition-all duration-200"
               )}
             >
               Subscribe
             </Button>
           </div>
-          
-          <p className="text-xs text-brand-text-secondary/60 text-center mt-3">
-            No spam, unsubscribe anytime. Privacy policy applies.
-          </p>
         </motion.div>
 
       </motion.div>

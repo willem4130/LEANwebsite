@@ -213,17 +213,253 @@ export const createParallaxAnimations = () => {
 }
 
 /**
- * Advanced Electronic Music Section Transitions
+ * Spectacular Hero-to-Section Transition
+ */
+export const createSpectacularHeroTransition = () => {
+  const heroSection = document.querySelector('#hero')
+  const firstSection = document.querySelector('.section-container:first-of-type')
+  
+  if (!heroSection || !firstSection) return
+
+  // Create the spectacular transition effects
+  ScrollTrigger.create({
+    trigger: firstSection,
+    start: 'top 100%',
+    end: 'top 20%',
+    scrub: 1,
+    onUpdate: (self) => {
+      const progress = self.progress
+      
+      // Hero section fade and scale
+      gsap.set(heroSection, {
+        opacity: 1 - progress * 0.7,
+        scale: 1 - progress * 0.1,
+        y: -progress * 100,
+        filter: `blur(${progress * 20}px) brightness(${1 - progress * 0.3})`
+      })
+    }
+  })
+
+  // Spectacular entrance animation for first section
+  ScrollTrigger.create({
+    trigger: firstSection,
+    start: 'top 120%',
+    end: 'top 50%',
+    onEnter: () => {
+      // Create multiple dramatic effects
+      const timeline = gsap.timeline()
+      
+      // 1. Lightning flash effect
+      const flash = document.createElement('div')
+      flash.className = 'lightning-flash fixed inset-0 pointer-events-none z-40'
+      flash.style.background = 'radial-gradient(circle, rgba(0,255,255,0.3) 0%, transparent 70%)'
+      flash.style.opacity = '0'
+      document.body.appendChild(flash)
+      
+      // 2. Electric surge lines (multiple)
+      const surgeContainer = document.createElement('div')
+      surgeContainer.className = 'electric-surges fixed inset-0 pointer-events-none z-50'
+      surgeContainer.innerHTML = `
+        <div class="surge-line-1 absolute top-1/3 w-full h-0.5 bg-gradient-to-r from-transparent via-brand-neon to-transparent opacity-0 shadow-lg shadow-brand-neon/70"></div>
+        <div class="surge-line-2 absolute top-1/2 w-full h-1 bg-gradient-to-r from-transparent via-brand-electric to-transparent opacity-0 shadow-lg shadow-brand-electric/70"></div>
+        <div class="surge-line-3 absolute top-2/3 w-full h-0.5 bg-gradient-to-r from-transparent via-brand-purple to-transparent opacity-0 shadow-lg shadow-brand-purple/70"></div>
+      `
+      document.body.appendChild(surgeContainer)
+      
+      // 3. Particle burst effect
+      const particles = document.createElement('div')
+      particles.className = 'particle-burst fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none z-45'
+      for (let i = 0; i < 12; i++) {
+        const particle = document.createElement('div')
+        particle.className = 'absolute w-2 h-2 bg-brand-neon rounded-full opacity-0'
+        particle.style.left = '0px'
+        particle.style.top = '0px'
+        particles.appendChild(particle)
+      }
+      document.body.appendChild(particles)
+
+      // Execute spectacular sequence - UNIQUE HERO TRANSITION
+      timeline
+        // 1. Digital Matrix Rain Effect
+        .add(() => {
+          const matrix = document.createElement('div')
+          matrix.className = 'matrix-rain fixed inset-0 pointer-events-none z-45'
+          for (let i = 0; i < 20; i++) {
+            const column = document.createElement('div')
+            column.className = 'absolute top-0 opacity-0'
+            column.style.left = `${i * 5}%`
+            column.style.width = '2px'
+            column.style.height = '100%'
+            column.style.background = `linear-gradient(to bottom, transparent, ${['#00ffff', '#00d4ff', '#8b5cf6'][i % 3]}, transparent)`
+            matrix.appendChild(column)
+          }
+          document.body.appendChild(matrix)
+          
+          gsap.to(matrix.children, {
+            opacity: 0.7,
+            y: '100vh',
+            duration: 2,
+            ease: 'none',
+            stagger: 0.1,
+            onComplete: () => matrix.remove()
+          })
+        })
+        
+        // 2. Lightning flash with screen shake
+        .to(flash, { opacity: 1, duration: 0.1 })
+        .add(() => {
+          gsap.to('body', {
+            x: '+=5',
+            yoyo: true,
+            repeat: 3,
+            duration: 0.1
+          })
+        }, '-=0.1')
+        .to(flash, { opacity: 0, duration: 0.3 })
+        
+        // 3. Holographic Scan Lines (different from circuit traces)
+        .add(() => {
+          const scanLines = document.createElement('div')
+          scanLines.className = 'holographic-scan fixed inset-0 pointer-events-none z-50'
+          scanLines.innerHTML = `
+            <div class="scan-1 absolute w-full h-px bg-gradient-to-r from-transparent via-brand-neon via-brand-neon to-transparent top-1/4 opacity-0 shadow-lg shadow-brand-neon"></div>
+            <div class="scan-2 absolute w-full h-px bg-gradient-to-r from-transparent via-brand-electric via-brand-electric to-transparent top-1/2 opacity-0 shadow-lg shadow-brand-electric"></div>
+            <div class="scan-3 absolute w-full h-px bg-gradient-to-r from-transparent via-brand-purple via-brand-purple to-transparent top-3/4 opacity-0 shadow-lg shadow-brand-purple"></div>
+          `
+          document.body.appendChild(scanLines)
+          
+          gsap.timeline()
+            .to('.scan-1', { opacity: 1, duration: 0.2 })
+            .to('.scan-1', { scaleX: 5, duration: 0.8, ease: 'power2.out' }, '+=0.1')
+            .to('.scan-2', { opacity: 1, duration: 0.2 }, '-=0.5')
+            .to('.scan-2', { scaleX: 5, duration: 1.0, ease: 'power2.out' }, '+=0.1')
+            .to('.scan-3', { opacity: 1, duration: 0.2 }, '-=0.7')
+            .to('.scan-3', { scaleX: 5, duration: 0.9, ease: 'power2.out' }, '+=0.1')
+            .call(() => scanLines.remove(), null, '+=1')
+        }, '-=0.2')
+        
+        // 4. Energy Orb Explosion (instead of particle burst)
+        .add(() => {
+          const orb = document.createElement('div')
+          orb.className = 'energy-orb fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none z-45'
+          orb.style.width = '20px'
+          orb.style.height = '20px'
+          orb.style.background = 'radial-gradient(circle, #00ffff, #8b5cf6)'
+          orb.style.borderRadius = '50%'
+          orb.style.boxShadow = '0 0 30px #00ffff, 0 0 60px #8b5cf6'
+          orb.style.opacity = '0'
+          document.body.appendChild(orb)
+          
+          gsap.timeline()
+            .to(orb, { opacity: 1, scale: 1, duration: 0.3 })
+            .to(orb, { scale: 15, opacity: 0, duration: 1.5, ease: 'power2.out' })
+            .call(() => orb.remove())
+        }, '-=1')
+        
+        // 5. Section Iris Reveal (completely different entrance)
+        .fromTo(firstSection, 
+          {
+            clipPath: 'circle(0% at 50% 50%)',
+            opacity: 0,
+            scale: 1.1,
+            filter: 'blur(20px) brightness(0.3) hue-rotate(180deg)'
+          },
+          {
+            clipPath: 'circle(100% at 50% 50%)',
+            opacity: 1,
+            scale: 1,
+            filter: 'blur(0px) brightness(1) hue-rotate(0deg)',
+            duration: 2.5,
+            ease: 'power3.out'
+          }, '-=1.5')
+        
+        // 6. Glitch Effect Finale
+        .add(() => {
+          const glitchCount = 5
+          for (let i = 0; i < glitchCount; i++) {
+            gsap.delayedCall(i * 0.1, () => {
+              gsap.to(firstSection, {
+                x: Math.random() * 10 - 5,
+                filter: `hue-rotate(${Math.random() * 360}deg) saturate(2)`,
+                duration: 0.05,
+                yoyo: true,
+                repeat: 1
+              })
+            })
+          }
+        }, '-=0.5')
+        
+        // Cleanup
+        .call(() => {
+          setTimeout(() => {
+            flash.remove()
+            surgeContainer.remove()
+            particles.remove()
+          }, 1000)
+        })
+    },
+    
+    // Reverse animation when scrolling back up
+    onLeave: () => {
+      gsap.to(firstSection, {
+        opacity: 0.7,
+        y: 50,
+        scale: 0.95,
+        filter: 'blur(5px)',
+        duration: 1,
+        ease: 'power2.inOut'
+      })
+    },
+    
+    onEnterBack: () => {
+      // Quick re-entrance when scrolling back down
+      gsap.to(firstSection, {
+        opacity: 1,
+        y: 0,
+        scale: 1,
+        filter: 'blur(0px)',
+        duration: 0.8,
+        ease: 'power2.out'
+      })
+    },
+    
+    onLeaveBack: () => {
+      // Hero comes back when scrolling up
+      gsap.to(heroSection, {
+        opacity: 1,
+        scale: 1,
+        y: 0,
+        filter: 'blur(0px) brightness(1)',
+        duration: 0.6,
+        ease: 'power2.out'
+      })
+      
+      gsap.to(firstSection, {
+        opacity: 0,
+        y: 100,
+        scale: 0.95,
+        filter: 'blur(10px)',
+        duration: 0.8,
+        ease: 'power2.in'
+      })
+    }
+  })
+}
+
+/**
+ * Advanced Electronic Music Section Transitions  
  */
 export const createAdvancedSectionTransitions = () => {
-  // Enhanced Section Reveals with Dramatic Entrance
-  gsap.utils.toArray('.section-container').forEach((section: any, index) => {
+  // Create the spectacular hero transition first
+  createSpectacularHeroTransition()
+  
+  // Enhanced Section Reveals for remaining sections
+  gsap.utils.toArray('.section-container:not(:first-child)').forEach((section: any, index) => {
     ScrollTrigger.create({
       trigger: section,
-      start: 'top 140%', // Start much earlier
+      start: 'top 140%',
       end: 'bottom 20%',
       onEnter: () => {
-        // Dramatic wave reveal with scale and blur effects
         gsap.fromTo(section, 
           { 
             clipPath: 'polygon(0% 110%, 100% 110%, 100% 110%, 0% 110%)',
@@ -238,34 +474,10 @@ export const createAdvancedSectionTransitions = () => {
             y: 0,
             scale: 1,
             filter: 'blur(0px) brightness(1)',
-            duration: 3.5, // Even longer for more impact
+            duration: 3.5,
             ease: 'power3.out'
           }
         )
-
-        // Add electric surge effect for first transition (hero to section 2)
-        if (index === 0) {
-          const surge = document.createElement('div')
-          surge.className = 'electric-surge fixed inset-0 pointer-events-none z-50'
-          surge.innerHTML = `
-            <div class="w-full h-1 bg-gradient-to-r from-transparent via-brand-neon to-transparent absolute top-1/2 transform -translate-y-1/2 opacity-0 shadow-lg shadow-brand-neon/50"></div>
-          `
-          document.body.appendChild(surge)
-          
-          gsap.timeline()
-            .set(surge.firstElementChild, { scaleX: 0, opacity: 1 })
-            .to(surge.firstElementChild, {
-              scaleX: 1,
-              duration: 1.5,
-              ease: 'power2.out'
-            })
-            .to(surge.firstElementChild, {
-              opacity: 0,
-              duration: 0.5,
-              ease: 'power2.out'
-            })
-            .call(() => surge.remove(), null, '+=0.5')
-        }
       }
     })
   })

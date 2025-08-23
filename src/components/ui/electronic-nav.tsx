@@ -129,8 +129,8 @@ export function ElectronicNav() {
         ref={navRef}
         className={cn(
           "fixed top-4 left-1/2 transform -translate-x-1/2 z-50",
-          "backdrop-blur-md border border-brand-neon/20 rounded-full",
-          "px-6 py-3 transition-all duration-500",
+          "backdrop-blur-md border border-brand-neon/20 rounded-2xl",
+          "px-6 py-4 transition-all duration-500",
           "bg-gradient-to-r from-brand-void/90 via-brand-dark/90 to-brand-navy/90",
           "shadow-lg shadow-brand-neon/10",
           isScrolled && "shadow-xl shadow-brand-neon/20 border-brand-neon/30"
@@ -153,7 +153,7 @@ export function ElectronicNav() {
               key={item.id}
               onClick={() => scrollToSection(item.href)}
               className={cn(
-                "relative flex items-center space-x-2 px-4 py-2 rounded-full",
+                "relative flex items-center space-x-2 px-4 py-3 rounded-xl",
                 "text-sm font-medium transition-all duration-300",
                 "hover:bg-brand-neon/10 hover:text-brand-neon",
                 "focus:outline-none focus:ring-2 focus:ring-brand-neon/50",

@@ -48,7 +48,7 @@ import React, { useEffect } from 'react'
 import { Metadata } from 'next'
 import { HeroSection } from '@/components/artist/hero-section'
 import { TwoColumnLayout } from '@/components/artist/two-column-layout'
-import { Gallery } from '@/components/artist/gallery'
+import { ArtisticGallery } from '@/components/artist/artistic-gallery'
 import { ContactSocial } from '@/components/artist/contact-social'
 import { ElectronicNav } from '@/components/ui/electronic-nav'
 import { initializeGSAPAnimations, cleanupGSAPAnimations } from '@/lib/gsap-animations'
@@ -236,13 +236,11 @@ export default function DemoPage() {
         />
       </div>
 
-      {/* Gallery with consistent dark theme */}
+      {/* Gallery with artistic layout */}
       <div id="gallery" className="section-container">
-        <Gallery
+        <ArtisticGallery
           items={mockGalleryItems}
-          layout="masonry"
           title="Gallery"
-          backgroundType="color"
           backgroundColor="#1a1a2e"
         />
       </div>
