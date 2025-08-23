@@ -51,7 +51,7 @@ import { TwoColumnLayout } from '@/components/artist/two-column-layout'
 import { ArtisticGallery } from '@/components/artist/artistic-gallery'
 import { ContactSocial } from '@/components/artist/contact-social'
 import { ElectronicNav } from '@/components/ui/electronic-nav'
-import { MassiveScrollTransition } from '@/components/animations/MassiveScrollTransition'
+import { ExplosiveScrollTransition } from '@/components/animations/ExplosiveScrollTransition'
 import { initializeGSAPAnimations, cleanupGSAPAnimations } from '@/lib/gsap-animations'
 
 // Mock data for demonstration
@@ -194,8 +194,8 @@ export default function DemoPage() {
       {/* Electronic Navigation */}
       <ElectronicNav />
       
-      {/* MASSIVE Scroll Transition Animation */}
-      <MassiveScrollTransition heroId="hero" nextSectionId="shows" />
+      {/* EXPLOSIVE Scroll Transition Animation - EXPERIMENTAL VERSION */}
+      <ExplosiveScrollTransition heroId="hero" nextSectionId="shows" />
       
       {/* Hero Section with gradient background */}
       <HeroSection
