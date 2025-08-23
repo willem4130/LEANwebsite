@@ -51,6 +51,7 @@ import { TwoColumnLayout } from '@/components/artist/two-column-layout'
 import { ArtisticGallery } from '@/components/artist/artistic-gallery'
 import { ContactSocial } from '@/components/artist/contact-social'
 import { ElectronicNav } from '@/components/ui/electronic-nav'
+import { MassiveScrollTransition } from '@/components/animations/MassiveScrollTransition'
 import { initializeGSAPAnimations, cleanupGSAPAnimations } from '@/lib/gsap-animations'
 
 // Mock data for demonstration
@@ -193,6 +194,9 @@ export default function DemoPage() {
       {/* Electronic Navigation */}
       <ElectronicNav />
       
+      {/* MASSIVE Scroll Transition Animation */}
+      <MassiveScrollTransition heroId="hero" nextSectionId="shows" />
+      
       {/* Hero Section with gradient background */}
       <HeroSection
         id="hero"
@@ -217,7 +221,8 @@ export default function DemoPage() {
 
       {/* Two Column Layout with consistent dark theme */}
       <div id="shows" className="section-container">
-        <TwoColumnLayout
+        <div className="reveal-text">
+          <TwoColumnLayout
           tourEvents={mockTourEvents}
         bioTitle="About Aria Nova"
         bioContent={`
@@ -234,6 +239,7 @@ export default function DemoPage() {
           backgroundType="color"
           backgroundColor="#0a0a0f"
         />
+        </div>
       </div>
 
       {/* Gallery with artistic layout */}

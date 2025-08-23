@@ -59,108 +59,108 @@ export default function HomePage() {
       force3D: true
     })
 
-    // Simplified but effective animation sequence
+    // MUCH FASTER animation sequence - no more waiting!
     const tl = gsap.timeline()
 
-    // Stage 1: Background effects (0-3s)
+    // Stage 1: Background effects (0-1s) - FASTER
     tl.to(containerRef.current, {
       opacity: 1,
-      duration: 0.5,
+      duration: 0.3,
       ease: "power2.out"
     })
     .to(backgroundGradientRef.current, {
       opacity: 1,
-      duration: 1.5,
+      duration: 0.8,
       ease: "power2.out"
     })
     .to(backgroundOverlayRef.current, {
       opacity: 1,
-      duration: 2,
+      duration: 1,
       ease: "power2.out"
-    }, "-=1")
+    }, "-=0.6")
     .to([backgroundCircle1Ref.current, backgroundCircle2Ref.current], {
       opacity: 1,
       scale: 1,
-      duration: 2,
+      duration: 1.2,
       ease: "elastic.out(1, 0.5)",
-      stagger: 0.5
-    }, "-=1")
+      stagger: 0.2
+    }, "-=0.8")
 
-    // Stage 2: Badge entrance (3-5s)
+    // Stage 2: Badge entrance (1s) - MUCH FASTER
     .to(badgeRef.current, {
       opacity: 1,
       y: 0,
-      duration: 1,
+      duration: 0.6,
       ease: "back.out(2)"
-    })
+    }, "-=0.4")
 
-    // Stage 3: Title entrance (5-8s)
+    // Stage 3: Title entrance (1.5s) - FASTER
     .to(titleRef.current, {
       opacity: 1,
       y: 0,
-      duration: 1.5,
+      duration: 0.8,
       ease: "power3.out",
       onStart: () => {
-        // Animate each word separately
+        // Animate each word separately - FASTER
         const words = titleRef.current?.children
         if (words) {
           gsap.fromTo(words, 
             {
               opacity: 0,
-              y: 50,
-              rotationX: 45
+              y: 30,
+              rotationX: 30
             },
             {
               opacity: 1,
               y: 0,
               rotationX: 0,
-              duration: 0.8,
-              stagger: 0.2,
-              ease: "back.out(2)"
+              duration: 0.5,
+              stagger: 0.1,
+              ease: "back.out(1.5)"
             }
           )
         }
       }
-    })
+    }, "-=0.2")
 
-    // Stage 4: Description and buttons (8-12s)
+    // Stage 4: Description and buttons (2.5s) - FASTER
     .to(descriptionRef.current, {
       opacity: 1,
       y: 0,
-      duration: 1,
+      duration: 0.6,
       ease: "power2.out"
-    })
+    }, "-=0.3")
     .to(buttonsRef.current, {
       opacity: 1,
       y: 0,
-      duration: 1,
+      duration: 0.7,
       ease: "back.out(1.5)"
-    })
+    }, "-=0.2")
     .to(noteRef.current, {
       opacity: 1,
       y: 0,
-      duration: 0.8,
+      duration: 0.5,
       ease: "power2.out"
-    })
+    }, "-=0.3")
 
-    // Stage 5: Feature cards (12-16s)
+    // Stage 5: Feature cards (3.5s) - FASTER
     .to(featuresRef.current?.children || [], {
       opacity: 1,
       y: 0,
       scale: 1,
-      duration: 1,
-      stagger: 0.15,
+      duration: 0.8,
+      stagger: 0.1,
       ease: "back.out(1.5)"
-    })
+    }, "-=0.2")
 
-    // Stage 6: Tech stack (16-18s)
+    // Stage 6: Tech stack (4.5s) - FASTER
     .to(techStackRef.current?.children || [], {
       opacity: 1,
       y: 0,
-      duration: 0.8,
-      stagger: 0.05,
+      duration: 0.6,
+      stagger: 0.03,
       ease: "power2.out"
-    })
+    }, "-=0.4")
 
     return () => {
       tl.kill()
@@ -202,36 +202,84 @@ export default function HomePage() {
       
       <div className="container mx-auto px-4 py-8 relative z-10 min-h-screen flex flex-col justify-center">
         <div ref={heroRef} className="text-center flex-1 flex flex-col justify-center">
-          <div 
-            ref={badgeRef}
-            className="inline-flex items-center gap-2 bg-gradient-to-r from-cyan-500/20 to-purple-500/20 border border-cyan-500/30 text-cyan-300 px-4 py-2 rounded-full text-sm mb-6 backdrop-blur-sm shadow-lg shadow-cyan-500/25 cursor-pointer"
-            onMouseEnter={(e) => {
-              gsap.to(e.currentTarget, {
-                scale: 1.1,
-                boxShadow: "0 0 40px rgba(34, 211, 238, 0.6)",
-                duration: 0.3
-              })
-            }}
-            onMouseLeave={(e) => {
-              gsap.to(e.currentTarget, {
-                scale: 1,
-                boxShadow: "0 8px 25px rgba(34, 211, 238, 0.25)",
-                duration: 0.3
-              })
-            }}
-          >
-            <Zap className="w-4 h-4 text-cyan-400" />
-            <span className="font-medium">Framework Ready</span>
+          <div ref={badgeRef} className="inline-flex flex-col items-center gap-3 mb-6">
+            {/* Main Framework Ready Badge - Enhanced with shadcn patterns */}
+            <div 
+              className="inline-flex items-center justify-center rounded-lg border px-4 py-2 text-sm font-medium w-fit whitespace-nowrap shrink-0 gap-2 focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] transition-all overflow-hidden cursor-pointer group bg-gradient-to-r from-cyan-500/10 to-purple-500/10 border-cyan-500/30 text-cyan-300 backdrop-blur-sm shadow-lg shadow-cyan-500/25"
+              onMouseEnter={(e) => {
+                gsap.to(e.currentTarget, {
+                  scale: 1.05,
+                  boxShadow: "0 0 40px rgba(34, 211, 238, 0.6)",
+                  duration: 0.3,
+                  ease: "power2.out"
+                })
+              }}
+              onMouseLeave={(e) => {
+                gsap.to(e.currentTarget, {
+                  scale: 1,
+                  boxShadow: "0 8px 25px rgba(34, 211, 238, 0.25)",
+                  duration: 0.3,
+                  ease: "power2.out"
+                })
+              }}
+            >
+              <Zap className="w-4 h-4 text-cyan-400 group-hover:animate-pulse" />
+              <span className="font-semibold bg-gradient-to-r from-cyan-300 to-purple-300 bg-clip-text text-transparent">Production Ready Framework</span>
+            </div>
+            
+            {/* USP Pills Row */}
+            <div className="flex flex-wrap justify-center gap-2 max-w-2xl">
+              <span className="inline-flex items-center justify-center rounded-full border px-3 py-1 text-xs font-medium border-emerald-500/30 bg-emerald-500/10 text-emerald-300 shadow-sm">
+                <CheckCircle className="w-3 h-3 mr-1" />
+                Next.js 14 Optimized
+              </span>
+              <span className="inline-flex items-center justify-center rounded-full border px-3 py-1 text-xs font-medium border-purple-500/30 bg-purple-500/10 text-purple-300 shadow-sm">
+                <Settings className="w-3 h-3 mr-1" />
+                CMS Integrated
+              </span>
+              <span className="inline-flex items-center justify-center rounded-full border px-3 py-1 text-xs font-medium border-blue-500/30 bg-blue-500/10 text-blue-300 shadow-sm">
+                <Play className="w-3 h-3 mr-1" />
+                Animation System
+              </span>
+              <span className="inline-flex items-center justify-center rounded-full border px-3 py-1 text-xs font-medium border-pink-500/30 bg-pink-500/10 text-pink-300 shadow-sm">
+                <Zap className="w-3 h-3 mr-1" />
+                TypeScript Ready
+              </span>
+              <span className="inline-flex items-center justify-center rounded-full border px-3 py-1 text-xs font-medium border-yellow-500/30 bg-yellow-500/10 text-yellow-300 shadow-sm">
+                Mobile Responsive
+              </span>
+              <span className="inline-flex items-center justify-center rounded-full border px-3 py-1 text-xs font-medium border-teal-500/30 bg-teal-500/10 text-teal-300 shadow-sm">
+                SEO Optimized
+              </span>
+            </div>
           </div>
           
           <h1 ref={titleRef} className="text-5xl md:text-6xl font-bold tracking-tight bg-gradient-to-r from-white via-cyan-300 to-purple-300 bg-clip-text text-transparent mb-4 leading-tight">
             <span>Music</span> <span>Artist</span> <span>Website</span>
           </h1>
-          <p ref={descriptionRef} className="text-lg md:text-xl text-gray-300 mb-8 max-w-3xl mx-auto leading-relaxed">
-            Professional music artist platform built with <span className="text-cyan-400 font-semibold">Next.js 14</span>, 
-            <span className="text-purple-400 font-semibold"> Payload CMS</span>, and 
-            <span className="text-pink-400 font-semibold"> shadcn/ui</span>.
-          </p>
+          <div ref={descriptionRef} className="max-w-4xl mx-auto mb-8">
+            <p className="text-lg md:text-xl text-gray-300 mb-6 leading-relaxed">
+              Professional music artist platform built with <span className="text-cyan-400 font-semibold">Next.js 14</span>, 
+              <span className="text-purple-400 font-semibold"> Payload CMS</span>, and 
+              <span className="text-pink-400 font-semibold"> shadcn/ui</span>.
+            </p>
+            
+            {/* Enhanced Feature Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
+              <div className="bg-gradient-to-br from-cyan-500/5 to-blue-500/5 border border-cyan-500/20 rounded-lg p-4 backdrop-blur-sm">
+                <div className="text-cyan-400 font-semibold text-lg mb-1">⚡ Lightning Fast</div>
+                <div className="text-gray-400 text-sm">Server-side rendering with edge optimization</div>
+              </div>
+              <div className="bg-gradient-to-br from-purple-500/5 to-pink-500/5 border border-purple-500/20 rounded-lg p-4 backdrop-blur-sm">
+                <div className="text-purple-400 font-semibold text-lg mb-1">🎨 Fully Customizable</div>
+                <div className="text-gray-400 text-sm">Brand colors, layouts, and animations</div>
+              </div>
+              <div className="bg-gradient-to-br from-emerald-500/5 to-teal-500/5 border border-emerald-500/20 rounded-lg p-4 backdrop-blur-sm">
+                <div className="text-emerald-400 font-semibold text-lg mb-1">🚀 Deploy Anywhere</div>
+                <div className="text-gray-400 text-sm">Vercel, Netlify, or your own server</div>
+              </div>
+            </div>
+          </div>
           
           <div ref={buttonsRef} className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8">
             <Button 

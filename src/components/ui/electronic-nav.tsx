@@ -32,21 +32,28 @@ export function ElectronicNav() {
   const navBlur = useTransform(scrollY, [0, 100], [8, 12])
 
   useEffect(() => {
-    // GSAP entrance animation for nav
+    // GSAP entrance animation for nav - SMOOTHED with MCP optimization
     if (navRef.current) {
+      // Performance defaults for smooth 60fps
+      gsap.defaults({ force3D: true, lazy: false })
+      
       gsap.fromTo(navRef.current, 
         { 
-          y: -100, 
+          y: -80, 
           opacity: 0,
-          filter: 'blur(10px)'
+          filter: 'blur(8px)',
+          scale: 0.9
         },
         { 
           y: 0, 
           opacity: 1,
           filter: 'blur(0px)',
-          duration: 1.2, 
-          ease: 'power3.out',
-          delay: 2.5 // After hero loads
+          scale: 1,
+          duration: 1.8, 
+          ease: 'back.out(1.2)', // Smoother, more refined bounce
+          delay: 2.5, // After hero loads
+          force3D: true,
+          clearProps: 'transform,opacity,filter' // Memory cleanup
         }
       )
     }
@@ -153,12 +160,14 @@ export function ElectronicNav() {
               key={item.id}
               onClick={() => scrollToSection(item.href)}
               className={cn(
-                "relative flex items-center space-x-2 px-4 py-3 rounded-xl",
-                "text-sm font-medium transition-all duration-300",
-                "hover:bg-brand-neon/10 hover:text-brand-neon",
-                "focus:outline-none focus:ring-2 focus:ring-brand-neon/50",
+                "relative inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg px-4 py-2.5",
+                "text-sm font-medium transition-all duration-300 group outline-none",
+                "focus-visible:ring-2 focus-visible:ring-brand-neon/50 focus-visible:ring-offset-2 focus-visible:ring-offset-brand-dark",
+                "hover:bg-brand-neon/10 hover:text-brand-neon hover:shadow-lg hover:shadow-brand-neon/25",
+                "disabled:pointer-events-none disabled:opacity-50",
+                "[&_svg:not([class*='size-'])]:size-4 [&_svg]:shrink-0",
                 activeSection === item.id 
-                  ? "text-brand-neon bg-brand-neon/10" 
+                  ? "text-brand-neon bg-brand-neon/10 shadow-md shadow-brand-neon/20" 
                   : "text-brand-text-secondary hover:text-brand-text-primary"
               )}
               onMouseEnter={(e) => handleNavItemHover(e.currentTarget, true)}

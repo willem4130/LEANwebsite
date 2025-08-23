@@ -278,6 +278,13 @@ export function HeroSection({
       {/* Advanced Atmospheric Overlay System */}
       <div className="absolute inset-0 bg-black/10 backdrop-blur-[1px]" />
       
+      {/* Parallax Background Layers for MASSIVE Scroll Transition */}
+      <div className="hero-bg absolute inset-0">
+        <div className="background-layer-1 absolute inset-0 bg-gradient-to-br from-brand-neon/5 via-transparent to-brand-purple/5" />
+        <div className="background-layer-2 absolute inset-0 bg-gradient-to-tr from-brand-electric/3 via-brand-dark/20 to-brand-navy/10" />
+        <div className="background-layer-3 absolute inset-0 bg-gradient-to-bl from-transparent via-brand-void/30 to-brand-dark/20" />
+      </div>
+      
 
       {/* Content */}
       <motion.div
