@@ -252,7 +252,7 @@ export const createSpectacularHeroTransition = () => {
       // 1. Lightning flash effect
       const flash = document.createElement('div')
       flash.className = 'lightning-flash fixed inset-0 pointer-events-none z-40'
-      flash.style.background = 'radial-gradient(circle, rgba(0,255,255,0.3) 0%, transparent 70%)'
+      flash.style.background = 'radial-gradient(circle, rgba(20, 184, 166, 0.12) 0%, transparent 70%)'
       flash.style.opacity = '0'
       document.body.appendChild(flash)
       
@@ -260,9 +260,9 @@ export const createSpectacularHeroTransition = () => {
       const surgeContainer = document.createElement('div')
       surgeContainer.className = 'electric-surges fixed inset-0 pointer-events-none z-50'
       surgeContainer.innerHTML = `
-        <div class="surge-line-1 absolute top-1/3 w-full h-0.5 bg-gradient-to-r from-transparent via-brand-neon to-transparent opacity-0 shadow-lg shadow-brand-neon/70"></div>
-        <div class="surge-line-2 absolute top-1/2 w-full h-1 bg-gradient-to-r from-transparent via-brand-electric to-transparent opacity-0 shadow-lg shadow-brand-electric/70"></div>
-        <div class="surge-line-3 absolute top-2/3 w-full h-0.5 bg-gradient-to-r from-transparent via-brand-purple to-transparent opacity-0 shadow-lg shadow-brand-purple/70"></div>
+        <div class="surge-line-1 absolute top-1/3 w-full h-0.5 bg-gradient-to-r from-transparent via-teal-400/40 to-transparent opacity-0 shadow-md shadow-teal-400/30"></div>
+        <div class="surge-line-2 absolute top-1/2 w-full h-1 bg-gradient-to-r from-transparent via-cyan-400/40 to-transparent opacity-0 shadow-md shadow-cyan-400/30"></div>
+        <div class="surge-line-3 absolute top-2/3 w-full h-0.5 bg-gradient-to-r from-transparent via-purple-400/40 to-transparent opacity-0 shadow-md shadow-purple-400/30"></div>
       `
       document.body.appendChild(surgeContainer)
       
@@ -271,7 +271,7 @@ export const createSpectacularHeroTransition = () => {
       particles.className = 'particle-burst fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none z-45'
       for (let i = 0; i < 12; i++) {
         const particle = document.createElement('div')
-        particle.className = 'absolute w-2 h-2 bg-brand-neon rounded-full opacity-0'
+        particle.className = 'absolute w-2 h-2 bg-teal-400/60 rounded-full opacity-0'
         particle.style.left = '0px'
         particle.style.top = '0px'
         particles.appendChild(particle)
@@ -290,7 +290,7 @@ export const createSpectacularHeroTransition = () => {
             column.style.left = `${i * 5}%`
             column.style.width = '2px'
             column.style.height = '100%'
-            column.style.background = `linear-gradient(to bottom, transparent, ${['#00ffff', '#00d4ff', '#8b5cf6'][i % 3]}, transparent)`
+            column.style.background = `linear-gradient(to bottom, transparent, ${['rgba(20, 184, 166, 0.4)', 'rgba(34, 211, 238, 0.4)', 'rgba(168, 85, 247, 0.4)'][i % 3]}, transparent)`
             matrix.appendChild(column)
           }
           document.body.appendChild(matrix)
@@ -322,9 +322,9 @@ export const createSpectacularHeroTransition = () => {
           const scanLines = document.createElement('div')
           scanLines.className = 'holographic-scan fixed inset-0 pointer-events-none z-50'
           scanLines.innerHTML = `
-            <div class="scan-1 absolute w-full h-px bg-gradient-to-r from-transparent via-brand-neon via-brand-neon to-transparent top-1/4 opacity-0 shadow-lg shadow-brand-neon"></div>
-            <div class="scan-2 absolute w-full h-px bg-gradient-to-r from-transparent via-brand-electric via-brand-electric to-transparent top-1/2 opacity-0 shadow-lg shadow-brand-electric"></div>
-            <div class="scan-3 absolute w-full h-px bg-gradient-to-r from-transparent via-brand-purple via-brand-purple to-transparent top-3/4 opacity-0 shadow-lg shadow-brand-purple"></div>
+            <div class="scan-1 absolute w-full h-px bg-gradient-to-r from-transparent via-teal-400/30 to-transparent top-1/4 opacity-0 shadow-sm shadow-teal-400/20"></div>
+            <div class="scan-2 absolute w-full h-px bg-gradient-to-r from-transparent via-cyan-400/30 to-transparent top-1/2 opacity-0 shadow-sm shadow-cyan-400/20"></div>
+            <div class="scan-3 absolute w-full h-px bg-gradient-to-r from-transparent via-purple-400/30 to-transparent top-3/4 opacity-0 shadow-sm shadow-purple-400/20"></div>
           `
           document.body.appendChild(scanLines)
           
@@ -344,9 +344,13 @@ export const createSpectacularHeroTransition = () => {
           orb.className = 'energy-orb fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none z-45'
           orb.style.width = '20px'
           orb.style.height = '20px'
-          orb.style.background = 'radial-gradient(circle, #00ffff, #8b5cf6)'
+          orb.style.background = `
+            radial-gradient(circle at 30% 30%, rgba(110, 231, 183, 0.8) 0%, transparent 40%),
+            radial-gradient(circle at 50% 50%, rgba(20, 184, 166, 0.6) 0%, transparent 60%),
+            radial-gradient(circle, rgba(168, 85, 247, 0.4) 0%, transparent 80%)
+          `
           orb.style.borderRadius = '50%'
-          orb.style.boxShadow = '0 0 30px #00ffff, 0 0 60px #8b5cf6'
+          orb.style.boxShadow = '0 0 20px rgba(20, 184, 166, 0.3), 0 0 40px rgba(168, 85, 247, 0.2)'
           orb.style.opacity = '0'
           document.body.appendChild(orb)
           
