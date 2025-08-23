@@ -57,15 +57,16 @@ export function ExplosiveScrollTransition({
           fragments.push(fragment)
         }
 
-        // EXPLOSIVE SCREEN SPLIT TRANSITION
+        // EXPLOSIVE SCREEN SPLIT TRANSITION - SCROLL TRIGGERED ONLY
         ScrollTrigger.create({
           trigger: `#${nextSectionId}`,
-          start: "top bottom",
-          end: "top 20%",
-          onToggle: (self) => {
-            if (self.isActive) {
-              // HERO EXPLOSION - Screen splits into fragments
-              fragments.forEach((fragment, i) => {
+          start: "top 80%", // Trigger when second section is 80% down from top
+          end: "top 50%",
+          toggleActions: "play none none reverse", // Only play on scroll down
+          once: true, // Only trigger once
+          onEnter: () => {
+            // HERO EXPLOSION - Screen splits into fragments
+            fragments.forEach((fragment, i) => {
                 const angle = (i / fragments.length) * Math.PI * 2
                 const distance = 800 + Math.random() * 400
                 const rotationX = Math.random() * 720 - 360
@@ -114,7 +115,6 @@ export function ExplosiveScrollTransition({
                 delay: 2,
                 ease: "power2.out"
               })
-            }
           }
         })
       }
@@ -166,11 +166,12 @@ export function ExplosiveScrollTransition({
         
         ScrollTrigger.create({
           trigger: `#${nextSectionId}`,
-          start: "top 80%",
+          start: "top 75%", // Trigger slightly after fragment explosion
           end: "top center",
-          onToggle: (self) => {
-            if (self.isActive) {
-              // Portal emergence
+          toggleActions: "play none none reverse",
+          once: true,
+          onEnter: () => {
+            // Portal emergence
               portalRings.forEach((ring, i) => {
                 gsap.to(ring, {
                   opacity: 1,
@@ -187,7 +188,6 @@ export function ExplosiveScrollTransition({
                   ease: "power2.in"
                 })
               })
-            }
           }
         })
       }
@@ -215,9 +215,10 @@ export function ExplosiveScrollTransition({
         ScrollTrigger.create({
           trigger: `#${nextSectionId}`,
           start: "top 85%",
-          onToggle: (self) => {
-            if (self.isActive) {
-              particles.forEach((particle, i) => {
+          toggleActions: "play none none reverse",
+          once: true,
+          onEnter: () => {
+            particles.forEach((particle, i) => {
                 const angle = (i / particles.length) * Math.PI * 2 + Math.random() * 0.5
                 const distance = 200 + Math.random() * 600
                 const startX = window.innerWidth * 0.5
@@ -241,7 +242,6 @@ export function ExplosiveScrollTransition({
                   force3D: true
                 })
               })
-            }
           }
         })
       }

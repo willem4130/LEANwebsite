@@ -3726,7 +3726,47 @@
       "lastAccessed": "2025-08-23T23:08:50.109Z",
       "lastVerified": "2025-08-23T23:08:50.109Z",
       "status": "fresh"
+    },
+    {
+      "id": "mem_1755991012179_lwdn3dgd3",
+      "content": "💥 EXPLOSIVE EXPERIMENTAL TRANSITION - COMPLETE INSANITY DELIVERED!\n\nWHAT WE CREATED:\n✅ Screen-splitting hero destruction: 64 fragments flying in 3D space with individual rotations\n✅ MASSIVE particle explosion: 150 particles with realistic physics trajectories  \n✅ Portal wormhole system: 12 spinning rings with dynamic scaling and color shifts\n✅ Reality tear effect: Canvas-drawn lightning tears ripping across the screen\n✅ Earthquake screen shake: Multi-axis camera shake system\n✅ 3D perspective hero destruction: Rotating and scaling in Z-space\n✅ Cinematic second section emergence: Dramatic 0.4x to 1.0x zoom with perspective\n\nEXPERIMENTAL BRANCH: feat/experimental-massive-transitions\nSTATUS: ✅ Build passing, ✅ Safely deployed, ✅ Ready for testing\n\nTHIS IS MOVIE-LEVEL TRANSITION EFFECTS!\nNo more subtle - this is Hollywood blockbuster insanity that will blow minds!\n\nUser can now test this separately without breaking main branch.",
+      "type": "general",
+      "tags": [
+        "general",
+        "testing",
+        "experimental",
+        "explosive-transition",
+        "movie-level",
+        "deployed",
+        "gsap-mcp"
+      ],
+      "timestamp": "2025-08-23T23:16:52.178Z",
+      "context": "EXPLOSIVE experimental transition deployed",
+      "accessCount": 0,
+      "lastAccessed": "2025-08-23T23:16:52.178Z",
+      "lastVerified": "2025-08-23T23:16:52.178Z",
+      "status": "fresh"
+    },
+    {
+      "id": "mem_1755991544078_8mlwovp2t",
+      "content": "User needs brutally honest assessment of animation architecture for rapid website launches. Context: Building music artist website framework, needs world-class animations but standardized for fast deployment. Current mix: manual GSAP, GSAP MCP, ExplosiveScrollTransition, Framer Motion, inline calls. Key requirements: Hollywood/AAA quality, standardized system, theme flexibility, developer efficiency, maintainability.",
+      "type": "code",
+      "tags": [
+        "code",
+        "deployment",
+        "animation-architecture",
+        "gsap",
+        "framer-motion",
+        "scalability",
+        "rapid-deployment"
+      ],
+      "timestamp": "2025-08-23T23:25:44.077Z",
+      "context": "Strategic architecture decision for animation system",
+      "accessCount": 0,
+      "lastAccessed": "2025-08-23T23:25:44.077Z",
+      "lastVerified": "2025-08-23T23:25:44.077Z",
+      "status": "fresh"
     }
   ],
-  "lastUpdated": "2025-08-23T23:08:50.109Z"
+  "lastUpdated": "2025-08-23T23:25:44.077Z"
 }
