@@ -50,6 +50,7 @@ import { HeroSection } from '@/components/artist/hero-section'
 import { TwoColumnLayout } from '@/components/artist/two-column-layout'
 import { ArtisticGallery } from '@/components/artist/artistic-gallery'
 import { ContactSocial } from '@/components/artist/contact-social'
+import { BookingForm } from '@/components/artist/booking-form'
 import { ElectronicNav } from '@/components/ui/electronic-nav'
 import { ExplosiveScrollTransition } from '@/components/animations/ExplosiveScrollTransition'
 import { initializeGSAPAnimations, cleanupGSAPAnimations } from '@/lib/gsap-animations'
@@ -248,6 +249,14 @@ export default function DemoPage() {
           items={mockGalleryItems}
           title="Gallery"
           backgroundColor="#1a1a2e"
+        />
+      </div>
+
+      {/* Professional Booking Form with Pricing */}
+      <div id="booking" className="section-container">
+        <BookingForm
+          artistName="ARIA NOVA"
+          backgroundColor="#060609"
         />
       </div>
 
