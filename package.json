@@ -8,7 +8,20 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "payload": "payload"
+    "payload": "payload",
+    
+    "theme:electronic": "NEXT_PUBLIC_THEME_VARIANT=electronic npm run dev",
+    "theme:vintage": "NEXT_PUBLIC_THEME_VARIANT=vintage npm run dev",
+    "theme:minimal": "NEXT_PUBLIC_THEME_VARIANT=minimal npm run dev",
+    "theme:luxury": "NEXT_PUBLIC_THEME_VARIANT=luxury npm run dev",
+    
+    "build:electronic": "NEXT_PUBLIC_THEME_VARIANT=electronic npm run build",
+    "build:vintage": "NEXT_PUBLIC_THEME_VARIANT=vintage npm run build",
+    "build:minimal": "NEXT_PUBLIC_THEME_VARIANT=minimal npm run build", 
+    "build:luxury": "NEXT_PUBLIC_THEME_VARIANT=luxury npm run build",
+    
+    "demo:all": "npm run theme:electronic & npm run theme:vintage",
+    "preview:variants": "echo 'Available themes: electronic, vintage, minimal, luxury' && echo 'Run: npm run theme:[variant]'"
   },
   "keywords": [],
   "author": "",
