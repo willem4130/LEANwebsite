@@ -85,23 +85,35 @@ export function ArtisticGallery({
             </motion.h2>
           )}
 
-          {/* ZERO GAP FULLSCREEN Grid - MAXIMUM IMAGE PRESENCE */}
+          {/* ABSOLUTE FULLSCREEN Grid - ZERO BACKGROUND VISIBLE */}
           <motion.div
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 min-h-screen gap-0"
+            className="w-full min-h-screen"
             variants={containerVariants}
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, margin: "-100px" }}
-            style={{ margin: 0, padding: 0 }}
+            style={{ 
+              margin: 0, 
+              padding: 0,
+              display: 'grid',
+              gridTemplateColumns: '1fr',
+              gap: 0
+            }}
           >
-            {items.map((item, index) => (
+            {items.slice(0, 3).map((item, index) => (
               <motion.div
                 key={item.id}
                 variants={itemVariants}
-                className="relative h-screen md:h-[50vh] lg:h-[33.33vh] cursor-pointer group overflow-hidden"
-                style={{ margin: 0, padding: 0, border: 'none' }}
+                className="relative w-full cursor-pointer group overflow-hidden"
+                style={{ 
+                  margin: 0, 
+                  padding: 0, 
+                  border: 'none',
+                  height: '100vh',
+                  minHeight: '100vh'
+                }}
                 whileHover={{ 
-                  scale: 1.02,
+                  scale: 1.01,
                   zIndex: 10,
                   transition: { duration: 0.2, ease: [0.4, 0.0, 0.2, 1.0] }
                 }}
@@ -118,14 +130,22 @@ export function ArtisticGallery({
                       <img
                         src={item.thumbnailUrl || item.url}
                         alt={item.altText || item.caption || ''}
-                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                        className="transition-transform duration-500 group-hover:scale-105"
                         style={{ 
                           display: 'block',
+                          width: '100%',
+                          height: '100vh',
+                          minHeight: '100vh',
                           margin: 0, 
                           padding: 0,
                           border: 'none',
                           objectFit: 'cover',
-                          objectPosition: 'center'
+                          objectPosition: 'center',
+                          position: 'absolute',
+                          top: 0,
+                          left: 0,
+                          right: 0,
+                          bottom: 0
                         }}
                         loading="eager"
                       />
@@ -137,14 +157,22 @@ export function ArtisticGallery({
                     <img
                       src={item.thumbnailUrl || item.url}
                       alt={item.altText || item.caption || ''}
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      className="transition-transform duration-500 group-hover:scale-105"
                       style={{ 
                         display: 'block',
+                        width: '100%',
+                        height: '100vh',
+                        minHeight: '100vh',
                         margin: 0, 
                         padding: 0,
                         border: 'none',
                         objectFit: 'cover',
-                        objectPosition: 'center'
+                        objectPosition: 'center',
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0
                       }}
                       loading="eager"
                     />
