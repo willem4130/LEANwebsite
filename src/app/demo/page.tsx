@@ -48,7 +48,7 @@ import React, { useEffect } from 'react'
 import { Metadata } from 'next'
 import { HeroSection } from '@/components/artist/hero-section'
 import { TwoColumnLayout } from '@/components/artist/two-column-layout'
-import { ArtisticGallery } from '@/components/artist/artistic-gallery'
+import { SmartGallery } from '@/components/gallery/SmartGallery'
 import { ContactSocial } from '@/components/artist/contact-social'
 import { ElectronicNav } from '@/components/ui/electronic-nav'
 import { ExplosiveScrollTransition } from '@/components/animations/ExplosiveScrollTransition'
@@ -242,9 +242,9 @@ export default function DemoPage() {
         </div>
       </div>
 
-      {/* Gallery with artistic layout */}
+      {/* Gallery with smart layout */}
       <div id="gallery" className="section-container">
-        <ArtisticGallery
+        <SmartGallery
           items={mockGalleryItems}
           title="Gallery"
           backgroundColor="#1a1a2e"
