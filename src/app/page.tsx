@@ -3,10 +3,11 @@
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { CheckCircle, Play, Settings, Zap } from 'lucide-react'
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { gsap } from 'gsap'
 
 export default function HomePage() {
+  const [isClient, setIsClient] = useState(false)
   const containerRef = useRef<HTMLDivElement>(null)
   const heroRef = useRef<HTMLDivElement>(null)
   const badgeRef = useRef<HTMLDivElement>(null)
@@ -21,159 +22,184 @@ export default function HomePage() {
   const backgroundCircle1Ref = useRef<HTMLDivElement>(null)
   const backgroundCircle2Ref = useRef<HTMLDivElement>(null)
 
+  // Prevent hydration mismatch by ensuring animations only run on client
   useEffect(() => {
-    if (!containerRef.current) return
-
-    // Performance defaults for smooth 60fps
-    gsap.defaults({ force3D: true, lazy: false })
-
-    // Set initial states using refs only
-    gsap.set([badgeRef.current, titleRef.current, descriptionRef.current, buttonsRef.current, noteRef.current], {
-      opacity: 0,
-      y: 50,
-      force3D: true
-    })
-    
-    gsap.set(featuresRef.current?.children || [], {
-      opacity: 0,
-      y: 100,
-      scale: 0.8,
-      force3D: true
-    })
-
-    gsap.set(techStackRef.current?.children || [], {
-      opacity: 0,
-      y: 50,
-      force3D: true
-    })
-
-    // Set background elements initial state
-    gsap.set([backgroundGradientRef.current, backgroundOverlayRef.current], {
-      opacity: 0,
-      force3D: true
-    })
-
-    gsap.set([backgroundCircle1Ref.current, backgroundCircle2Ref.current], {
-      opacity: 0,
-      scale: 0,
-      force3D: true
-    })
-
-    // MUCH FASTER animation sequence - no more waiting!
-    const tl = gsap.timeline()
-
-    // Stage 1: Background effects (0-1s) - FASTER
-    tl.to(containerRef.current, {
-      opacity: 1,
-      duration: 0.3,
-      ease: "power2.out"
-    })
-    .to(backgroundGradientRef.current, {
-      opacity: 1,
-      duration: 0.8,
-      ease: "power2.out"
-    })
-    .to(backgroundOverlayRef.current, {
-      opacity: 1,
-      duration: 1,
-      ease: "power2.out"
-    }, "-=0.6")
-    .to([backgroundCircle1Ref.current, backgroundCircle2Ref.current], {
-      opacity: 1,
-      scale: 1,
-      duration: 1.2,
-      ease: "elastic.out(1, 0.5)",
-      stagger: 0.2
-    }, "-=0.8")
-
-    // Stage 2: Badge entrance (1s) - MUCH FASTER
-    .to(badgeRef.current, {
-      opacity: 1,
-      y: 0,
-      duration: 0.6,
-      ease: "back.out(2)"
-    }, "-=0.4")
-
-    // Stage 3: Title entrance (1.5s) - FASTER
-    .to(titleRef.current, {
-      opacity: 1,
-      y: 0,
-      duration: 0.8,
-      ease: "power3.out",
-      onStart: () => {
-        // Animate each word separately - FASTER
-        const words = titleRef.current?.children
-        if (words) {
-          gsap.fromTo(words, 
-            {
-              opacity: 0,
-              y: 30,
-              rotationX: 30
-            },
-            {
-              opacity: 1,
-              y: 0,
-              rotationX: 0,
-              duration: 0.5,
-              stagger: 0.1,
-              ease: "back.out(1.5)"
-            }
-          )
-        }
-      }
-    }, "-=0.2")
-
-    // Stage 4: Description and buttons (2.5s) - FASTER
-    .to(descriptionRef.current, {
-      opacity: 1,
-      y: 0,
-      duration: 0.6,
-      ease: "power2.out"
-    }, "-=0.3")
-    .to(buttonsRef.current, {
-      opacity: 1,
-      y: 0,
-      duration: 0.7,
-      ease: "back.out(1.5)"
-    }, "-=0.2")
-    .to(noteRef.current, {
-      opacity: 1,
-      y: 0,
-      duration: 0.5,
-      ease: "power2.out"
-    }, "-=0.3")
-
-    // Stage 5: Feature cards (3.5s) - FASTER
-    .to(featuresRef.current?.children || [], {
-      opacity: 1,
-      y: 0,
-      scale: 1,
-      duration: 0.8,
-      stagger: 0.1,
-      ease: "back.out(1.5)"
-    }, "-=0.2")
-
-    // Stage 6: Tech stack (4.5s) - FASTER
-    .to(techStackRef.current?.children || [], {
-      opacity: 1,
-      y: 0,
-      duration: 0.6,
-      stagger: 0.03,
-      ease: "power2.out"
-    }, "-=0.4")
-
-    return () => {
-      tl.kill()
-      // Clear properties to free memory
-      gsap.set([badgeRef.current, titleRef.current, descriptionRef.current, buttonsRef.current, noteRef.current], { clearProps: "all" })
-      gsap.set(featuresRef.current?.children || [], { clearProps: "all" })
-      gsap.set(techStackRef.current?.children || [], { clearProps: "all" })
-      gsap.set([backgroundGradientRef.current, backgroundOverlayRef.current, backgroundCircle1Ref.current, backgroundCircle2Ref.current], { clearProps: "all" })
-    }
+    setIsClient(true)
   }, [])
 
-  // Advanced hover interactions
+  useEffect(() => {
+    // Ensure we're only running on client and DOM is ready
+    if (!containerRef.current || !isClient || typeof window === 'undefined') return
+
+    // Add a small delay to ensure complete hydration
+    const initAnimations = () => {
+      try {
+        // Performance defaults for smooth 60fps
+        gsap.defaults({ force3D: true, lazy: false })
+
+        // Set initial states using refs only
+        gsap.set([badgeRef.current, titleRef.current, descriptionRef.current, buttonsRef.current, noteRef.current], {
+          opacity: 0,
+          y: 50,
+          force3D: true
+        })
+    
+        gsap.set(featuresRef.current?.children || [], {
+          opacity: 0,
+          y: 100,
+          scale: 0.8,
+          force3D: true
+        })
+
+        gsap.set(techStackRef.current?.children || [], {
+          opacity: 0,
+          y: 50,
+          force3D: true
+        })
+
+        // Set background elements initial state
+        gsap.set([backgroundGradientRef.current, backgroundOverlayRef.current], {
+          opacity: 0,
+          force3D: true
+        })
+
+        gsap.set([backgroundCircle1Ref.current, backgroundCircle2Ref.current], {
+          opacity: 0,
+          scale: 0,
+          force3D: true
+        })
+
+        // MUCH FASTER animation sequence - no more waiting!
+        const tl = gsap.timeline()
+
+        // Stage 1: Background effects (0-1s) - FASTER
+        tl.to(containerRef.current, {
+          opacity: 1,
+          duration: 0.3,
+          ease: "power2.out"
+        })
+        .to(backgroundGradientRef.current, {
+          opacity: 1,
+          duration: 0.8,
+          ease: "power2.out"
+        })
+        .to(backgroundOverlayRef.current, {
+          opacity: 1,
+          duration: 1,
+          ease: "power2.out"
+        }, "-=0.6")
+        .to([backgroundCircle1Ref.current, backgroundCircle2Ref.current], {
+          opacity: 1,
+          scale: 1,
+          duration: 1.2,
+          ease: "elastic.out(1, 0.5)",
+          stagger: 0.2
+        }, "-=0.8")
+
+        // Stage 2: Badge entrance (1s) - MUCH FASTER
+        .to(badgeRef.current, {
+          opacity: 1,
+          y: 0,
+          duration: 0.6,
+          ease: "back.out(2)"
+        }, "-=0.4")
+
+        // Stage 3: Title entrance (1.5s) - FASTER
+        .to(titleRef.current, {
+          opacity: 1,
+          y: 0,
+          duration: 0.8,
+          ease: "power3.out",
+          onStart: () => {
+            // Animate each word separately - FASTER
+            const words = titleRef.current?.children
+            if (words) {
+              gsap.fromTo(words, 
+                {
+                  opacity: 0,
+                  y: 30,
+                  rotationX: 30
+                },
+                {
+                  opacity: 1,
+                  y: 0,
+                  rotationX: 0,
+                  duration: 0.5,
+                  stagger: 0.1,
+                  ease: "back.out(1.5)"
+                }
+              )
+            }
+          }
+        }, "-=0.2")
+
+        // Stage 4: Description and buttons (2.5s) - FASTER
+        .to(descriptionRef.current, {
+          opacity: 1,
+          y: 0,
+          duration: 0.6,
+          ease: "power2.out"
+        }, "-=0.3")
+        .to(buttonsRef.current, {
+          opacity: 1,
+          y: 0,
+          duration: 0.7,
+          ease: "back.out(1.5)"
+        }, "-=0.2")
+        .to(noteRef.current, {
+          opacity: 1,
+          y: 0,
+          duration: 0.5,
+          ease: "power2.out"
+        }, "-=0.3")
+
+        // Stage 5: Feature cards (3.5s) - FASTER
+        .to(featuresRef.current?.children || [], {
+          opacity: 1,
+          y: 0,
+          scale: 1,
+          duration: 0.8,
+          stagger: 0.1,
+          ease: "back.out(1.5)"
+        }, "-=0.2")
+
+        // Stage 6: Tech stack (4.5s) - FASTER
+        .to(techStackRef.current?.children || [], {
+          opacity: 1,
+          y: 0,
+          duration: 0.6,
+          stagger: 0.03,
+          ease: "power2.out"
+        }, "-=0.4")
+
+        return () => {
+          tl.kill()
+          // Clear properties to free memory
+          gsap.set([badgeRef.current, titleRef.current, descriptionRef.current, buttonsRef.current, noteRef.current], { clearProps: "all" })
+          gsap.set(featuresRef.current?.children || [], { clearProps: "all" })
+          gsap.set(techStackRef.current?.children || [], { clearProps: "all" })
+          gsap.set([backgroundGradientRef.current, backgroundOverlayRef.current, backgroundCircle1Ref.current, backgroundCircle2Ref.current], { clearProps: "all" })
+        }
+      } catch (error) {
+        console.error('GSAP animation error:', error)
+        // Fallback: show content immediately if animations fail
+        if (containerRef.current) {
+          containerRef.current.style.opacity = '1'
+        }
+      }
+    }
+
+    // Delay animation initialization to prevent hydration issues
+    const timeoutId = setTimeout(initAnimations, 100)
+    
+    return () => {
+      clearTimeout(timeoutId)
+    }
+  }, [isClient])
+
+  // Advanced hover interactions with safety checks
   const handleCardHover = (element: HTMLElement, enter: boolean) => {
+    if (!isClient || typeof window === 'undefined') return
     gsap.to(element, {
       scale: enter ? 1.08 : 1,
       rotationY: enter ? 5 : 0,
@@ -184,6 +210,7 @@ export default function HomePage() {
   }
 
   const handleButtonHover = (element: HTMLElement, enter: boolean) => {
+    if (!isClient || typeof window === 'undefined') return
     gsap.to(element, {
       scale: enter ? 1.1 : 1,
       rotationX: enter ? 10 : 0,
@@ -193,7 +220,7 @@ export default function HomePage() {
     })
   }
   return (
-    <div ref={containerRef} className="min-h-screen bg-gradient-to-br from-black via-purple-950/20 to-black relative overflow-hidden" style={{opacity: 0}}>
+    <div ref={containerRef} className="min-h-screen bg-gradient-to-br from-black via-purple-950/20 to-black relative overflow-hidden" style={{opacity: isClient ? 0 : 1}}>
       {/* Animated background elements */}
       <div ref={backgroundGradientRef} className="absolute inset-0 bg-gradient-to-r from-cyan-500/10 via-purple-500/10 to-pink-500/10" />
       <div ref={backgroundOverlayRef} className="absolute inset-0 bg-gradient-to-r from-cyan-500/5 via-purple-500/5 to-pink-500/5" />
@@ -207,6 +234,7 @@ export default function HomePage() {
             <div 
               className="inline-flex items-center justify-center rounded-lg border px-4 py-2 text-sm font-medium w-fit whitespace-nowrap shrink-0 gap-2 focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] transition-all overflow-hidden cursor-pointer group bg-gradient-to-r from-cyan-500/10 to-purple-500/10 border-cyan-500/30 text-cyan-300 backdrop-blur-sm shadow-lg shadow-cyan-500/25"
               onMouseEnter={(e) => {
+                if (!isClient || typeof window === 'undefined') return
                 gsap.to(e.currentTarget, {
                   scale: 1.05,
                   boxShadow: "0 0 40px rgba(34, 211, 238, 0.6)",
@@ -215,6 +243,7 @@ export default function HomePage() {
                 })
               }}
               onMouseLeave={(e) => {
+                if (!isClient || typeof window === 'undefined') return
                 gsap.to(e.currentTarget, {
                   scale: 1,
                   boxShadow: "0 8px 25px rgba(34, 211, 238, 0.25)",
@@ -394,6 +423,7 @@ export default function HomePage() {
                 key={tech.name} 
                 className={`bg-gradient-to-r ${tech.color}/10 border ${tech.border} backdrop-blur-sm px-4 py-2 rounded-full ${tech.text} font-medium shadow-lg transition-all duration-300 cursor-pointer`}
                 onMouseEnter={(e) => {
+                  if (!isClient || typeof window === 'undefined') return
                   gsap.to(e.currentTarget, {
                     scale: 1.15,
                     y: -5,
@@ -404,6 +434,7 @@ export default function HomePage() {
                   })
                 }}
                 onMouseLeave={(e) => {
+                  if (!isClient || typeof window === 'undefined') return
                   gsap.to(e.currentTarget, {
                     scale: 1,
                     y: 0,

@@ -5,9 +5,16 @@ import { usePathname } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Home, Play, Settings, FileText } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { useEffect, useState } from 'react'
 
 export function NavSwitcher() {
+  const [isClient, setIsClient] = useState(false)
   const pathname = usePathname()
+
+  // Prevent hydration mismatch
+  useEffect(() => {
+    setIsClient(true)
+  }, [])
 
   const navItems = [
     {
@@ -36,7 +43,7 @@ export function NavSwitcher() {
         <div className="flex items-center gap-2">
           {navItems.map((item) => {
             const Icon = item.icon
-            const isActive = pathname === item.href
+            const isActive = isClient && pathname === item.href
             
             return (
               <Button

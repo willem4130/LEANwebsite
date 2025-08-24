@@ -2,6 +2,8 @@ import type { Metadata } from 'next'
 import { Inter, Orbitron, Exo_2, Space_Mono } from 'next/font/google'
 import { NavSwitcher } from '@/components/ui/nav-switcher'
 import { ErrorBoundary } from '@/components/ErrorBoundary'
+import { ClientOnly } from '@/components/ClientOnly'
+import { Suspense } from 'react'
 import '@/styles/globals.css'
 
 // Electronic Music Typography System
@@ -47,8 +49,16 @@ export default function RootLayout({
     <html lang="en" className="scroll-smooth">
       <body className={`${inter.variable} ${orbitron.variable} ${exo2.variable} ${spaceMono.variable} font-body-primary`}>
         <ErrorBoundary>
-          <NavSwitcher />
-          {children}
+          <ClientOnly>
+            <NavSwitcher />
+          </ClientOnly>
+          <Suspense fallback={
+            <div className="min-h-screen bg-gradient-to-br from-black via-purple-950/20 to-black flex items-center justify-center">
+              <div className="text-white">Loading...</div>
+            </div>
+          }>
+            {children}
+          </Suspense>
         </ErrorBoundary>
       </body>
     </html>

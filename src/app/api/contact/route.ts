@@ -1,50 +1,42 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { 
+  ContactFormSchema, 
+  validateRequest, 
+  createApiResponse, 
+  withErrorHandling, 
+  rateLimit,
+  addSecurityHeaders,
+  ApiError 
+} from '@/lib/api-framework'
 
-export async function POST(req: NextRequest) {
-  try {
-    const { name, email, subject, message } = await req.json()
+const contactRateLimit = rateLimit(5, 60 * 1000) // 5 requests per minute
 
-    // Basic validation
-    if (!name || !email || !subject || !message) {
-      return NextResponse.json(
-        { error: 'All fields are required' },
-        { status: 400 }
-      )
-    }
-
-    // Email validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    if (!emailRegex.test(email)) {
-      return NextResponse.json(
-        { error: 'Invalid email address' },
-        { status: 400 }
-      )
-    }
-
-    // Here you would integrate with your email service
-    // Examples: SendGrid, Mailgun, EmailJS, Resend, etc.
-    
-    // For now, log the contact form submission
-    console.log('Contact form submission:', {
-      name,
-      email,
-      subject,
-      message,
-      timestamp: new Date().toISOString()
-    })
-
-    // Simulate email sending (replace with actual email service)
-    await new Promise(resolve => setTimeout(resolve, 1000))
-
-    return NextResponse.json(
-      { message: 'Message sent successfully' },
-      { status: 200 }
-    )
-  } catch (error) {
-    console.error('Contact form error:', error)
-    return NextResponse.json(
-      { error: 'Failed to send message' },
-      { status: 500 }
-    )
+export const POST = withErrorHandling(async (req: NextRequest) => {
+  // Rate limiting
+  if (!contactRateLimit(req)) {
+    throw new ApiError('RATE_LIMIT_EXCEEDED', 'Too many requests. Please wait before submitting again.', 429)
   }
-}
+
+  // Validate request data
+  const validatedData = await validateRequest(ContactFormSchema)(req)
+
+  // Here you would integrate with your email service
+  // Examples: SendGrid, Mailgun, EmailJS, Resend, etc.
+  
+  // For now, log the contact form submission
+  console.log('Contact form submission:', {
+    ...validatedData,
+    timestamp: new Date().toISOString()
+  })
+
+  // Simulate email sending (replace with actual email service)
+  await new Promise(resolve => setTimeout(resolve, 1000))
+
+  // Send success response
+  const response = createApiResponse({ 
+    messageId: `msg_${Date.now()}`,
+    submittedAt: new Date().toISOString() 
+  })
+
+  return addSecurityHeaders(response)
+})

@@ -1,0 +1,422 @@
+/**
+ * Payload CMS Admin Panel Custom Styles
+ * =====================================
+ * 
+ * Custom styling for the Payload admin interface
+ * Maintains brand consistency with the main website
+ */
+
+/* ================================
+   1. CUSTOM BRANDING
+   ================================ */
+
+/* Admin panel header customization */
+.payload-header {
+  background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
+  border-bottom: 2px solid #333;
+}
+
+.payload-header .payload-logo {
+  filter: brightness(1.2);
+}
+
+/* Custom color scheme for dark mode */
+:root {
+  --theme-bg: #0a0a0a;
+  --theme-text: #ffffff;
+  --theme-text-dim: #a0a0a0;
+  --theme-primary: #ff0000;
+  --theme-primary-hover: #cc0000;
+  --theme-secondary: #333333;
+  --theme-border: #444444;
+  --theme-success: #00ff00;
+  --theme-warning: #ffff00;
+  --theme-error: #ff4444;
+}
+
+/* ================================
+   2. NAVIGATION STYLING
+   ================================ */
+
+.nav__wrap {
+  background-color: var(--theme-bg);
+  border-right: 1px solid var(--theme-border);
+}
+
+.nav-link {
+  color: var(--theme-text-dim);
+  transition: all 0.2s ease;
+}
+
+.nav-link:hover,
+.nav-link.active {
+  color: var(--theme-text);
+  background-color: var(--theme-secondary);
+}
+
+.nav-group__toggle {
+  color: var(--theme-text);
+  font-weight: 600;
+}
+
+/* Collection group styling */
+.nav-group[data-group="Content"] .nav-group__toggle {
+  color: var(--theme-primary);
+}
+
+.nav-group[data-group="Configuration"] .nav-group__toggle {
+  color: var(--theme-warning);
+}
+
+/* ================================
+   3. FORM STYLING
+   ================================ */
+
+/* Form field enhancements */
+.field-type-text input,
+.field-type-textarea textarea,
+.field-type-select select {
+  background-color: var(--theme-secondary);
+  border: 1px solid var(--theme-border);
+  color: var(--theme-text);
+  border-radius: 4px;
+  transition: border-color 0.2s ease;
+}
+
+.field-type-text input:focus,
+.field-type-textarea textarea:focus,
+.field-type-select select:focus {
+  border-color: var(--theme-primary);
+  box-shadow: 0 0 0 2px rgba(255, 0, 0, 0.1);
+}
+
+/* Rich text editor styling */
+.rich-text-editor {
+  background-color: var(--theme-bg);
+  border: 1px solid var(--theme-border);
+  border-radius: 6px;
+}
+
+.rich-text-toolbar {
+  background-color: var(--theme-secondary);
+  border-bottom: 1px solid var(--theme-border);
+}
+
+/* Upload field styling */
+.upload {
+  background-color: var(--theme-secondary);
+  border: 2px dashed var(--theme-border);
+  border-radius: 8px;
+  transition: border-color 0.2s ease;
+}
+
+.upload:hover {
+  border-color: var(--theme-primary);
+}
+
+.upload__file-preview {
+  background-color: var(--theme-bg);
+  border: 1px solid var(--theme-border);
+  border-radius: 6px;
+}
+
+/* ================================
+   4. BUTTON STYLING
+   ================================ */
+
+.btn {
+  border-radius: 6px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.btn--style-primary {
+  background-color: var(--theme-primary);
+  border-color: var(--theme-primary);
+  color: white;
+}
+
+.btn--style-primary:hover {
+  background-color: var(--theme-primary-hover);
+  border-color: var(--theme-primary-hover);
+  transform: translateY(-1px);
+}
+
+.btn--style-secondary {
+  background-color: var(--theme-secondary);
+  border-color: var(--theme-border);
+  color: var(--theme-text);
+}
+
+.btn--style-secondary:hover {
+  background-color: var(--theme-border);
+  transform: translateY(-1px);
+}
+
+/* Action buttons */
+.doc-controls__action {
+  border-radius: 4px;
+}
+
+/* ================================
+   5. TABLE STYLING
+   ================================ */
+
+.collection-list__table {
+  background-color: var(--theme-bg);
+  border: 1px solid var(--theme-border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.collection-list__header {
+  background-color: var(--theme-secondary);
+  border-bottom: 1px solid var(--theme-border);
+}
+
+.collection-list__row {
+  border-bottom: 1px solid var(--theme-border);
+  transition: background-color 0.2s ease;
+}
+
+.collection-list__row:hover {
+  background-color: var(--theme-secondary);
+}
+
+.collection-list__cell {
+  color: var(--theme-text);
+  padding: 12px 16px;
+}
+
+/* ================================
+   6. STATUS INDICATORS
+   ================================ */
+
+/* Publication status styling */
+.status-published {
+  background-color: var(--theme-success);
+  color: black;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.status-draft {
+  background-color: var(--theme-warning);
+  color: black;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.status-private {
+  background-color: var(--theme-error);
+  color: white;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+/* Featured indicator */
+.featured-indicator {
+  color: var(--theme-primary);
+  font-weight: bold;
+}
+
+.featured-indicator::before {
+  content: "⭐ ";
+}
+
+/* ================================
+   7. RESPONSIVE DESIGN
+   ================================ */
+
+@media (max-width: 768px) {
+  .nav__wrap {
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+  }
+  
+  .nav__wrap.nav--open {
+    transform: translateX(0);
+  }
+  
+  .collection-list__table {
+    font-size: 14px;
+  }
+  
+  .collection-list__cell {
+    padding: 8px 12px;
+  }
+}
+
+/* ================================
+   8. ACCESSIBILITY ENHANCEMENTS
+   ================================ */
+
+/* Focus indicators */
+*:focus {
+  outline: 2px solid var(--theme-primary);
+  outline-offset: 2px;
+}
+
+/* Screen reader improvements */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ================================
+   9. CUSTOM FIELD ENHANCEMENTS
+   ================================ */
+
+/* Tab navigation styling */
+.tabs__nav {
+  background-color: var(--theme-secondary);
+  border-radius: 8px 8px 0 0;
+  padding: 4px;
+}
+
+.tabs__nav-button {
+  background-color: transparent;
+  border: none;
+  color: var(--theme-text-dim);
+  padding: 8px 16px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.tabs__nav-button:hover {
+  background-color: var(--theme-border);
+  color: var(--theme-text);
+}
+
+.tabs__nav-button.tabs__nav-button--active {
+  background-color: var(--theme-primary);
+  color: white;
+}
+
+/* Array field styling */
+.array-field__add-button {
+  background-color: var(--theme-primary);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.array-field__add-button:hover {
+  background-color: var(--theme-primary-hover);
+}
+
+.array-field__item {
+  background-color: var(--theme-secondary);
+  border: 1px solid var(--theme-border);
+  border-radius: 6px;
+  margin-bottom: 12px;
+  padding: 16px;
+}
+
+.array-field__item-header {
+  color: var(--theme-text);
+  font-weight: 600;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--theme-border);
+}
+
+/* Group field styling */
+.group-field {
+  background-color: var(--theme-secondary);
+  border: 1px solid var(--theme-border);
+  border-radius: 8px;
+  padding: 16px;
+  margin: 16px 0;
+}
+
+.group-field__label {
+  color: var(--theme-text);
+  font-weight: 600;
+  font-size: 16px;
+  margin-bottom: 16px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--theme-border);
+}
+
+/* ================================
+   10. LOADING AND STATES
+   ================================ */
+
+/* Loading spinner */
+.spinner {
+  border: 3px solid var(--theme-border);
+  border-top: 3px solid var(--theme-primary);
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Empty state styling */
+.empty-state {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--theme-text-dim);
+}
+
+.empty-state__icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+  opacity: 0.5;
+}
+
+.empty-state__message {
+  font-size: 18px;
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+
+.empty-state__description {
+  font-size: 14px;
+  opacity: 0.7;
+}
+
+/* ================================
+   11. MUSIC-SPECIFIC STYLING
+   ================================ */
+
+/* Release type indicators */
+.release-type-single { color: #4CAF50; }
+.release-type-ep { color: #FF9800; }
+.release-type-album { color: #2196F3; }
+.release-type-lp { color: #9C27B0; }
+.release-type-mixtape { color: #607D8B; }
+
+/* Tour event status */
+.event-status-upcoming { color: #4CAF50; }
+.event-status-sold-out { color: #F44336; }
+.event-status-cancelled { color: #9E9E9E; }
+
+/* Gallery category colors */
+.gallery-category-live { background-color: #FF5722; }
+.gallery-category-studio { background-color: #3F51B5; }
+.gallery-category-bts { background-color: #9C27B0; }
+.gallery-category-press { background-color: #607D8B; }

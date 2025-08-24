@@ -27,5 +27,26 @@
             "path": "pwsh",
             "icon": "terminal-powershell"
         }
+    },
+    "livePreview.defaultPreviewPath": "http://localhost:3001",
+    "livePreview.autoShow": true,
+    "livePreview.openPreviewTarget": "Beside",
+    "livePreview.notifyOnOpenLooseFile": false,
+    "livePreview.debugOnExternalPreview": false,
+    "workbench.editorAssociations": {
+        "*.md": "default"
+    },
+    "typescript.preferences.importModuleSpecifier": "relative",
+    "emmet.includeLanguages": {
+        "typescript": "html",
+        "typescriptreact": "html"
+    },
+    "editor.quickSuggestions": {
+        "strings": true
+    },
+    "editor.suggest.insertMode": "replace",
+    "files.associations": {
+        "*.tsx": "typescriptreact",
+        "*.ts": "typescript"
     }
 }
