@@ -90,10 +90,10 @@ export function SmartGallery({
       rotate: 0,
       transition: {
         duration: 0.6,
-        ease: [0.215, 0.61, 0.355, 1],
+        ease: "easeOut" as any,
       }
     }
-  }
+  } as any
 
   if (!items || items.length === 0) {
     return (

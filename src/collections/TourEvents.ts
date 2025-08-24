@@ -1,4 +1,4 @@
-import { CollectionConfig } from 'payload/types'
+import type { CollectionConfig } from 'payload'
 
 export const TourEvents: CollectionConfig = {
   slug: 'tour-events',
@@ -194,7 +194,7 @@ export const TourEvents: CollectionConfig = {
             {
               name: 'venueWebsite',
               type: 'text',
-              validate: (value) => {
+              validate: (value: any) => {
                 if (value && !/^https?:\/\//.test(value)) {
                   return 'URL must start with http:// or https://'
                 }
@@ -285,7 +285,7 @@ export const TourEvents: CollectionConfig = {
                 {
                   name: 'website',
                   type: 'text',
-                  validate: (value) => {
+                  validate: (value: any) => {
                     if (value && !/^https?:\/\//.test(value)) {
                       return 'URL must start with http:// or https://'
                     }
@@ -335,7 +335,7 @@ export const TourEvents: CollectionConfig = {
                 {
                   name: 'ticketUrl',
                   type: 'text',
-                  validate: (value) => {
+                  validate: (value: any) => {
                     if (value && !/^https?:\/\//.test(value)) {
                       return 'URL must start with http:// or https://'
                     }
@@ -348,7 +348,7 @@ export const TourEvents: CollectionConfig = {
                 {
                   name: 'presaleUrl',
                   type: 'text',
-                  validate: (value) => {
+                  validate: (value: any) => {
                     if (value && !/^https?:\/\//.test(value)) {
                       return 'URL must start with http:// or https://'
                     }

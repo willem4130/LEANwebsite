@@ -1,4 +1,4 @@
-import { CollectionConfig } from 'payload/types'
+import type { CollectionConfig } from 'payload'
 
 export const SiteConfig: CollectionConfig = {
   slug: 'site-config',
@@ -41,7 +41,7 @@ export const SiteConfig: CollectionConfig = {
               name: 'siteUrl',
               type: 'text',
               required: true,
-              validate: (value) => {
+              validate: (value: any) => {
                 if (!value) return 'Site URL is required'
                 if (!/^https?:\/\//.test(value)) {
                   return 'URL must start with http:// or https://'
@@ -111,7 +111,7 @@ export const SiteConfig: CollectionConfig = {
               type: 'text',
               required: true,
               defaultValue: '#000000',
-              validate: (value) => {
+              validate: (value: any) => {
                 if (!/^#[0-9a-f]{6}$/i.test(value)) {
                   return 'Please enter a valid hex color (e.g., #000000)'
                 }
@@ -126,7 +126,7 @@ export const SiteConfig: CollectionConfig = {
               type: 'text',
               required: true,
               defaultValue: '#ffffff',
-              validate: (value) => {
+              validate: (value: any) => {
                 if (!/^#[0-9a-f]{6}$/i.test(value)) {
                   return 'Please enter a valid hex color (e.g., #ffffff)'
                 }
@@ -140,7 +140,7 @@ export const SiteConfig: CollectionConfig = {
               name: 'accentColor',
               type: 'text',
               defaultValue: '#ff0000',
-              validate: (value) => {
+              validate: (value: any) => {
                 if (value && !/^#[0-9a-f]{6}$/i.test(value)) {
                   return 'Please enter a valid hex color (e.g., #ff0000)'
                 }

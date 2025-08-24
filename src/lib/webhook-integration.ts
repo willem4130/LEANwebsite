@@ -34,7 +34,7 @@ export const WebhookEventSchema = z.object({
   ]),
   source: z.string(), // The source system (payload-cms, frontend, api)
   timestamp: z.string().datetime(),
-  data: z.record(z.any()),
+  data: z.record(z.string(), z.any()),
   metadata: z.object({
     userId: z.string().optional(),
     sessionId: z.string().optional(),
@@ -59,7 +59,7 @@ export const N8nWebhookConfigSchema = z.object({
   filters: z.object({
     domains: z.array(z.string()).optional(), // Filter by domain
     userRoles: z.array(z.string()).optional(), // Filter by user role
-    conditions: z.record(z.any()).optional(), // Custom filter conditions
+    conditions: z.record(z.string(), z.any()).optional(), // Custom filter conditions
   }).optional(),
 })
 

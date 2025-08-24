@@ -1,4 +1,4 @@
-import { CollectionConfig } from 'payload/types'
+import type { CollectionConfig } from 'payload'
 
 export const Artists: CollectionConfig = {
   slug: 'artists',
@@ -266,7 +266,7 @@ export const Artists: CollectionConfig = {
                   name: 'url',
                   type: 'text',
                   required: true,
-                  validate: (value) => {
+                  validate: (value: any) => {
                     if (!value) return 'URL is required'
                     if (!/^https?:\/\//.test(value)) {
                       return 'URL must start with http:// or https://'
@@ -296,7 +296,7 @@ export const Artists: CollectionConfig = {
             {
               name: 'website',
               type: 'text',
-              validate: (value) => {
+              validate: (value: any) => {
                 if (value && !/^https?:\/\//.test(value)) {
                   return 'URL must start with http:// or https://'
                 }

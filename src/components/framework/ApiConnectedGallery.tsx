@@ -13,7 +13,8 @@
 'use client'
 
 import React from 'react'
-import { useApi, GalleryItem } from '@/lib/api-framework'
+import { useEnhancedApi } from '@/hooks/useEnhancedApi'
+import { GalleryItem } from '@/lib/api-framework'
 import { Button } from '@/components/ui/button'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Badge } from '@/components/ui/badge'
@@ -42,7 +43,7 @@ export function ApiConnectedGallery({
   queryParams.set('limit', limit.toString())
   
   // Type-safe API call using our framework
-  const { data, loading, error, refetch } = useApi<GalleryItem[]>(
+  const { data, loading, error, refetch } = useEnhancedApi<GalleryItem[]>(
     `/gallery?${queryParams.toString()}`,
     { 
       dependencies: [selectedCategory, showFeaturedOnly, limit] 
@@ -82,7 +83,7 @@ export function ApiConnectedGallery({
     )
   }
 
-  const galleryItems = data?.data || []
+  const galleryItems = data || []
 
   return (
     <div className={`space-y-6 ${className}`}>

@@ -59,15 +59,15 @@ class EnhancedApiClient {
     endpoint: string,
     options: RequestInit & { 
       params?: Record<string, string>
-      cache?: boolean
+      enableCache?: boolean
       ttl?: number
     } = {}
   ): Promise<EnhancedApiResponse<T>> {
-    const { params, cache = false, ttl = 300000, ...fetchOptions } = options
+    const { params, enableCache = false, ttl = 300000, ...fetchOptions } = options
     const cacheKey = this.getCacheKey(endpoint, params)
 
     // Check cache first
-    if (cache) {
+    if (enableCache) {
       const cached = this.getFromCache<T>(cacheKey)
       if (cached) return cached
     }
@@ -101,7 +101,7 @@ class EnhancedApiClient {
     }
 
     // Cache if requested
-    if (cache) {
+    if (enableCache) {
       this.setCache(cacheKey, enhancedResponse.data, ttl)
     }
 
@@ -111,7 +111,7 @@ class EnhancedApiClient {
   async get<T>(
     endpoint: string, 
     params?: Record<string, string>,
-    options: { cache?: boolean; ttl?: number } = {}
+    options: { enableCache?: boolean; ttl?: number } = {}
   ): Promise<EnhancedApiResponse<T>> {
     return this.request<T>(endpoint, { method: 'GET', params, ...options })
   }
@@ -152,7 +152,7 @@ export function useEnhancedApi<T>(
     immediate?: boolean
     dependencies?: any[]
     realtime?: boolean
-    cache?: boolean
+    enableCache?: boolean
     ttl?: number
     pollInterval?: number
   } = {}
@@ -170,7 +170,7 @@ export function useEnhancedApi<T>(
     
     try {
       const response = await client.get<T>(endpoint, undefined, {
-        cache: options.cache,
+        enableCache: options.enableCache,
         ttl: options.ttl
       })
       setData(response.data)
@@ -180,7 +180,7 @@ export function useEnhancedApi<T>(
     } finally {
       setLoading(false)
     }
-  }, [endpoint, client, options.cache, options.ttl])
+  }, [endpoint, client, options.enableCache, options.ttl])
 
   useEffect(() => {
     if (options.immediate !== false) {

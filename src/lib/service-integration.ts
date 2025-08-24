@@ -39,13 +39,13 @@ export const ServiceConfigSchema = z.object({
   // Authentication & Credentials
   auth: z.object({
     type: z.enum(['api-key', 'oauth2', 'basic', 'bearer', 'custom']),
-    credentials: z.record(z.string()), // Encrypted storage
+    credentials: z.record(z.string(), z.string()), // Encrypted storage
     refreshToken: z.string().optional(),
     tokenExpiry: z.string().datetime().optional(),
   }),
   
   // Configuration & Settings
-  config: z.record(z.any()),
+  config: z.record(z.string(), z.any()),
   
   // Rate Limiting & Quotas
   limits: z.object({
@@ -83,7 +83,7 @@ export type ServiceConfig = z.infer<typeof ServiceConfigSchema>
 export const ServiceRequestSchema = z.object({
   serviceId: z.string(),
   operation: z.string(),
-  data: z.record(z.any()),
+  data: z.record(z.string(), z.any()),
   options: z.object({
     timeout: z.number().optional(),
     retries: z.number().optional(),
@@ -100,7 +100,7 @@ export const ServiceResponseSchema = z.object({
   error: z.object({
     code: z.string(),
     message: z.string(),
-    details: z.record(z.any()).optional(),
+    details: z.record(z.string(), z.any()).optional(),
   }).optional(),
   metadata: z.object({
     serviceId: z.string(),
@@ -397,7 +397,7 @@ export class ServiceRegistry {
   async performHealthChecks(): Promise<Map<string, boolean>> {
     const results = new Map<string, boolean>()
 
-    for (const [serviceId, adapter] of this.serviceInstances) {
+    for (const [serviceId, adapter] of Array.from(this.serviceInstances)) {
       try {
         const isHealthy = await adapter.healthCheck()
         results.set(serviceId, isHealthy)

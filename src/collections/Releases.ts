@@ -1,4 +1,4 @@
-import { CollectionConfig } from 'payload/types'
+import type { CollectionConfig } from 'payload'
 
 export const Releases: CollectionConfig = {
   slug: 'releases',
@@ -283,7 +283,7 @@ export const Releases: CollectionConfig = {
                   name: 'url',
                   type: 'text',
                   required: true,
-                  validate: (value) => {
+                  validate: (value: any) => {
                     if (!value) return 'URL is required'
                     if (!/^https?:\/\//.test(value)) {
                       return 'URL must start with http:// or https://'
@@ -325,7 +325,7 @@ export const Releases: CollectionConfig = {
                   name: 'url',
                   type: 'text',
                   required: true,
-                  validate: (value) => {
+                  validate: (value: any) => {
                     if (!value) return 'URL is required'
                     if (!/^https?:\/\//.test(value)) {
                       return 'URL must start with http:// or https://'

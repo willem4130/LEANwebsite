@@ -51,8 +51,8 @@ export const PluginManifestSchema = z.object({
   
   // Technical Specifications
   main: z.string(), // Entry point file
-  dependencies: z.record(z.string()),
-  peerDependencies: z.record(z.string()).optional(),
+  dependencies: z.record(z.string(), z.string()),
+  peerDependencies: z.record(z.string(), z.string()).optional(),
   engines: z.object({
     node: z.string().optional(),
     npm: z.string().optional(),
@@ -72,8 +72,8 @@ export const PluginManifestSchema = z.object({
   
   // Configuration & Settings
   config: z.object({
-    schema: z.record(z.any()), // JSON Schema for plugin configuration
-    defaults: z.record(z.any()).default({}),
+    schema: z.record(z.string(), z.any()), // JSON Schema for plugin configuration
+    defaults: z.record(z.string(), z.any()).default({}),
     required: z.array(z.string()).default([]),
   }).optional(),
   
@@ -132,7 +132,7 @@ export const PluginInstallationSchema = z.object({
   version: z.string(),
   installedAt: z.string().datetime(),
   enabled: z.boolean().default(true),
-  config: z.record(z.any()).default({}),
+  config: z.record(z.string(), z.any()).default({}),
   autoUpdate: z.boolean().default(false),
   installationMethod: z.enum(['marketplace', 'npm', 'github', 'local']),
   licenseKey: z.string().optional(), // For paid plugins
@@ -517,7 +517,7 @@ export class PluginMarketplace {
           name: componentName,
           version: '1.0.0', // Get from plugin manifest
           description: `Component from ${pluginId} plugin`,
-          category: 'ui-components' as const,
+          category: 'utility' as const,
           tags: ['plugin', pluginId],
           author: {
             name: 'Plugin',
@@ -778,8 +778,12 @@ export const MARKETPLACE_PLUGINS: PluginManifest[] = [
     },
     capabilities: {
       hooks: ['page_view', 'user_action'],
-      network: true,
+      api: [],
+      components: [],
       admin: true,
+      database: false,
+      filesystem: false,
+      network: true,
     },
     config: {
       schema: {
@@ -787,15 +791,22 @@ export const MARKETPLACE_PLUGINS: PluginManifest[] = [
         enhanced: { type: 'boolean', default: true },
         anonymizeIP: { type: 'boolean', default: true },
       },
+      defaults: {
+        enhanced: true,
+        anonymizeIP: true,
+      },
       required: ['trackingId'],
     },
     marketplace: {
       featured: true,
       price: 0,
+      currency: 'USD',
       license: 'MIT',
     },
     quality: {
       verified: true,
+      reviews: 0,
+      downloads: 0,
       lastUpdated: new Date().toISOString(),
       security: {
         scanned: true,
@@ -834,8 +845,12 @@ export const MARKETPLACE_PLUGINS: PluginManifest[] = [
     },
     capabilities: {
       hooks: ['form_submit', 'user_register'],
-      network: true,
+      api: [],
+      components: [],
       admin: true,
+      database: false,
+      filesystem: false,
+      network: true,
     },
     marketplace: {
       featured: false,

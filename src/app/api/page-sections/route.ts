@@ -95,7 +95,6 @@ export const GET = withErrorHandling(async (req: NextRequest) => {
       collection: 'page-sections',
       where,
       limit,
-      skip: offset,
       sort,
     })
 
@@ -103,8 +102,8 @@ export const GET = withErrorHandling(async (req: NextRequest) => {
     const validatedSections = result.docs.map(doc => 
       PayloadPageSectionSchema.parse({
         ...doc,
-        createdAt: doc.createdAt.toISOString(),
-        updatedAt: doc.updatedAt.toISOString(),
+        createdAt: typeof doc.createdAt === 'string' ? doc.createdAt : (doc.createdAt as Date).toISOString(),
+        updatedAt: typeof doc.updatedAt === 'string' ? doc.updatedAt : (doc.updatedAt as Date).toISOString(),
       })
     )
 
@@ -180,14 +179,14 @@ export const POST = withErrorHandling(async (req: NextRequest) => {
     // Create in database
     const result = await payload.create({
       collection: 'page-sections',
-      data: processedData[0] || data,
+      data: (Array.isArray(processedData) ? processedData[0] || data : processedData || data) as any,
     })
 
     // Validate result
     const validatedSection = PayloadPageSectionSchema.parse({
       ...result,
-      createdAt: result.createdAt.toISOString(),
-      updatedAt: result.updatedAt.toISOString(),
+      createdAt: typeof result.createdAt === 'string' ? result.createdAt : (result.createdAt as Date).toISOString(),
+      updatedAt: typeof result.updatedAt === 'string' ? result.updatedAt : (result.updatedAt as Date).toISOString(),
     })
 
     // Invalidate related caches

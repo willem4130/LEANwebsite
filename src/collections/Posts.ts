@@ -1,4 +1,4 @@
-import { CollectionConfig } from 'payload/types'
+import type { CollectionConfig } from 'payload'
 
 export const Posts: CollectionConfig = {
   slug: 'posts',
@@ -9,7 +9,7 @@ export const Posts: CollectionConfig = {
     description: 'Blog posts, news updates, and announcements',
   },
   access: {
-    read: ({ req: { user } }) => {
+    read: ({ req: { user } }: any) => {
       if (user) return true
       // Public can only see published posts
       return {
@@ -17,7 +17,7 @@ export const Posts: CollectionConfig = {
           { status: { equals: 'published' } },
           { publishedDate: { less_than_equal: new Date() } }
         ]
-      }
+      } as any
     },
     create: ({ req: { user } }) => !!user,
     update: ({ req: { user } }) => !!user,
@@ -228,7 +228,7 @@ export const Posts: CollectionConfig = {
                 {
                   name: 'website',
                   type: 'text',
-                  validate: (value) => {
+                  validate: (value: any) => {
                     if (value && !/^https?:\/\//.test(value)) {
                       return 'URL must start with http:// or https://'
                     }
@@ -284,7 +284,7 @@ export const Posts: CollectionConfig = {
             {
               name: 'externalLink',
               type: 'text',
-              validate: (value, { data }) => {
+              validate: (value: any, { data }: any) => {
                 if (data.contentType === 'link' && !value) {
                   return 'External link is required for link posts'
                 }
@@ -449,9 +449,9 @@ export const Posts: CollectionConfig = {
 
         // Calculate reading time (approximate: 200 words per minute)
         if (data.content) {
-          const wordCount = data.content.reduce((count, node) => {
+          const wordCount = data.content.reduce((count: number, node: any) => {
             if (node.type === 'paragraph' && node.children) {
-              return count + node.children.reduce((nodeCount, child) => {
+              return count + node.children.reduce((nodeCount: number, child: any) => {
                 return nodeCount + (child.text ? child.text.split(/\s+/).length : 0)
               }, 0)
             }

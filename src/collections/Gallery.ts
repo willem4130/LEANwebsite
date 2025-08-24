@@ -1,4 +1,4 @@
-import { CollectionConfig } from 'payload/types'
+import type { CollectionConfig } from 'payload'
 
 export const Gallery: CollectionConfig = {
   slug: 'gallery',
@@ -290,7 +290,7 @@ export const Gallery: CollectionConfig = {
             {
               name: 'photographerWebsite',
               type: 'text',
-              validate: (value) => {
+              validate: (value: any) => {
                 if (value && !/^https?:\/\//.test(value)) {
                   return 'URL must start with http:// or https://'
                 }

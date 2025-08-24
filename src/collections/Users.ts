@@ -1,4 +1,4 @@
-import { CollectionConfig } from 'payload/types'
+import type { CollectionConfig } from 'payload'
 
 export const Users: CollectionConfig = {
   slug: 'users',
@@ -66,7 +66,7 @@ export const Users: CollectionConfig = {
   ],
   hooks: {
     afterLogin: [
-      async ({ req, doc }) => {
+      async ({ req, doc }: any) => {
         // Update last logged in time
         await req.payload.update({
           collection: 'users',

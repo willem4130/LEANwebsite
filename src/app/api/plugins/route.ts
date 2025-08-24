@@ -28,12 +28,117 @@ function ensureInitialized() {
 // PLUGIN DISCOVERY & BROWSING
 // ================================
 
-// GET /api/plugins - Browse and search plugins
+// GET /api/plugins - Browse and search plugins or handle sub-routes
 export const GET = withErrorHandling(async (req: NextRequest) => {
   ensureInitialized()
   
-  const { searchParams } = new URL(req.url)
+  const { searchParams, pathname } = new URL(req.url)
   
+  // Handle sub-routes based on URL path
+  if (pathname.includes('/installed')) {
+    const installations = pluginMarketplace.getInstalledPlugins()
+    
+    const installedPlugins = installations.map(({ manifest, installation }) => ({
+      id: manifest.id,
+      name: manifest.name,
+      version: installation.version,
+      enabled: installation.enabled,
+      installedAt: installation.installedAt,
+      config: installation.config,
+      autoUpdate: installation.autoUpdate,
+      installationMethod: installation.installationMethod,
+      hasLicense: !!installation.licenseKey,
+      category: manifest.category,
+      author: manifest.author,
+      capabilities: manifest.capabilities,
+    }))
+
+    return createApiResponse({
+      plugins: installedPlugins,
+      total: installedPlugins.length,
+      enabled: installedPlugins.filter(p => p.enabled).length,
+      disabled: installedPlugins.filter(p => !p.enabled).length,
+    })
+  }
+  
+  if (pathname.includes('/categories')) {
+    const plugins = pluginMarketplace.searchPlugins({})
+    const categories = Array.from(new Set(plugins.map(p => p.category)))
+    
+    const categoryStats = categories.map(category => ({
+      name: category,
+      count: plugins.filter(p => p.category === category).length,
+      featured: plugins.filter(p => p.category === category && p.marketplace.featured).length,
+    }))
+
+    return createApiResponse({
+      categories: categoryStats,
+      total: categories.length,
+    })
+  }
+  
+  if (pathname.includes('/tags')) {
+    const plugins = pluginMarketplace.searchPlugins({})
+    const allTags = plugins.flatMap(p => p.tags)
+    const tagCounts = allTags.reduce((acc, tag) => {
+      acc[tag] = (acc[tag] || 0) + 1
+      return acc
+    }, {} as Record<string, number>)
+
+    const tags = Object.entries(tagCounts)
+      .map(([tag, count]) => ({ tag, count }))
+      .sort((a, b) => b.count - a.count)
+
+    return createApiResponse({
+      tags,
+      total: tags.length,
+    })
+  }
+  
+  if (pathname.includes('/stats')) {
+    const plugins = pluginMarketplace.searchPlugins({})
+    const installations = pluginMarketplace.getInstalledPlugins()
+
+    const stats = {
+      marketplace: {
+        totalPlugins: plugins.length,
+        featuredPlugins: plugins.filter(p => p.marketplace.featured).length,
+        freePlugins: plugins.filter(p => p.marketplace.price === 0).length,
+        paidPlugins: plugins.filter(p => p.marketplace.price > 0).length,
+        verifiedPlugins: plugins.filter(p => p.quality.verified).length,
+        categories: Array.from(new Set(plugins.map(p => p.category))).length,
+        totalDownloads: plugins.reduce((sum, p) => sum + p.quality.downloads, 0),
+      },
+      installation: {
+        totalInstalled: installations.length,
+        enabledPlugins: installations.filter(({ installation }) => installation.enabled).length,
+        disabledPlugins: installations.filter(({ installation }) => !installation.enabled).length,
+        pluginsWithLicense: installations.filter(({ installation }) => !!installation.licenseKey).length,
+      },
+      topCategories: Array.from(new Set(plugins.map(p => p.category)))
+        .map(category => ({
+          category,
+          count: plugins.filter(p => p.category === category).length,
+        }))
+        .sort((a, b) => b.count - a.count)
+        .slice(0, 5),
+      recentPlugins: plugins
+        .sort((a, b) => new Date(b.quality.lastUpdated).getTime() - new Date(a.quality.lastUpdated).getTime())
+        .slice(0, 10)
+        .map(p => ({
+          id: p.id,
+          name: p.name,
+          version: p.version,
+          lastUpdated: p.quality.lastUpdated,
+          downloads: p.quality.downloads,
+          rating: p.quality.rating,
+        })),
+    }
+
+    return createApiResponse(stats)
+  }
+  
+  // Default: Browse and search plugins
   const query = {
     search: searchParams.get('search') || undefined,
     category: searchParams.get('category') || undefined,
@@ -54,8 +159,8 @@ export const GET = withErrorHandling(async (req: NextRequest) => {
     featured: plugins.filter(p => p.marketplace.featured).length,
     free: plugins.filter(p => p.marketplace.price === 0).length,
     verified: plugins.filter(p => p.quality.verified).length,
-    categories: [...new Set(plugins.map(p => p.category))],
-    tags: [...new Set(plugins.flatMap(p => p.tags))],
+    categories: Array.from(new Set(plugins.map(p => p.category))),
+    tags: Array.from(new Set(plugins.flatMap(p => p.tags))),
   }
 
   return createApiResponse({
@@ -65,8 +170,86 @@ export const GET = withErrorHandling(async (req: NextRequest) => {
   })
 })
 
-// POST /api/plugins - Submit/register a plugin
+// POST /api/plugins - Submit/register a plugin or handle installations
 export const POST = withErrorHandling(async (req: NextRequest) => {
+  const { pathname } = new URL(req.url)
+  
+  // Handle installation route
+  if (pathname.includes('/install')) {
+    const InstallPluginSchema = z.object({
+      pluginId: z.string(),
+      version: z.string().optional(),
+      config: z.record(z.string(), z.any()).default({}),
+      licenseKey: z.string().optional(),
+      autoUpdate: z.boolean().default(false),
+    })
+
+    const { pluginId, version, config, licenseKey, autoUpdate } = InstallPluginSchema.parse(await req.json())
+    
+    ensureInitialized()
+    
+    // Check if plugin exists in marketplace
+    const plugin = pluginMarketplace.getPlugin(pluginId)
+    if (!plugin) {
+      return createApiResponse(undefined, {
+        error: {
+          code: 'PLUGIN_NOT_FOUND',
+          message: `Plugin ${pluginId} not found in marketplace`,
+        },
+        statusCode: 404,
+      })
+    }
+
+    // Check if already installed
+    const installations = pluginMarketplace.getInstalledPlugins()
+    const alreadyInstalled = installations.find(({ manifest }) => manifest.id === pluginId)
+    
+    if (alreadyInstalled) {
+      return createApiResponse(undefined, {
+        error: {
+          code: 'PLUGIN_ALREADY_INSTALLED',
+          message: `Plugin ${pluginId} is already installed`,
+          details: { installedVersion: alreadyInstalled.installation.version },
+        },
+        statusCode: 409,
+      })
+    }
+
+    // Validate license for paid plugins
+    if (plugin.marketplace.price > 0 && !licenseKey) {
+      return createApiResponse(undefined, {
+        error: {
+          code: 'LICENSE_REQUIRED',
+          message: `Plugin ${pluginId} requires a valid license key`,
+          details: { price: plugin.marketplace.price, currency: plugin.marketplace.currency },
+        },
+        statusCode: 402,
+      })
+    }
+
+    // Install the plugin
+    const success = await pluginMarketplace.installPlugin(pluginId, version, config, licenseKey)
+    
+    if (!success) {
+      return createApiResponse(undefined, {
+        error: {
+          code: 'INSTALLATION_FAILED',
+          message: `Failed to install plugin ${pluginId}`,
+        },
+        statusCode: 500,
+      })
+    }
+
+    return createApiResponse({
+      message: 'Plugin installed successfully',
+      pluginId,
+      pluginName: plugin.name,
+      version: version || plugin.version,
+      enabled: true,
+    }, { statusCode: 201 })
+  }
+  
+  // Default: Submit/register a plugin
   const PluginSubmissionSchema = z.object({
     manifest: z.object({
       id: z.string(),
@@ -91,8 +274,8 @@ export const POST = withErrorHandling(async (req: NextRequest) => {
         verified: z.boolean().default(false),
       }),
       main: z.string(),
-      dependencies: z.record(z.string()),
-      peerDependencies: z.record(z.string()).optional(),
+      dependencies: z.record(z.string(), z.string()),
+      peerDependencies: z.record(z.string(), z.string()).optional(),
       engines: z.object({
         node: z.string().optional(),
         npm: z.string().optional(),
@@ -108,8 +291,8 @@ export const POST = withErrorHandling(async (req: NextRequest) => {
         network: z.boolean().default(false),
       }),
       config: z.object({
-        schema: z.record(z.any()),
-        defaults: z.record(z.any()).default({}),
+        schema: z.record(z.string(), z.any()),
+        defaults: z.record(z.string(), z.any()).default({}),
         required: z.array(z.string()).default([]),
       }).optional(),
       marketplace: z.object({
@@ -187,409 +370,28 @@ export const POST = withErrorHandling(async (req: NextRequest) => {
 // PLUGIN INSTALLATION & MANAGEMENT
 // ================================
 
-// GET /api/plugins/installed - List installed plugins
-export async function GET_INSTALLED() {
-  ensureInitialized()
-  
-  const installations = pluginMarketplace.getInstalledPlugins()
-  
-  const installedPlugins = installations.map(({ manifest, installation }) => ({
-    id: manifest.id,
-    name: manifest.name,
-    version: installation.version,
-    enabled: installation.enabled,
-    installedAt: installation.installedAt,
-    config: installation.config,
-    autoUpdate: installation.autoUpdate,
-    installationMethod: installation.installationMethod,
-    hasLicense: !!installation.licenseKey,
-    category: manifest.category,
-    author: manifest.author,
-    capabilities: manifest.capabilities,
-  }))
+// Installed plugins functionality moved to main GET handler
 
-  return NextResponse.json({
-    success: true,
-    data: {
-      plugins: installedPlugins,
-      total: installedPlugins.length,
-      enabled: installedPlugins.filter(p => p.enabled).length,
-      disabled: installedPlugins.filter(p => !p.enabled).length,
-    },
-  })
-}
+// Install functionality moved to main POST handler
 
-// POST /api/plugins/install - Install a plugin
-export async function POST_INSTALL(req: NextRequest) {
-  const InstallPluginSchema = z.object({
-    pluginId: z.string(),
-    version: z.string().optional(),
-    config: z.record(z.any()).default({}),
-    licenseKey: z.string().optional(),
-    autoUpdate: z.boolean().default(false),
-  })
+// Uninstall functionality would need separate dynamic route
 
-  try {
-    const { pluginId, version, config, licenseKey, autoUpdate } = InstallPluginSchema.parse(await req.json())
-    
-    ensureInitialized()
-    
-    // Check if plugin exists in marketplace
-    const plugin = pluginMarketplace.getPlugin(pluginId)
-    if (!plugin) {
-      return NextResponse.json({
-        success: false,
-        error: {
-          code: 'PLUGIN_NOT_FOUND',
-          message: `Plugin ${pluginId} not found in marketplace`,
-        },
-      }, { status: 404 })
-    }
+// Toggle functionality would need separate dynamic route
 
-    // Check if already installed
-    const installations = pluginMarketplace.getInstalledPlugins()
-    const alreadyInstalled = installations.find(({ manifest }) => manifest.id === pluginId)
-    
-    if (alreadyInstalled) {
-      return NextResponse.json({
-        success: false,
-        error: {
-          code: 'PLUGIN_ALREADY_INSTALLED',
-          message: `Plugin ${pluginId} is already installed`,
-          details: { installedVersion: alreadyInstalled.installation.version },
-        },
-      }, { status: 409 })
-    }
-
-    // Validate license for paid plugins
-    if (plugin.marketplace.price > 0 && !licenseKey) {
-      return NextResponse.json({
-        success: false,
-        error: {
-          code: 'LICENSE_REQUIRED',
-          message: `Plugin ${pluginId} requires a valid license key`,
-          details: { price: plugin.marketplace.price, currency: plugin.marketplace.currency },
-        },
-      }, { status: 402 })
-    }
-
-    // Install the plugin
-    const success = await pluginMarketplace.installPlugin(pluginId, version, config, licenseKey)
-    
-    if (!success) {
-      return NextResponse.json({
-        success: false,
-        error: {
-          code: 'INSTALLATION_FAILED',
-          message: `Failed to install plugin ${pluginId}`,
-        },
-      }, { status: 500 })
-    }
-
-    return NextResponse.json({
-      success: true,
-      data: {
-        message: 'Plugin installed successfully',
-        pluginId,
-        pluginName: plugin.name,
-        version: version || plugin.version,
-        enabled: true,
-      },
-    }, { status: 201 })
-
-  } catch (error) {
-    return NextResponse.json({
-      success: false,
-      error: {
-        code: 'VALIDATION_ERROR',
-        message: error instanceof Error ? error.message : 'Invalid installation request',
-      },
-    }, { status: 400 })
-  }
-}
-
-// DELETE /api/plugins/[pluginId] - Uninstall a plugin
-export async function DELETE_PLUGIN(req: NextRequest, { params }: { params: { pluginId: string } }) {
-  ensureInitialized()
-  
-  try {
-    const success = await pluginMarketplace.uninstallPlugin(params.pluginId)
-    
-    if (!success) {
-      return NextResponse.json({
-        success: false,
-        error: {
-          code: 'UNINSTALL_FAILED',
-          message: `Failed to uninstall plugin ${params.pluginId}`,
-        },
-      }, { status: 500 })
-    }
-
-    return NextResponse.json({
-      success: true,
-      data: {
-        message: 'Plugin uninstalled successfully',
-        pluginId: params.pluginId,
-      },
-    })
-
-  } catch (error) {
-    return NextResponse.json({
-      success: false,
-      error: {
-        code: 'UNINSTALL_ERROR',
-        message: error instanceof Error ? error.message : 'Uninstall operation failed',
-      },
-    }, { status: 500 })
-  }
-}
-
-// PATCH /api/plugins/[pluginId]/toggle - Enable/disable a plugin
-export async function PATCH_TOGGLE(req: NextRequest, { params }: { params: { pluginId: string } }) {
-  const TogglePluginSchema = z.object({
-    enabled: z.boolean(),
-  })
-
-  try {
-    const { enabled } = TogglePluginSchema.parse(await req.json())
-    
-    ensureInitialized()
-    
-    const success = await pluginMarketplace.togglePlugin(params.pluginId, enabled)
-    
-    if (!success) {
-      return NextResponse.json({
-        success: false,
-        error: {
-          code: 'TOGGLE_FAILED',
-          message: `Failed to ${enabled ? 'enable' : 'disable'} plugin ${params.pluginId}`,
-        },
-      }, { status: 500 })
-    }
-
-    return NextResponse.json({
-      success: true,
-      data: {
-        message: `Plugin ${enabled ? 'enabled' : 'disabled'} successfully`,
-        pluginId: params.pluginId,
-        enabled,
-      },
-    })
-
-  } catch (error) {
-    return NextResponse.json({
-      success: false,
-      error: {
-        code: 'VALIDATION_ERROR',
-        message: error instanceof Error ? error.message : 'Invalid toggle request',
-      },
-    }, { status: 400 })
-  }
-}
-
-// PUT /api/plugins/[pluginId]/update - Update a plugin
-export async function PUT_UPDATE(req: NextRequest, { params }: { params: { pluginId: string } }) {
-  const UpdatePluginSchema = z.object({
-    version: z.string().optional(),
-    config: z.record(z.any()).optional(),
-  })
-
-  try {
-    const { version, config } = UpdatePluginSchema.parse(await req.json())
-    
-    ensureInitialized()
-    
-    // Check if plugin is installed
-    const installations = pluginMarketplace.getInstalledPlugins()
-    const installation = installations.find(({ manifest }) => manifest.id === params.pluginId)
-    
-    if (!installation) {
-      return NextResponse.json({
-        success: false,
-        error: {
-          code: 'PLUGIN_NOT_INSTALLED',
-          message: `Plugin ${params.pluginId} is not installed`,
-        },
-      }, { status: 404 })
-    }
-
-    // Update the plugin
-    const success = await pluginMarketplace.updatePlugin(params.pluginId, version)
-    
-    if (!success) {
-      return NextResponse.json({
-        success: false,
-        error: {
-          code: 'UPDATE_FAILED',
-          message: `Failed to update plugin ${params.pluginId}`,
-        },
-      }, { status: 500 })
-    }
-
-    return NextResponse.json({
-      success: true,
-      data: {
-        message: 'Plugin updated successfully',
-        pluginId: params.pluginId,
-        oldVersion: installation.installation.version,
-        newVersion: version || 'latest',
-      },
-    })
-
-  } catch (error) {
-    return NextResponse.json({
-      success: false,
-      error: {
-        code: 'UPDATE_ERROR',
-        message: error instanceof Error ? error.message : 'Update operation failed',
-      },
-    }, { status: 500 })
-  }
-}
+// Update functionality would need separate dynamic route
 
 // ================================
 // PLUGIN DETAILS & METADATA
 // ================================
 
-// GET /api/plugins/[pluginId] - Get plugin details
-export async function GET_PLUGIN(req: NextRequest, { params }: { params: { pluginId: string } }) {
-  ensureInitialized()
-  
-  const plugin = pluginMarketplace.getPlugin(params.pluginId)
-  
-  if (!plugin) {
-    return NextResponse.json({
-      success: false,
-      error: {
-        code: 'PLUGIN_NOT_FOUND',
-        message: `Plugin ${params.pluginId} not found`,
-      },
-    }, { status: 404 })
-  }
+// Plugin details functionality would need separate dynamic route
 
-  // Check if plugin is installed
-  const installations = pluginMarketplace.getInstalledPlugins()
-  const installation = installations.find(({ manifest }) => manifest.id === params.pluginId)
+// Categories functionality moved to main GET handler
 
-  const response = {
-    plugin,
-    installation: installation ? {
-      installed: true,
-      version: installation.installation.version,
-      enabled: installation.installation.enabled,
-      installedAt: installation.installation.installedAt,
-      config: installation.installation.config,
-      autoUpdate: installation.installation.autoUpdate,
-    } : {
-      installed: false,
-    },
-    compatibility: {
-      compatible: true, // This would check actual compatibility
-      issues: [] as string[],
-    },
-  }
-
-  return NextResponse.json({
-    success: true,
-    data: response,
-  })
-}
-
-// GET /api/plugins/categories - Get available categories
-export async function GET_CATEGORIES() {
-  ensureInitialized()
-  
-  const plugins = pluginMarketplace.searchPlugins({})
-  const categories = [...new Set(plugins.map(p => p.category))]
-  
-  const categoryStats = categories.map(category => ({
-    name: category,
-    count: plugins.filter(p => p.category === category).length,
-    featured: plugins.filter(p => p.category === category && p.marketplace.featured).length,
-  }))
-
-  return NextResponse.json({
-    success: true,
-    data: {
-      categories: categoryStats,
-      total: categories.length,
-    },
-  })
-}
-
-// GET /api/plugins/tags - Get available tags
-export async function GET_TAGS() {
-  ensureInitialized()
-  
-  const plugins = pluginMarketplace.searchPlugins({})
-  const allTags = plugins.flatMap(p => p.tags)
-  const tagCounts = allTags.reduce((acc, tag) => {
-    acc[tag] = (acc[tag] || 0) + 1
-    return acc
-  }, {} as Record<string, number>)
-
-  const tags = Object.entries(tagCounts)
-    .map(([tag, count]) => ({ tag, count }))
-    .sort((a, b) => b.count - a.count)
-
-  return NextResponse.json({
-    success: true,
-    data: {
-      tags,
-      total: tags.length,
-    },
-  })
-}
+// Tags functionality moved to main GET handler
 
 // ================================
 // PLUGIN MARKETPLACE STATS
 // ================================
 
-// GET /api/plugins/stats - Get marketplace statistics
-export async function GET_STATS() {
-  ensureInitialized()
-  
-  const plugins = pluginMarketplace.searchPlugins({})
-  const installations = pluginMarketplace.getInstalledPlugins()
-
-  const stats = {
-    marketplace: {
-      totalPlugins: plugins.length,
-      featuredPlugins: plugins.filter(p => p.marketplace.featured).length,
-      freePlugins: plugins.filter(p => p.marketplace.price === 0).length,
-      paidPlugins: plugins.filter(p => p.marketplace.price > 0).length,
-      verifiedPlugins: plugins.filter(p => p.quality.verified).length,
-      categories: [...new Set(plugins.map(p => p.category))].length,
-      totalDownloads: plugins.reduce((sum, p) => sum + p.quality.downloads, 0),
-    },
-    installation: {
-      totalInstalled: installations.length,
-      enabledPlugins: installations.filter(({ installation }) => installation.enabled).length,
-      disabledPlugins: installations.filter(({ installation }) => !installation.enabled).length,
-      pluginsWithLicense: installations.filter(({ installation }) => !!installation.licenseKey).length,
-    },
-    topCategories: [...new Set(plugins.map(p => p.category))]
-      .map(category => ({
-        category,
-        count: plugins.filter(p => p.category === category).length,
-      }))
-      .sort((a, b) => b.count - a.count)
-      .slice(0, 5),
-    recentPlugins: plugins
-      .sort((a, b) => new Date(b.quality.lastUpdated).getTime() - new Date(a.quality.lastUpdated).getTime())
-      .slice(0, 10)
-      .map(p => ({
-        id: p.id,
-        name: p.name,
-        version: p.version,
-        lastUpdated: p.quality.lastUpdated,
-        downloads: p.quality.downloads,
-        rating: p.quality.rating,
-      })),
-  }
-
-  return NextResponse.json({
-    success: true,
-    data: stats,
-  })
-}
+// Stats functionality moved to main GET handler

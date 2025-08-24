@@ -16,7 +16,7 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { useEnhancedApi } from '@/lib/enhanced-api-framework'
+import { useEnhancedApi } from '@/hooks/useEnhancedApi'
 import type { ThemeSettings } from '@/lib/enhanced-api-framework'
 
 interface NavigationItem {
@@ -78,7 +78,7 @@ export const NavigationManager: React.FC<NavigationManagerProps> = ({
     '/navigation',
     {
       realtime: true,
-      cache: true,
+      enableCache: true,
       ttl: 600000, // 10 minutes
     }
   )
@@ -144,7 +144,7 @@ export const NavigationManager: React.FC<NavigationManagerProps> = ({
   }
 
   if (error || !navigationData) {
-    return <NavigationError error={error} />
+    return <NavigationError error={error || undefined} />
   }
 
   const navClasses = [
@@ -582,7 +582,7 @@ const NavigationLink: React.FC<NavigationLinkProps> = ({
   const linkProps = {
     onClick: handleClick,
     className,
-    'aria-current': isActive ? 'page' : undefined,
+    'aria-current': (isActive as boolean) ? ('page' as const) : undefined,
   }
 
   if (item.type === 'external') {

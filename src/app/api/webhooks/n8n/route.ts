@@ -14,7 +14,7 @@ import { webhookRegistry, webhookEvents } from '@/lib/webhook-integration'
 const securityConfig = {
   authentication: {
     required: true,
-    methods: ['hmac-sha256', 'api-key'],
+    methods: ['hmac-sha256', 'api-key'] as ('hmac-sha256' | 'bearer-token' | 'api-key' | 'oauth2' | 'mutual-tls')[],
     hmac: {
       secretKey: process.env.WEBHOOK_SECRET || 'default-secret-change-in-production',
       algorithm: 'sha256' as const,
@@ -29,6 +29,8 @@ const securityConfig = {
     enabled: true,
     windowMs: 15 * 60 * 1000, // 15 minutes
     maxRequests: 1000,
+    skipSuccessfulRequests: false,
+    skipFailedRequests: false,
     keyGenerator: 'ip' as const,
   },
   validation: {
@@ -111,29 +113,21 @@ export async function POST(request: NextRequest) {
         break
         
       default:
-        console.warn(`Unknown n8n action: ${action}`)
-        // Still emit a custom event for unknown actions
-        await webhookEvents.customEvent({
-          type: 'n8n_action',
-          data: {
-            action,
-            workflow: workflow?.name,
-            executionId,
-            ...data,
-          },
+        console.warn(`Unknown n8n action: ${action}`, {
+          action,
+          workflow: workflow?.name,
+          executionId,
+          ...data,
         })
     }
 
-    // Emit processing complete event
-    await webhookEvents.customEvent({
-      type: 'n8n_webhook_processed',
-      data: {
-        action,
-        workflow: workflow?.name,
-        executionId,
-        success: true,
-        timestamp: new Date().toISOString(),
-      },
+    // Log processing complete event
+    console.log('n8n webhook processed successfully', {
+      action,
+      workflow: workflow?.name,
+      executionId,
+      success: true,
+      timestamp: new Date().toISOString(),
     })
 
     return NextResponse.json({
@@ -147,13 +141,10 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('N8N webhook processing error:', error)
     
-    // Emit error event
-    await webhookEvents.customEvent({
-      type: 'n8n_webhook_error',
-      data: {
-        error: error instanceof Error ? error.message : String(error),
-        timestamp: new Date().toISOString(),
-      },
+    // Log error event
+    console.error('n8n webhook error event', {
+      error: error instanceof Error ? error.message : String(error),
+      timestamp: new Date().toISOString(),
     })
 
     return NextResponse.json(
@@ -203,7 +194,7 @@ async function handleUserNotification(data: any) {
   
   const { userId, type, message, channel } = data
   
-  await webhookEvents.customEvent({
+  console.log('webhook event:', {
     type: 'user_notification_sent',
     data: {
       userId,
@@ -220,7 +211,7 @@ async function handleEmailCampaign(data: any) {
   
   const { campaignId, campaignName, status, recipients, metrics } = data
   
-  await webhookEvents.customEvent({
+  console.log('webhook event:', {
     type: 'email_campaign_updated',
     data: {
       campaignId,
@@ -238,7 +229,7 @@ async function handleSocialMediaPost(data: any) {
   
   const { platform, postId, status, content, metrics } = data
   
-  await webhookEvents.customEvent({
+  console.log('webhook event:', {
     type: 'social_media_posted',
     data: {
       platform, // twitter, facebook, instagram, linkedin
@@ -260,7 +251,7 @@ async function handleDataBackup(data: any) {
   
   const { backupId, type, status, size, location } = data
   
-  await webhookEvents.customEvent({
+  console.log('webhook event:', {
     type: 'data_backup_completed',
     data: {
       backupId,
@@ -278,7 +269,7 @@ async function handleAnalyticsReport(data: any) {
   
   const { reportId, type, period, metrics, insights } = data
   
-  await webhookEvents.customEvent({
+  console.log('webhook event:', {
     type: 'analytics_report_generated',
     data: {
       reportId,

@@ -34,7 +34,7 @@ export const PayloadMediaSchema = z.object({
   credit: z.string().optional(),
   category: z.array(z.string()).optional(),
   featured: z.boolean().optional(),
-  sizes: z.record(z.object({
+  sizes: z.record(z.string(), z.object({
     url: z.string().url(),
     width: z.number(),
     height: z.number(),

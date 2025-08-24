@@ -37,12 +37,12 @@ export const ComponentMetadataSchema = z.object({
     url: z.string().url().optional(),
   }),
   license: z.string().default('MIT'),
-  dependencies: z.record(z.string()), // package.json style dependencies
-  peerDependencies: z.record(z.string()).optional(),
+  dependencies: z.record(z.string(), z.string()), // package.json style dependencies
+  peerDependencies: z.record(z.string(), z.string()).optional(),
   props: z.object({
-    schema: z.record(z.any()), // JSON Schema for props validation
+    schema: z.record(z.string(), z.any()), // JSON Schema for props validation
     required: z.array(z.string()).default([]),
-    examples: z.array(z.record(z.any())).default([]),
+    examples: z.array(z.record(z.string(), z.any())).default([]),
   }),
   styling: z.object({
     cssVariables: z.array(z.string()).default([]),
@@ -76,8 +76,8 @@ export const ComponentVariantSchema = z.object({
   name: z.string(),
   description: z.string(),
   componentId: z.string(),
-  props: z.record(z.any()),
-  styling: z.record(z.any()),
+  props: z.record(z.string(), z.any()),
+  styling: z.record(z.string(), z.any()),
   conditions: z.object({
     userSegments: z.array(z.string()).optional(),
     deviceTypes: z.array(z.enum(['mobile', 'tablet', 'desktop'])).optional(),
@@ -277,7 +277,7 @@ export class ComponentRegistry {
 
       script.onload = () => {
         // Assume the component is available on window
-        const componentName = url.split('/').pop()?.replace(/[^a-zA-Z]/g, '')
+        const componentName = url.split('/').pop()?.replace(/[^a-zA-Z]/g, '') || 'UnknownComponent'
         const component = (window as any)[componentName]
         if (component) {
           resolve(component)
@@ -333,7 +333,7 @@ export class ComponentRegistry {
     const variantId = test.variants[bucketIndex]
     
     // Find the variant
-    for (const variants of this.variants.values()) {
+    for (const variants of Array.from(this.variants.values())) {
       const variant = variants.find(v => v.id === variantId)
       if (variant) return variant
     }
@@ -435,22 +435,22 @@ export const ThemeConfigSchema = z.object({
   name: z.string(),
   description: z.string(),
   version: z.string(),
-  variables: z.record(z.string()), // CSS custom properties
-  components: z.record(z.object({
-    styles: z.record(z.any()),
-    variants: z.record(z.any()).optional(),
+  variables: z.record(z.string(), z.string()), // CSS custom properties
+  components: z.record(z.string(), z.object({
+    styles: z.record(z.string(), z.any()),
+    variants: z.record(z.string(), z.any()).optional(),
   })),
-  breakpoints: z.record(z.string()),
+  breakpoints: z.record(z.string(), z.string()),
   typography: z.object({
-    fontFamilies: z.record(z.string()),
-    fontSizes: z.record(z.string()),
-    fontWeights: z.record(z.string()),
-    lineHeights: z.record(z.string()),
+    fontFamilies: z.record(z.string(), z.string()),
+    fontSizes: z.record(z.string(), z.string()),
+    fontWeights: z.record(z.string(), z.string()),
+    lineHeights: z.record(z.string(), z.string()),
   }),
-  colors: z.record(z.string()),
-  spacing: z.record(z.string()),
-  shadows: z.record(z.string()),
-  animations: z.record(z.string()),
+  colors: z.record(z.string(), z.string()),
+  spacing: z.record(z.string(), z.string()),
+  shadows: z.record(z.string(), z.string()),
+  animations: z.record(z.string(), z.string()),
 })
 
 export type ThemeConfig = z.infer<typeof ThemeConfigSchema>

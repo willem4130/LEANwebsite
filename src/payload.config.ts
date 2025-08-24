@@ -29,10 +29,7 @@ export default buildConfig({
     user: 'users',
     meta: {
       titleSuffix: '- LEAN CMS',
-      favicon: '/admin-favicon.ico',
-      ogImage: '/admin-og-image.jpg',
     },
-    css: path.resolve(__dirname, 'admin/styles.css'),
   },
   
   editor: slateEditor({
@@ -148,9 +145,10 @@ export default buildConfig({
               name: 'url',
               type: 'text',
               required: true,
-              validate: (value) => {
+              validate: (value: string | string[] | null | undefined) => {
                 if (!value) return 'URL is required'
-                if (!/^https?:\/\//.test(value)) {
+                const stringValue = typeof value === 'string' ? value : (Array.isArray(value) ? value[0] : '')
+                if (!stringValue || !/^https?:\/\//.test(stringValue)) {
                   return 'URL must start with http:// or https://'
                 }
                 return true
@@ -338,12 +336,6 @@ export default buildConfig({
     },
   },
 
-  // Rate limiting
-  rateLimit: {
-    trustProxy: true,
-    window: 15 * 60 * 1000, // 15 minutes
-    max: 1000, // requests per window
-  },
 
   // Localization (if needed for multi-language sites)
   localization: {

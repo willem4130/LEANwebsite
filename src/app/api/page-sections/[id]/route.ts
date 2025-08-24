@@ -30,12 +30,12 @@ import { pluginManager } from '@/lib/plugin-architecture'
 // GET - Fetch Single Page Section
 // ================================
 
-export const GET = withErrorHandling(async (
+export async function GET(
   req: NextRequest,
-  { params }: { params: { id: string } }
-) => {
+  { params }: { params: Promise<{ id: string }> }
+) {
   const startTime = Date.now()
-  const { id } = params
+  const { id } = await params
   
   try {
     // Build cache key
@@ -83,8 +83,8 @@ export const GET = withErrorHandling(async (
     // Validate data with Zod schema
     const validatedSection = PayloadPageSectionSchema.parse({
       ...result,
-      createdAt: result.createdAt.toISOString(),
-      updatedAt: result.updatedAt.toISOString(),
+      createdAt: typeof result.createdAt === 'string' ? result.createdAt : (result.createdAt as Date).toISOString(),
+      updatedAt: typeof result.updatedAt === 'string' ? result.updatedAt : (result.updatedAt as Date).toISOString(),
     })
 
     // Cache the result
@@ -116,9 +116,15 @@ export const GET = withErrorHandling(async (
       url: req.url,
     })
 
-    throw error
+    return createApiResponse(undefined, {
+      error: {
+        code: error instanceof Error ? 'INTERNAL_ERROR' : 'UNKNOWN_ERROR',
+        message: error instanceof Error ? error.message : 'An unexpected error occurred',
+      },
+      statusCode: 500,
+    })
   }
-})
+}
 
 // ================================
 // PUT - Update Page Section
@@ -130,12 +136,12 @@ const UpdatePageSectionSchema = PayloadPageSectionSchema.partial().omit({
   updatedAt: true,
 })
 
-export const PUT = withErrorHandling(async (
+export async function PUT(
   req: NextRequest,
-  { params }: { params: { id: string } }
-) => {
+  { params }: { params: Promise<{ id: string }> }
+) {
   const startTime = Date.now()
-  const { id } = params
+  const { id } = await params
   
   try {
     // Validate request data
@@ -174,8 +180,8 @@ export const PUT = withErrorHandling(async (
     // Validate result
     const validatedSection = PayloadPageSectionSchema.parse({
       ...result,
-      createdAt: result.createdAt.toISOString(),
-      updatedAt: result.updatedAt.toISOString(),
+      createdAt: typeof result.createdAt === 'string' ? result.createdAt : (result.createdAt as Date).toISOString(),
+      updatedAt: typeof result.updatedAt === 'string' ? result.updatedAt : (result.updatedAt as Date).toISOString(),
     })
 
     // Invalidate related caches
@@ -215,20 +221,26 @@ export const PUT = withErrorHandling(async (
       url: req.url,
     })
 
-    throw error
+    return createApiResponse(undefined, {
+      error: {
+        code: error instanceof Error ? 'INTERNAL_ERROR' : 'UNKNOWN_ERROR',
+        message: error instanceof Error ? error.message : 'An unexpected error occurred',
+      },
+      statusCode: 500,
+    })
   }
-})
+}
 
 // ================================
 // DELETE - Remove Page Section
 // ================================
 
-export const DELETE = withErrorHandling(async (
+export async function DELETE(
   req: NextRequest,
-  { params }: { params: { id: string } }
-) => {
+  { params }: { params: Promise<{ id: string }> }
+) {
   const startTime = Date.now()
-  const { id } = params
+  const { id } = await params
   
   try {
     // Execute before-delete hooks
@@ -310,9 +322,15 @@ export const DELETE = withErrorHandling(async (
       url: req.url,
     })
 
-    throw error
+    return createApiResponse(undefined, {
+      error: {
+        code: error instanceof Error ? 'INTERNAL_ERROR' : 'UNKNOWN_ERROR',
+        message: error instanceof Error ? error.message : 'An unexpected error occurred',
+      },
+      statusCode: 500,
+    })
   }
-})
+}
 
 // ================================
 // Helper Functions

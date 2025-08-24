@@ -1,4 +1,4 @@
-import { CollectionConfig } from 'payload/types'
+import type { CollectionConfig } from 'payload'
 
 /**
  * Theme Settings Collection - Complete Visual Control
@@ -126,7 +126,7 @@ export const ThemeSettings: CollectionConfig = {
                       type: 'text',
                       required: true,
                       defaultValue: '#3b82f6',
-                      validate: (value) => {
+                      validate: (value: any) => {
                         if (!/^#[0-9a-f]{6}$/i.test(value)) {
                           return 'Please enter a valid hex color'
                         }
@@ -140,7 +140,7 @@ export const ThemeSettings: CollectionConfig = {
                       name: 'light',
                       type: 'text',
                       defaultValue: '#60a5fa',
-                      validate: (value) => {
+                      validate: (value: any) => {
                         if (value && !/^#[0-9a-f]{6}$/i.test(value)) {
                           return 'Please enter a valid hex color'
                         }
@@ -151,7 +151,7 @@ export const ThemeSettings: CollectionConfig = {
                       name: 'dark',
                       type: 'text',
                       defaultValue: '#1d4ed8',
-                      validate: (value) => {
+                      validate: (value: any) => {
                         if (value && !/^#[0-9a-f]{6}$/i.test(value)) {
                           return 'Please enter a valid hex color'
                         }
@@ -162,7 +162,7 @@ export const ThemeSettings: CollectionConfig = {
                       name: 'contrast',
                       type: 'text',
                       defaultValue: '#ffffff',
-                      validate: (value) => {
+                      validate: (value: any) => {
                         if (value && !/^#[0-9a-f]{6}$/i.test(value)) {
                           return 'Please enter a valid hex color'
                         }
@@ -351,7 +351,7 @@ export const ThemeSettings: CollectionConfig = {
                       name: 'value',
                       type: 'text',
                       required: true,
-                      validate: (value) => {
+                      validate: (value: any) => {
                         if (!/^#[0-9a-f]{6}$/i.test(value)) {
                           return 'Please enter a valid hex color'
                         }

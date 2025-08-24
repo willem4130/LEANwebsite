@@ -1,4 +1,4 @@
-import { CollectionConfig } from 'payload/types'
+import type { CollectionConfig } from 'payload'
 
 /**
  * Component Library Collection - Reusable UI Components
@@ -254,7 +254,7 @@ export const ComponentLibrary: CollectionConfig = {
                 {
                   name: 'liveDemo',
                   type: 'text',
-                  validate: (value) => {
+                  validate: (value: any) => {
                     if (value && !/^https?:\/\//.test(value)) {
                       return 'URL must start with http:// or https://'
                     }
@@ -701,7 +701,7 @@ export const ComponentLibrary: CollectionConfig = {
         if (!data.displayName && data.componentName) {
           data.displayName = data.componentName
             .replace(/([A-Z])/g, ' $1')
-            .replace(/^./, str => str.toUpperCase())
+            .replace(/^./, (str: string) => str.toUpperCase())
             .trim()
         }
         return data

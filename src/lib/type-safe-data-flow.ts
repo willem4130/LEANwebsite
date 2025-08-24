@@ -19,7 +19,7 @@
  */
 
 import { z } from 'zod'
-import type { CollectionConfig } from 'payload/types'
+import type { CollectionConfig } from 'payload'
 
 // ================================
 // 1. PAYLOAD TYPE GENERATION
@@ -375,7 +375,7 @@ export const PayloadPageSectionSchema = z.object({
   page: z.array(z.enum(['homepage', 'about', 'music', 'gallery', 'tour', 'contact', 'blog', 'global'])),
   enabled: z.boolean(),
   order: z.number(),
-  content: z.record(z.any()),
+  content: z.record(z.string(), z.any()),
   styling: z.object({
     containerWidth: z.enum(['full', 'wide', 'container', 'narrow']).optional(),
     padding: z.object({
@@ -404,7 +404,7 @@ export const PayloadPageSectionSchema = z.object({
   seo: z.object({
     seoTitle: z.string().optional(),
     seoDescription: z.string().optional(),
-    structuredData: z.record(z.any()).optional(),
+    structuredData: z.record(z.string(), z.any()).optional(),
   }).optional(),
   analytics: z.object({
     trackingEvents: z.array(z.object({
@@ -419,7 +419,7 @@ export const PayloadPageSectionSchema = z.object({
     variants: z.array(z.object({
       name: z.string(),
       weight: z.number().min(0).max(100),
-      contentOverride: z.record(z.any()).optional(),
+      contentOverride: z.record(z.string(), z.any()).optional(),
     })).optional(),
   }).optional(),
   createdAt: z.string(),
@@ -446,8 +446,8 @@ export const PayloadComponentLibrarySchema = z.object({
       required: z.boolean(),
     })),
   }),
-  propsSchema: z.record(z.any()),
-  defaultProps: z.record(z.any()).optional(),
+  propsSchema: z.record(z.string(), z.any()),
+  defaultProps: z.record(z.string(), z.any()).optional(),
   exampleUsage: z.string().optional(),
   preview: z.object({
     screenshot: PayloadMediaSchema,
@@ -462,7 +462,7 @@ export const PayloadComponentLibrarySchema = z.object({
     keyboardNavigation: z.boolean(),
     screenReaderSupport: z.boolean(),
     colorContrastCompliant: z.boolean(),
-    ariaLabels: z.record(z.any()).optional(),
+    ariaLabels: z.record(z.string(), z.any()).optional(),
   }),
   responsive: z.object({
     breakpoints: z.array(z.enum(['mobile', 'tablet', 'desktop', 'large'])),
@@ -470,17 +470,17 @@ export const PayloadComponentLibrarySchema = z.object({
   }),
   configuration: z.object({
     configurable: z.boolean(),
-    configSchema: z.record(z.any()).optional(),
+    configSchema: z.record(z.string(), z.any()).optional(),
     adminInterface: z.enum(['form', 'visual', 'code', 'json']),
     presets: z.array(z.object({
       name: z.string(),
       description: z.string().optional(),
-      config: z.record(z.any()),
+      config: z.record(z.string(), z.any()),
       preview: PayloadMediaSchema.optional(),
     })).optional(),
   }),
   integrations: z.object({
-    cmsFields: z.record(z.any()).optional(),
+    cmsFields: z.record(z.string(), z.any()).optional(),
     apiEndpoints: z.array(z.object({
       name: z.string(),
       endpoint: z.string(),
@@ -491,7 +491,7 @@ export const PayloadComponentLibrarySchema = z.object({
       service: z.string(),
       purpose: z.string().optional(),
       apiKeyRequired: z.boolean(),
-      configFields: z.record(z.any()).optional(),
+      configFields: z.record(z.string(), z.any()).optional(),
     })).optional(),
   }),
   performance: z.object({
@@ -503,13 +503,13 @@ export const PayloadComponentLibrarySchema = z.object({
   }),
   seo: z.object({
     seoFriendly: z.boolean(),
-    structuredData: z.record(z.any()).optional(),
-    metaTags: z.record(z.any()).optional(),
+    structuredData: z.record(z.string(), z.any()).optional(),
+    metaTags: z.record(z.string(), z.any()).optional(),
   }),
   documentation: z.object({
     readme: z.string().optional(),
     installation: z.string().optional(),
-    apiDocs: z.record(z.any()).optional(),
+    apiDocs: z.record(z.string(), z.any()).optional(),
     examples: z.array(z.object({
       title: z.string(),
       description: z.string().optional(),
@@ -595,13 +595,13 @@ export const PayloadThemeSettingsSchema = z.object({
       customHeadings: z.string().optional(),
       monospace: z.string(),
     }),
-    fontSizes: z.record(z.string()),
-    fontWeights: z.record(z.number()),
-    lineHeights: z.record(z.string()),
+    fontSizes: z.record(z.string(), z.string()),
+    fontWeights: z.record(z.string(), z.number()),
+    lineHeights: z.record(z.string(), z.string()),
   }),
   spacing: z.object({
     base: z.string(),
-    scale: z.record(z.string()),
+    scale: z.record(z.string(), z.string()),
   }),
   breakpoints: z.object({
     xs: z.string(),
@@ -612,16 +612,16 @@ export const PayloadThemeSettingsSchema = z.object({
     '2xl': z.string(),
   }),
   containers: z.object({
-    maxWidths: z.record(z.string()),
-    padding: z.record(z.string()),
+    maxWidths: z.record(z.string(), z.string()),
+    padding: z.record(z.string(), z.string()),
   }),
   components: z.object({
     buttons: z.object({
       borderRadius: z.string(),
-      padding: z.record(z.string()),
-      fontSize: z.record(z.string()),
+      padding: z.record(z.string(), z.string()),
+      fontSize: z.record(z.string(), z.string()),
       fontWeight: z.number(),
-      variants: z.record(z.any()),
+      variants: z.record(z.string(), z.any()),
     }),
     cards: z.object({
       borderRadius: z.string(),
@@ -639,17 +639,17 @@ export const PayloadThemeSettingsSchema = z.object({
   }),
   animations: z.object({
     enabled: z.boolean(),
-    duration: z.record(z.string()).optional(),
-    easing: z.record(z.string()).optional(),
-    presets: z.record(z.any()).optional(),
+    duration: z.record(z.string(), z.string()).optional(),
+    easing: z.record(z.string(), z.string()).optional(),
+    presets: z.record(z.string(), z.any()).optional(),
   }).optional(),
   darkMode: z.object({
     enabled: z.boolean(),
     strategy: z.enum(['css-vars', 'css-classes', 'data-attrs']),
-    colorOverrides: z.record(z.string()).optional(),
+    colorOverrides: z.record(z.string(), z.string()).optional(),
   }).optional(),
   customCSS: z.string().optional(),
-  cssVariables: z.record(z.any()).optional(),
+  cssVariables: z.record(z.string(), z.any()).optional(),
   generateUtilities: z.boolean(),
   purgeCSS: z.object({
     enabled: z.boolean(),
@@ -907,7 +907,7 @@ export class TypeSafeApiClient extends EnhancedApiClient {
 // 4. TYPE-SAFE REACT HOOKS
 // ================================
 
-import { useEnhancedApi, useEnhancedMutation } from './enhanced-api-framework'
+import { useEnhancedApi, useEnhancedMutation } from '../hooks/useEnhancedApi'
 
 // Typed hooks for each collection
 export function usePageSections(page?: string) {
@@ -917,7 +917,7 @@ export function usePageSections(page?: string) {
     page ? `/page-sections?page=${page}` : '/page-sections',
     {
       realtime: true,
-      cache: true,
+      enableCache: true,
       ttl: 300000,
     }
   )
@@ -929,7 +929,7 @@ export function usePageSection(id: string) {
   return useEnhancedApi<PayloadPageSection>(
     `/page-sections/${id}`,
     {
-      cache: true,
+      enableCache: true,
       ttl: 300000,
       dependencies: [id],
     }
@@ -938,14 +938,14 @@ export function usePageSection(id: string) {
 
 export function useComponents() {
   return useEnhancedApi<PayloadComponentLibrary[]>('/component-library', {
-    cache: true,
+    enableCache: true,
     ttl: 600000,
   })
 }
 
 export function useComponent(id: string) {
   return useEnhancedApi<PayloadComponentLibrary>(`/component-library/${id}`, {
-    cache: true,
+    enableCache: true,
     ttl: 600000,
     dependencies: [id],
   })
@@ -953,7 +953,7 @@ export function useComponent(id: string) {
 
 export function useThemes() {
   return useEnhancedApi<PayloadThemeSettings[]>('/theme-settings', {
-    cache: true,
+    enableCache: true,
     ttl: 600000,
   })
 }
@@ -962,7 +962,7 @@ export function useTheme(id?: string) {
   const endpoint = id ? `/theme-settings/${id}` : '/theme-settings?isDefault=true'
   
   return useEnhancedApi<PayloadThemeSettings>(endpoint, {
-    cache: true,
+    enableCache: true,
     ttl: 600000,
     dependencies: [id],
   })
@@ -971,7 +971,7 @@ export function useTheme(id?: string) {
 export function useNavigation() {
   return useEnhancedApi('/navigation', {
     realtime: true,
-    cache: true,
+    enableCache: true,
     ttl: 600000,
   })
 }
@@ -1055,7 +1055,7 @@ export class TypeCompatibilityChecker {
       return { compatible: true, errors, warnings }
     } catch (error) {
       if (error instanceof z.ZodError) {
-        errors.push(...error.errors.map(e => `${e.path.join('.')}: ${e.message}`))
+        errors.push(...error.issues.map(e => `${e.path.join('.')}: ${e.message}`))
       }
       
       return { compatible: false, errors, warnings }
@@ -1076,11 +1076,3 @@ export const typeSafeApiClient = new TypeSafeApiClient()
 export const schemaMigrator = new SchemaMigrator()
 export const typeCompatibilityChecker = new TypeCompatibilityChecker()
 
-export {
-  type PayloadDocument,
-  type PayloadMedia,
-  type PayloadUser,
-  type PayloadPageSection,
-  type PayloadComponentLibrary,
-  type PayloadThemeSettings,
-}

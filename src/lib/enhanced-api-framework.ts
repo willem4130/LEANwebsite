@@ -88,7 +88,7 @@ export const PageSectionSchema = z.object({
   page: z.array(z.enum(['homepage', 'about', 'music', 'gallery', 'tour', 'contact', 'blog', 'global'])),
   enabled: z.boolean(),
   order: z.number(),
-  content: z.record(z.any()), // Dynamic content based on sectionType
+  content: z.record(z.string(), z.any()), // Dynamic content based on sectionType
   styling: z.object({
     containerWidth: z.enum(['full', 'wide', 'container', 'narrow']).optional(),
     padding: z.object({
@@ -134,8 +134,8 @@ export const ComponentLibrarySchema = z.object({
       required: z.boolean(),
     })),
   }),
-  propsSchema: z.record(z.any()),
-  defaultProps: z.record(z.any()).optional(),
+  propsSchema: z.record(z.string(), z.any()),
+  defaultProps: z.record(z.string(), z.any()).optional(),
 })
 
 export type ComponentLibraryItem = z.infer<typeof ComponentLibrarySchema>
@@ -174,17 +174,17 @@ export const ThemeSettingsSchema = z.object({
       headings: z.string().optional(),
       monospace: z.string().optional(),
     }),
-    fontSizes: z.record(z.string()),
-    fontWeights: z.record(z.number()),
+    fontSizes: z.record(z.string(), z.string()),
+    fontWeights: z.record(z.string(), z.number()),
   }),
   spacing: z.object({
     base: z.string(),
-    scale: z.record(z.string()),
+    scale: z.record(z.string(), z.string()),
   }),
   animations: z.object({
     enabled: z.boolean(),
-    duration: z.record(z.string()).optional(),
-    easing: z.record(z.string()).optional(),
+    duration: z.record(z.string(), z.string()).optional(),
+    easing: z.record(z.string(), z.string()).optional(),
   }).optional(),
 })
 
@@ -337,7 +337,7 @@ class PluginManager {
   ): Promise<T> {
     let result = payload
 
-    for (const plugin of this.plugins.values()) {
+    for (const plugin of Array.from(this.plugins.values())) {
       const hook = plugin.hooks[hookName]
       if (hook) {
         try {
@@ -435,7 +435,7 @@ export class EnhancedApiClient {
       
       return processedResponse
     } catch (error) {
-      await pluginManager.executeHook('onError', error, config)
+      await pluginManager.executeHook('onError', error)
       throw error
     } finally {
       this.requestQueue.delete(cacheKey)
@@ -657,7 +657,7 @@ class PerformanceMonitor {
     }
 
     const allStats: Record<string, any> = {}
-    for (const [ep, times] of this.metrics.entries()) {
+    for (const [ep, times] of Array.from(this.metrics.entries())) {
       allStats[ep] = this.calculateStats(times)
     }
     return allStats

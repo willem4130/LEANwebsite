@@ -343,7 +343,7 @@ export class PluginManager extends EventEmitter {
       this.emit('plugin:installed', plugin.manifest.name)
       
     } catch (error) {
-      this.logger.error(`Failed to install plugin from ${pluginPath}`, error)
+      this.logger.error(`Failed to install plugin from ${pluginPath}`, error as Error)
       throw error
     }
   }
@@ -372,7 +372,7 @@ export class PluginManager extends EventEmitter {
       this.emit('plugin:uninstalled', pluginName)
       
     } catch (error) {
-      this.logger.error(`Failed to uninstall plugin ${pluginName}`, error)
+      this.logger.error(`Failed to uninstall plugin ${pluginName}`, error as Error)
       throw error
     }
   }
@@ -397,7 +397,7 @@ export class PluginManager extends EventEmitter {
       
     } catch (error) {
       this.pluginStates.set(pluginName, 'error')
-      this.logger.error(`Failed to enable plugin ${pluginName}`, error)
+      this.logger.error(`Failed to enable plugin ${pluginName}`, error as Error)
       throw error
     }
   }
@@ -417,7 +417,7 @@ export class PluginManager extends EventEmitter {
       
     } catch (error) {
       this.pluginStates.set(pluginName, 'error')
-      this.logger.error(`Failed to disable plugin ${pluginName}`, error)
+      this.logger.error(`Failed to disable plugin ${pluginName}`, error as Error)
       throw error
     }
   }
@@ -434,7 +434,7 @@ export class PluginManager extends EventEmitter {
           results.push(result)
         }
       } catch (error) {
-        this.logger.error(`Hook ${hookName} failed`, error)
+        this.logger.error(`Hook ${hookName} failed`, error as Error)
         // Continue executing other hooks
       }
     }
@@ -723,23 +723,6 @@ export class PluginBuilder {
 
 export const pluginManager = new PluginManager(
   {} as FrameworkAPI, // Will be injected by the framework
-  console as Logger   // Will be replaced with proper logger
+  console as unknown as Logger   // Will be replaced with proper logger
 )
 
-export {
-  type Plugin,
-  type PluginManifest,
-  type PluginHooks,
-  type PluginContext,
-  type PluginHealthStatus,
-  type FrameworkAPI,
-  type ServiceRegistry,
-  type StorageAPI,
-  type Logger,
-  type AnalyticsPlugin,
-  type WebhookPlugin,
-  type N8nPlugin,
-  type MarketplaceAPI,
-  type MarketplacePlugin,
-  type PluginUpdate,
-}

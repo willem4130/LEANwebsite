@@ -139,7 +139,7 @@ export function validateRequest<T>(schema: z.ZodSchema<T>) {
           'VALIDATION_ERROR',
           'Invalid request data',
           400,
-          { validationErrors: error.errors }
+          { validationErrors: error.issues }
         )
       }
       throw new ApiError('INVALID_JSON', 'Invalid JSON in request body', 400)
@@ -251,7 +251,7 @@ export function rateLimit(requests: number = 100, windowMs: number = 15 * 60 * 1
     const windowStart = now - windowMs
     
     // Clean old entries
-    for (const [key, value] of requests_store.entries()) {
+    for (const [key, value] of Array.from(requests_store.entries())) {
       if (value.resetTime < windowStart) {
         requests_store.delete(key)
       }
