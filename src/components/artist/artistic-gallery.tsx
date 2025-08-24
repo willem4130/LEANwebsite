@@ -70,9 +70,9 @@ export function ArtisticGallery({
 
   return (
     <ComponentErrorBoundary componentName="Artistic Gallery">
-      <section className={cn("relative min-h-screen", className)} style={{ backgroundColor }}>
-        {/* No padding, no max-width - full screen */}
-        <div className="w-full h-full">
+      <section className={cn("relative min-h-screen", className)} style={{ backgroundColor, margin: 0, padding: 0 }}>
+        {/* ZERO spacing, ZERO padding - MAXIMUM image presence */}
+        <div className="w-full h-full" style={{ margin: 0, padding: 0 }}>
           {title && (
             <motion.h2 
               className="text-4xl md:text-6xl font-bold text-white text-center py-12 bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent"
@@ -85,48 +85,68 @@ export function ArtisticGallery({
             </motion.h2>
           )}
 
-          {/* FULLSCREEN Grid - WAY BIGGER IMAGES */}
+          {/* ZERO GAP FULLSCREEN Grid - MAXIMUM IMAGE PRESENCE */}
           <motion.div
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 min-h-screen"
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 min-h-screen gap-0"
             variants={containerVariants}
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, margin: "-100px" }}
+            style={{ margin: 0, padding: 0 }}
           >
             {items.map((item, index) => (
               <motion.div
                 key={item.id}
                 variants={itemVariants}
                 className="relative h-screen md:h-[50vh] lg:h-[33.33vh] cursor-pointer group overflow-hidden"
+                style={{ margin: 0, padding: 0, border: 'none' }}
                 whileHover={{ 
-                  scale: 1.05,
+                  scale: 1.02,
                   zIndex: 10,
-                  transition: { duration: 0.3, ease: [0.4, 0.0, 0.2, 1.0] }
+                  transition: { duration: 0.2, ease: [0.4, 0.0, 0.2, 1.0] }
                 }}
                 transition={{ 
-                  duration: 0.6, 
+                  duration: 0.4, 
                   ease: [0.4, 0.0, 0.2, 1.0]
                 }}
                 onClick={() => setSelectedImage(item)}
               >
-                {/* MASSIVE Image/Video filling entire space */}
-                <div className="absolute inset-0">
+                {/* MAXIMUM COVERAGE Image/Video - NO BACKGROUND VISIBLE */}
+                <div className="absolute inset-0" style={{ margin: 0, padding: 0 }}>
                   {item.type === 'video' ? (
                     <>
                       <img
                         src={item.thumbnailUrl || item.url}
                         alt={item.altText || item.caption || ''}
-                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                        style={{ 
+                          display: 'block',
+                          margin: 0, 
+                          padding: 0,
+                          border: 'none',
+                          objectFit: 'cover',
+                          objectPosition: 'center'
+                        }}
+                        loading="eager"
                       />
-                      <div className="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                        <Play className="w-24 h-24 text-white drop-shadow-2xl" />
+                      <div className="absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        <Play className="w-20 h-20 text-white drop-shadow-2xl" />
                       </div>
                     </>
                   ) : (
                     <img
                       src={item.thumbnailUrl || item.url}
                       alt={item.altText || item.caption || ''}
-                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      style={{ 
+                        display: 'block',
+                        margin: 0, 
+                        padding: 0,
+                        border: 'none',
+                        objectFit: 'cover',
+                        objectPosition: 'center'
+                      }}
+                      loading="eager"
                     />
                   )}
                 </div>
