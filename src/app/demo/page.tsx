@@ -50,7 +50,6 @@ import { HeroSection } from '@/components/artist/hero-section'
 import { TwoColumnLayout } from '@/components/artist/two-column-layout'
 import { ArtisticGallery } from '@/components/artist/artistic-gallery'
 import { ContactSocial } from '@/components/artist/contact-social'
-import { BookingForm } from '@/components/artist/booking-form'
 import { ElectronicNav } from '@/components/ui/electronic-nav'
 import { ExplosiveScrollTransition } from '@/components/animations/ExplosiveScrollTransition'
 import { initializeGSAPAnimations, cleanupGSAPAnimations } from '@/lib/gsap-animations'
@@ -252,12 +251,29 @@ export default function DemoPage() {
         />
       </div>
 
-      {/* Professional Booking Form with Pricing */}
+      {/* Simple Booking CTA */}
       <div id="booking" className="section-container">
-        <BookingForm
-          artistName="ARIA NOVA"
-          backgroundColor="#060609"
-        />
+        <div className="py-20 px-6" style={{ backgroundColor: "#060609" }}>
+          <div className="max-w-4xl mx-auto text-center">
+            <h2 className="text-4xl md:text-6xl font-bold mb-8 bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">
+              BOOK ARIA NOVA
+            </h2>
+            <p className="text-2xl text-gray-300 mb-12">
+              Available for festivals, clubs, and private events
+            </p>
+            <div className="flex flex-col sm:flex-row gap-6 justify-center">
+              <a 
+                href="mailto:booking@arianova.com?subject=Booking Inquiry" 
+                className="inline-flex items-center justify-center px-12 py-4 text-xl font-bold bg-gradient-to-r from-cyan-600 to-purple-600 hover:from-cyan-700 hover:to-purple-700 text-white rounded-lg transition-all duration-300 hover:scale-105"
+              >
+                booking@arianova.com
+              </a>
+              <div className="text-2xl text-cyan-400 font-bold self-center">
+                $5K - $25K
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Contact & Social with consistent gradient theme */}

@@ -70,11 +70,12 @@ export function ArtisticGallery({
 
   return (
     <ComponentErrorBoundary componentName="Artistic Gallery">
-      <section className={cn("py-16 relative", className)} style={{ backgroundColor }}>
-        <div className="max-w-7xl mx-auto px-4">
+      <section className={cn("relative min-h-screen", className)} style={{ backgroundColor }}>
+        {/* No padding, no max-width - full screen */}
+        <div className="w-full h-full">
           {title && (
             <motion.h2 
-              className="text-3xl font-bold text-foreground text-center mb-12"
+              className="text-4xl md:text-6xl font-bold text-white text-center py-12 bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
@@ -84,9 +85,9 @@ export function ArtisticGallery({
             </motion.h2>
           )}
 
-          {/* Artistic Masonry Grid */}
+          {/* FULLSCREEN Grid - WAY BIGGER IMAGES */}
           <motion.div
-            className="columns-1 md:columns-2 lg:columns-3 xl:columns-4 gap-6"
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 min-h-screen"
             variants={containerVariants}
             initial="hidden"
             whileInView="visible"
@@ -96,12 +97,10 @@ export function ArtisticGallery({
               <motion.div
                 key={item.id}
                 variants={itemVariants}
-                className={cn(
-                  "break-inside-avoid mb-6 cursor-pointer group relative overflow-hidden rounded-lg bg-card border border-border",
-                  getItemHeight(index)
-                )}
+                className="relative h-screen md:h-[50vh] lg:h-[33.33vh] cursor-pointer group overflow-hidden"
                 whileHover={{ 
-                  scale: 1.02,
+                  scale: 1.05,
+                  zIndex: 10,
                   transition: { duration: 0.3, ease: [0.4, 0.0, 0.2, 1.0] }
                 }}
                 transition={{ 
@@ -110,34 +109,37 @@ export function ArtisticGallery({
                 }}
                 onClick={() => setSelectedImage(item)}
               >
-                {/* Image/Video */}
-                <div className="relative w-full h-full overflow-hidden">
+                {/* MASSIVE Image/Video filling entire space */}
+                <div className="absolute inset-0">
                   {item.type === 'video' ? (
                     <>
                       <img
                         src={item.thumbnailUrl || item.url}
                         alt={item.altText || item.caption || ''}
-                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                       />
-                      <div className="absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                        <Play className="w-12 h-12 text-white" />
+                      <div className="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                        <Play className="w-24 h-24 text-white drop-shadow-2xl" />
                       </div>
                     </>
                   ) : (
                     <img
                       src={item.thumbnailUrl || item.url}
                       alt={item.altText || item.caption || ''}
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                     />
                   )}
                 </div>
 
                 {/* Caption Overlay */}
                 {item.caption && (
-                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <p className="text-white text-sm font-medium">{item.caption}</p>
+                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent p-8 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                    <p className="text-white text-xl font-bold drop-shadow-2xl">{item.caption}</p>
                   </div>
                 )}
+
+                {/* Gradient overlay for better text visibility */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
               </motion.div>
             ))}
           </motion.div>
